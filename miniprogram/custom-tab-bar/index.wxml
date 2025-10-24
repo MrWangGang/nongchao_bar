@@ -1,0 +1,28 @@
+<view class="tab-bar">
+  <view class="tab-item" hover-class="none" data-index="0" data-path="/pages/index/index" bindtap="switchTab">
+    <image class="icon {{selected === 0 ? 'selected' : ''}}" src="{{selected === 0 ? '/images/首页_true.png' : '/images/首页_false.png'}}"></image>
+    <text style="color: {{selected === 0 ? selectedColor : color}}">首页</text>
+  </view>
+  
+  <view class="tab-item" hover-class="none" data-index="1" data-path="/pages/meal/index" bindtap="switchTab">
+    <image class="icon {{selected === 1 ? 'selected' : ''}}" src="{{selected === 1 ? '/images/菜单_true.png' : '/images/菜单_false.png'}}"></image>
+    <text style="color: {{selected === 1 ? selectedColor : color}}">菜单</text>
+  </view>
+
+  <view class="tab-item-bulge" hover-class="none" data-index="2" data-path="/pages/game/index" bindtap="switchTab">
+    <view class="bulge-button">
+      <image class="icon-bulge {{selected === 2 ? 'selected' : ''}}" src="{{selected === 2 ? '/images/游戏_true.png' : '/images/游戏_false.png'}}"></image>
+    </view>
+    <text style="color: {{selected === 2 ? selectedColor : color}}">游戏</text>
+  </view>
+
+  <view class="tab-item" hover-class="none" data-index="3" data-path="/pages/cocktail/index" bindtap="switchTab">
+    <image class="icon {{selected === 3 ? 'selected' : ''}}" src="{{selected === 3 ? '/images/调酒_true.png' : '/images/调酒_false.png'}}"></image>
+    <text style="color: {{selected === 3 ? selectedColor : color}}">调酒</text>
+  </view>
+  
+  <view class="tab-item" hover-class="none" data-index="4" data-path="/pages/myself/index" bindtap="switchTab">
+    <image class="icon {{selected === 4 ? 'selected' : ''}}" src="{{selected === 4 ? '/images/我的_true.png' : '/images/我的_false.png'}}"></image>
+    <text style="color: {{selected === 4 ? selectedColor : color}}">我的</text>
+  </view>
+</view>

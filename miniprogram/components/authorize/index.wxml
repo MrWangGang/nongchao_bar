@@ -1,0 +1,31 @@
+<view class="auth-overlay-fixed" wx:if="{{isAuthModalVisible}}">
+  <view class="auth-form-card">
+      
+      <text class="title-main">完善会员信息</text>
+      <text class="title-sub">请选择头像以一键登录</text>
+
+      <button class="avatar-auth-btn" open-type="chooseAvatar" bind:chooseavatar="onChooseAvatar">
+        <image class="avatar-auth-img" src="{{authAvatarUrl}}"></image>
+        <view class="avatar-hint">点击选择头像 (必选)</view>
+      </button> 
+      
+      <view class="nickname-input-group">
+          <input 
+              type="nickname" 
+              class="nickname-input-field" 
+              placeholder="点击填写昵称 (必填)"
+              value="{{authNickName}}"
+              bindblur="onNicknameInput"
+              bindinput="onNicknameInput"
+          />
+      </view>
+      
+      <button 
+          class="login-submit-btn" 
+          type="primary" 
+          bindtap="submitAuthAndLogin"
+          disabled="{{authAvatarUrl === defaultAvatarUrl || !authNickName}}"> 
+          一键登录
+      </button>
+  </view>
+</view>

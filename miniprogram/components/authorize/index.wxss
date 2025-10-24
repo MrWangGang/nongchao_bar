@@ -1,0 +1,144 @@
+/* components/authorize/authorize.wxss */
+
+/* =============================================== */
+/* 1. 授权覆盖层容器 (全屏) */
+/* =============================================== */
+.auth-overlay-fixed {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  
+  background-color: rgba(0, 0, 0, 0.65); 
+  
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  
+  z-index: 10000;
+}
+
+/* =============================================== */
+/* 2. 授权表单卡片 (模态框主体) */
+/* =============================================== */
+.auth-form-card {
+  background-color: white;
+  padding: 60rpx 40rpx 40rpx;
+  border-radius: 24rpx; 
+  width: 85%; 
+  max-width: 600rpx;
+  
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  
+  box-shadow: 0 10rpx 30rpx rgba(0, 0, 0, 0.2);
+  
+  animation: fadeInScale 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+/* 标题和副标题 */
+.title-main {
+  font-size: 38rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 8rpx;
+}
+.title-sub {
+  font-size: 26rpx;
+  color: #999;
+  margin-bottom: 50rpx;
+}
+
+/* =============================================== */
+/* 3. 头像选择按钮 (open-type="chooseAvatar") */
+/* =============================================== */
+
+/* 核心按钮容器 (必须为正方形和圆形) */
+.avatar-auth-btn {
+  background: none;
+  line-height: 1; 
+  padding: 0;
+  margin: 30rpx 0 10rpx 0;
+  
+  width: 160rpx !important;
+  height: 160rpx !important;
+  border-radius: 50% !important;
+  
+  position: relative; 
+  overflow: hidden; 
+  border: 4rpx solid #e0e0e0;
+}
+
+/* 头像图片 (必须是 100% 宽高，且设置圆角) */
+.avatar-auth-img {
+  width: 100% !important;
+  height: 100% !important;
+  border-radius: 50% !important; 
+  object-fit: cover; 
+  display: block;
+}
+
+/* 提示文本 */
+.avatar-hint {
+  font-size: 24rpx;
+  color: #4a90e2; 
+  margin-top: 15rpx;
+  margin-bottom: 30rpx;
+  display: block; 
+}
+
+/* ⭐ 昵称输入框样式 ⭐ */
+.nickname-input-group {
+  width: 100%;
+  padding: 20rpx 0;
+  border-bottom: 1rpx solid #eee;
+  margin-bottom: 30rpx;
+}
+
+.nickname-input-field {
+  width: 100%;
+  text-align: center;
+  font-size: 34rpx;
+  padding: 5rpx 0;
+}
+
+/* =============================================== */
+/* 4. 提交登录按钮 */
+/* =============================================== */
+
+.login-submit-btn {
+  margin-top: 40rpx; 
+  width: auto; 
+  box-shadow: none;
+  border: none;
+  
+  height: 90rpx;
+  line-height: 90rpx;
+  font-size: 34rpx;
+  
+  padding: 0 40rpx; 
+  
+  border-radius: 45rpx; 
+  background-color: #4a90e2;
+  color: #fff;
+  transition: background-color 0.2s;
+}
+
+.login-submit-btn.disabled {
+  background-color: #bbbbbb;
+  color: #f0f0f0;
+}
+
+/* 动画效果 */
+@keyframes fadeInScale {
+  0% {
+      opacity: 0;
+      transform: scale(0.95);
+  }
+  100% {
+      opacity: 1;
+      transform: scale(1);
+  }
+}

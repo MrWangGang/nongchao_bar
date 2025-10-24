@@ -1,0 +1,59 @@
+{
+  "cloud": true,
+  "pages": [
+    "pages/index/index",
+    "pages/meal/index",
+    "pages/game/index",
+    "pages/cocktail/index",
+    "pages/myself/index",
+    "pages/index/reserve/index",
+    "pages/index/reserve/detail/index",
+    "pages/index/reserve/bill/index",
+    "pages/index/orders/index",
+    "pages/meal/food/index",
+    "pages/meal/food/detail/index",
+    "pages/meal/food/bill/index"
+  ],
+  "window": {
+    "backgroundColor": "#F6F6F6",
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#F6F6F6",
+    "navigationBarTitleText": "云开发 QuickStart",
+    "navigationBarTextStyle": "black"
+  },
+  "tabBar": {
+    "custom": true,
+    "color": "#666666",
+    "selectedColor": "#E64340",
+    "backgroundColor": "#FFFFFF",
+    "borderStyle": "black",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "菜单"
+      },
+      {
+        "pagePath": "pages/meal/index",
+        "text": "菜单"
+      },
+      {
+        "pagePath": "pages/game/index",
+        "text": "游戏"
+      },
+      {
+        "pagePath": "pages/cocktail/index",
+        "text": "调酒"
+      },
+      {
+        "pagePath": "pages/myself/index",
+        "text": "我的"
+      }
+    ]
+  },
+  "usingComponents": {
+    "authorize": "/components/authorize/index"
+  },
+  "sitemapLocation": "sitemap.json",
+  "style": "v2",
+  "lazyCodeLoading": "requiredComponents"
+}

@@ -1,0 +1,108 @@
+/* custom-tab-bar/index.wxss */
+
+/* --- 主容器 --- */
+.tab-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 100rpx;
+  background: white;
+  display: flex;
+  /* 适配 iPhone X 等底部安全区域 */
+  padding-bottom: constant(safe-area-inset-bottom);
+  padding-bottom: env(safe-area-inset-bottom);
+  /* 边框和阴影 */
+  border-top: 1rpx solid #EFEFEF;
+  box-shadow: 0 -2rpx 10rpx rgba(0, 0, 0, 0.04);
+}
+
+/* --- 普通 Tab 项 --- */
+.tab-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 22rpx;
+  flex: 1;
+  height: 100%;
+  position: relative;
+  z-index: 2;
+}
+
+.icon {
+  width: 48rpx;
+  height: 48rpx;
+  margin-bottom: 4rpx;
+  transition: transform 0.2s ease-in-out;
+}
+
+.icon.selected {
+  transform: scale(1.2);
+}
+
+/* --- 中间突起的容器 --- */
+.tab-item-bulge {
+  position: relative;
+  width: 20%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 22rpx;
+  z-index: 2;
+  /* 确保文字可以基于底部定位，或者使用 flex-end */
+  justify-content: flex-end; 
+}
+
+/* --- 核心：中间突起的方形按钮 --- */
+.bulge-button {
+  position: absolute;
+  /* 稍微上移，以适应更深的弧度 */
+  top: -30rpx; 
+  /* 按钮本身也可以适当缩小，以包裹变小的图标 */
+  width: 135rpx;
+  height: 85rpx;
+  background: #FFFFFF;
+  border-radius: 50rpx;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.icon-bulge {
+  /* 将图标尺寸从 80rpx 减小到 70rpx */
+  width: 70rpx;
+  height: 70rpx;
+  transition: transform 0.2s ease-in-out;
+}
+
+.icon-bulge.selected {
+  transform: scale(1.1);
+}
+
+/* 【关键修改】：定位中间按钮下方的文字 */
+.tab-item-bulge > text {
+  position: absolute; /* 绝对定位 */
+  bottom: 10rpx;     /* 定位到 TabBar 底部上方 10rpx 处 */
+  z-index: 3;        /* 确保文字在按钮和凹槽上方 */
+  font-size: 22rpx;  /* 确保文字大小正确 */
+}
+
+/* --- 核心：使用伪元素制作弧形凹槽 --- */
+.tab-item-bulge::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  /* 增加宽度，让弧形更开阔 */
+  width: 160rpx;  
+  /* 增加高度，让弧形更深，弧度更大 */
+  height: 100rpx;  
+  background: white;
+  /* 同步修改圆角值，确保是完美的半圆弧 */
+  border-radius: 0 0 80rpx 80rpx;  
+  z-index: -1;
+  border-top: 1rpx solid #EFEFEF;
+}

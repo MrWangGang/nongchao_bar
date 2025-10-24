@@ -1,0 +1,253 @@
+/* /pages/index/reserve/detail/index.wxss */
+page {
+  background-color: #f7f7f7;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+.page-wrapper {
+  padding-top: 24rpx;
+  padding-bottom: 180rpx;
+}
+
+.card {
+  background-color: #ffffff;
+  border-radius: 20rpx;
+  margin: 0 24rpx 24rpx 24rpx;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.05);
+}
+
+.card-content {
+  padding: 30rpx;
+}
+
+.summary-card .card-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.summary-card {
+  background: linear-gradient(to right, #fff6f6, #ffffff);
+}
+
+.seat-box {
+  border: 2rpx solid #FF4D4F;
+  border-radius: 16rpx;
+  padding: 20rpx;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.seat-name {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #FF4D4F;
+}
+
+.seat-meta {
+  font-size: 24rpx;
+  color: #666;
+  margin-top: 8rpx;
+}
+
+.date-info {
+  text-align: right;
+}
+
+.booking-date {
+  font-size: 30rpx;
+  font-weight: 500;
+  color: #333;
+}
+
+.arrival-time {
+  font-size: 26rpx;
+  color: #888;
+  margin-top: 10rpx;
+}
+
+.card-title-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 20rpx;
+  margin-bottom: 10rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.card-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+.icons .icon {
+  width: 40rpx;
+  height: 40rpx;
+  margin-left: 30rpx;
+}
+
+.form-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 30rpx 0;
+  font-size: 28rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.form-card .card-content > .form-item:last-child,
+.form-card .card-content > picker:last-child > .form-item {
+  border-bottom: none;
+}
+
+.label {
+  color: #333;
+}
+.value {
+  color: #666;
+}
+.input {
+  text-align: right;
+  color: #333;
+}
+.placeholder {
+  color: #ccc;
+}
+.picker-value {
+  display: flex;
+  align-items: center;
+}
+.arrow-right {
+  color: #8b8686;
+  margin-left: 10rpx;
+}
+
+.content-card .card-title-bar {
+  margin-bottom: 0;
+}
+.content-item {
+  display: flex;
+  align-items: flex-start;
+  padding-top: 20rpx;
+}
+.image-wrapper {
+  position: relative;
+  width: 160rpx;
+  height: 160rpx;
+  border-radius: 16rpx;
+  margin-right: 25rpx;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+.item-image {
+  width: 100%;
+  height: 100%;
+}
+.image-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #ffffff;
+  font-size: 32rpx;
+  font-weight: bold;
+}
+.item-details {
+  display: flex;
+  flex-direction: column;
+}
+.item-name {
+  font-size: 30rpx;
+  color: #333;
+  font-weight: 500;
+}
+.item-desc {
+  font-size: 24rpx;
+  color: #999;
+  margin: 10rpx 0;
+}
+.item-price {
+  font-size: 32rpx;
+  color: #FF4D4F;
+  font-weight: bold;
+  margin-left: 0rpx;
+}
+.bottom-bar {
+  width: 100%;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  padding: 10rpx 30rpx;
+  padding-bottom: calc(20rpx + env(safe-area-inset-bottom));
+  box-sizing: border-box;
+}
+.submit-btn {
+  width: 100% !important;
+  height: 90rpx;
+  line-height: 60rpx;
+  border-radius: 15rpx;
+  background: linear-gradient(to right, #FF7043, #FF4D4F);
+  color: #fff;
+  font-size: 32rpx;
+  font-weight: bold;
+  border: none;
+}
+.submit-btn::after {
+  border: none;
+}
+
+
+/**************************************************************
+ * --- 新增样式：手机号输入框与“悬浮”的发送验证码按钮 ---
+ **************************************************************/
+
+/* 1. 输入框和按钮的父容器，作为“定位锚点” */
+.input-wrapper {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  justify-content: flex-end;
+  position: relative; /* 关键：让它成为绝对定位的参考容器 */
+}
+
+/* 2. 为手机号输入框右侧留出空间，防止文字与按钮重叠 */
+.phone-input {
+  flex: 1;
+  min-width: 0;
+  padding-right: 200rpx; /* 关键：在输入框内部留出空间 */
+  box-sizing: border-box;  /* 确保 padding 不会撑大输入框 */
+}
+
+/* 3. “悬浮”的发送验证码按钮 */
+.send-code-btn {
+  /* 核心：变为绝对定位，脱离布局流 */
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+
+  /* 尺寸和样式 */
+  height: 70rpx;
+  line-height: 68rpx;
+  padding: 0 20rpx;
+  box-sizing: border-box;
+  font-size: 26rpx;
+  border: 1rpx solid #FF4D4F;
+  border-radius: 10rpx;
+  color: #FF4D4F;
+  background-color: #fff;
+  white-space: nowrap;
+  transition: all 0.2s;
+}
+
+/* 4. 按钮的禁用状态 (倒计时中) */
+.send-code-btn.disabled {
+  background-color: #f7f7f7;
+  color: #ccc;
+  border-color: #eee;
+}

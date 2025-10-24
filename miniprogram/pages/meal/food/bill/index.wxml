@@ -1,0 +1,121 @@
+<view class="container">
+    
+    <view class="header-bg"></view>
+    
+    <view class="status-card-positioner" wx:if="{{!loading && orderDetail}}">
+        <view class="status-card-wrapper">
+            <view class="status-card">
+                <view class="status-content">
+                    <view class="status-main">
+                        <text class="status-title">
+                            {{orderStatusMap[orderDetail.orderStatus].title}}
+                        </text>
+                        <text class="status-timer" 
+                            wx:if="{{orderDetail.orderStatus === '待支付'}}">
+                            {{countdownDisplay || '00:00'}}
+                        </text>
+                    </view>
+                    
+                    <view class="status-tip">
+                        {{orderStatusMap[orderDetail.orderStatus].tip}}
+                    </view>
+                    
+                    <view class="status-actions" wx:if="{{orderDetail.orderStatus === '待支付'}}">
+                        <button class="action-btn action-btn-cancel" bindtap="cancelOrder">取消订单</button>
+                        <button class="action-btn action-btn-pay" bindtap="payNow">立即支付</button>
+                    </view>
+                </view>
+            </view>
+        </view>
+    </view>
+    
+    <block wx:if="{{orderDetail}}">
+        <view class="info-card product-card-v6">
+            <view class="store-info">
+                <text class="store-name">商品详情</text>
+                <view class="contact-icons">
+                    <image  
+                        class="contact-icon"  
+                        bindtap="makePhoneCall"  
+                        src="cloud://cloud1-7gy6iiv5f0cbcb43.636c-cloud1-7gy6iiv5f0cbcb43-1379173903/素材/首页_电话.png"
+                    />
+                    <image  
+                        class="contact-icon"  
+                        bindtap="openLocation"  
+                        src="cloud://cloud1-7gy6iiv5f0cbcb43.636c-cloud1-7gy6iiv5f0cbcb43-1379173903/素材/首页_定位.png"
+                    />
+                </view>
+            </view>
+
+            <scroll-view class="product-list-scroll-v7" scroll-y>
+                <view class="product-list">
+                    <block wx:for="{{orderDetail.products}}" wx:key="index">
+                        <view class="product-item">
+                            <image class="product-image" src="{{item.image}}" mode="aspectFill"></image>
+                            <view class="product-details">
+                                <text class="product-name">{{item.name}}</text>
+                                <text class="product-spec">{{item.formattedSpec}}</text>
+                            </view>
+                            <view class="product-price-quantity">
+                                <view class="product-price">¥{{item.price}}</view>
+                                <view class="product-quantity">x{{item.quantity}}</view>
+                            </view>
+                        </view>
+                    </block>
+                </view>
+            </scroll-view>
+            
+            
+            <view class="total-summary-line">
+                <text class="total-summary-text">共<text class="count-value">{{orderDetail.totalCount}}</text>件，合计</text>
+                <text class="total-amount">¥{{orderDetail.totalAmount}}</text>
+            </view>
+        </view>
+
+        <view class="info-card remark-card-v6">
+            <view class="card-title">订单备注</view>
+            
+            <block wx:if="{{orderDetail.remark}}">
+                <textarea 
+                    class="remark-textarea" 
+                    value="{{orderDetail.remark}}" 
+                    disabled="{{true}}" 
+                    auto-height 
+                    maxlength="-1"
+                />
+            </block>
+            <block wx:else>
+                <view 
+                    class="remark-textarea" 
+                    style="color: #999; font-size: 28rpx; height: 150rpx;" 
+                >
+                    无备注
+                </view>
+            </block>
+            </view>
+
+        <view class="info-card info-data-card-v6">
+            <view class="card-title">订单信息</view>
+            
+            <view class="info-row">
+                <text class="info-label">订单编号</text>
+                <text class="info-value">{{orderDetail.no}}</text>
+                <text class="copy-btn" bindtap="copyOrderNo">复制</text>
+            </view>
+            <view class="info-row" wx:if="{{orderDetail.orderStatus === '已支付' && orderDetail.payment.paymentMethod}}">
+                <text class="info-label">支付方式</text>
+                <text class="info-value">{{orderDetail.payment.paymentMethod}}</text>
+            </view>
+            <view class="info-row">
+                <text class="info-label">下单时间</text>
+                <text class="info-value">{{orderDetail.formattedCreateTime}}</text>
+            </view>
+            <view class="info-row">
+                <text class="info-label">桌台号码</text>
+                <text class="info-value">{{orderDetail.seatInfo.name}}</text>
+            </view>
+        </view>
+    </block>
+    
+    <view class="safe-bottom"></view>
+</view>

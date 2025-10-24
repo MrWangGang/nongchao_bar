@@ -1,0 +1,105 @@
+<view class="page-wrapper">
+  <view class="card payment-card">
+    <view class="card-content">
+      <block wx:if="{{orderInfo.orderStatus === '待支付'}}">
+        <view class="payment-title">待支付 <text class="countdown-timer">{{countdown}}</text></view>
+        <view class="payment-subtitle">超时后订单会自动取消，请你尽快支付</view>
+        <view class="action-buttons">
+          <button class="action-btn cancel-btn" bindtap="cancelOrder">取消订单</button>
+          <button class="action-btn pay-btn" bindtap="payNow">立即支付</button>
+        </view>
+      </block>
+      
+      <block wx:elif="{{orderInfo.orderStatus === '订单取消'}}">
+        <view class="payment-title">订单已取消</view>
+        <view class="payment-subtitle">订单已取消，有疑问请联系客服</view>
+        </block>
+      
+      <block wx:elif="{{orderInfo.orderStatus === '已支付'}}">
+        <view class="payment-title">订单已支付</view>
+        <view class="payment-subtitle">订单已支付，有疑问联系客服</view>
+        </block>
+      
+    </view>
+  </view>
+
+  <view class="card summary-card">
+    <view class="card-content">
+      <view class="seat-box">
+        <view class="seat-name">{{orderInfo.seatInfo.name}}</view>
+        <view class="seat-meta">人数: {{orderInfo.seatInfo.description}}</view>
+        <view class="seat-meta">套餐: {{orderInfo.comboInfo.name}}</view>
+      </view>
+      <view class="date-info">
+        <view class="booking-date">{{orderInfo.bookingDate.formattedDate}} {{orderInfo.bookingDate.dayOfWeek}}</view>
+        <view class="arrival-time">最晚到店: {{orderInfo.arrivalTime}}</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="card form-card">
+    <view class="card-content">
+      <view class="card-title-bar">
+        <text class="card-title">预订信息</text>
+        <view class="icons">
+          <image class="icon" bindtap="makePhoneCall" src="cloud://cloud1-7gy6iiv5f0cbcb43.636c-cloud1-7gy6iiv5f0cbcb43-1379173903/素材/首页_电话.png" />
+          <image class="icon" bindtap="openLocation" src="cloud://cloud1-7gy6iiv5f0cbcb43.636c-cloud1-7gy6iiv5f0cbcb43-1379173903/素材/首页_定位.png" />
+        </view>
+      </view>
+
+      <view class="form-item">
+        <text class="label">手机号</text>
+        <text class="value">{{orderInfo.phone}}</text>
+      </view>
+      <view class="form-item">
+        <text class="label">姓名</text>
+        <text class="value">{{orderInfo.name}}</text>
+      </view>
+      <view class="form-item">
+        <text class="label">身份证</text>
+        <text class="value">{{orderInfo.idCard}}</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="card content-card">
+    <view class="card-content">
+      <view class="card-title-bar">
+        <text class="card-title">预订内容</text>
+      </view>
+      <view class="content-item">
+        <view class="image-wrapper">
+          <image class="item-image" src="{{orderInfo.packageInfo.imageUrl}}" mode="aspectFill" />
+          <view class="image-overlay">{{orderInfo.seatInfo.name}}</view>
+        </view>
+        <view class="item-details">
+          <view class="item-name">{{orderInfo.comboInfo.name}}</view>
+          <view class="item-desc">{{orderInfo.comboInfo.description}}</view>
+          <view class="item-price">¥ {{orderInfo.comboInfo.price}}</view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="card order-info-card">
+    <view class="card-content">
+      <view class="card-title-bar">
+        <text class="card-title">订单信息</text>
+      </view>
+      <view class="form-item">
+        <text class="label">订单编号</text>
+        <view class="value copyable" bindtap="copyOrderNo">
+          {{orderInfo.orderNo}} <text class="copy-btn">复制</text>
+        </view>
+      </view>
+      <view class="form-item">
+        <text class="label">支付方式</text>
+        <text class="value">线上支付</text>
+      </view>
+      <view class="form-item">
+        <text class="label">下单时间</text>
+        <text class="value">{{orderInfo.createTime}}</text>
+      </view>
+    </view>
+  </view>
+</view>

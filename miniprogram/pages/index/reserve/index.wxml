@@ -1,0 +1,51 @@
+<view class="container">
+    <scroll-view class="date-navbar" scroll-x enable-flex>
+        <view wx:for="{{dateList}}" wx:for-item="dateItem" wx:key="fullDate" 
+              class="date-item {{dateItem.isActive ? 'active' : ''}}" 
+              bindtap="changeDate" data-date="{{dateItem.fullDate}}">
+            <text class="date-text">{{dateItem.displayDay}}</text>
+            <text class="day-text">{{dateItem.displayMonthDate}}</text>
+            <view wx:if="{{dateItem.isActive}}" class="date-underline"></view>
+        </view>
+    </scroll-view>
+
+    <view class="main-content">
+        <scroll-view class="category-sidebar" scroll-y>
+            <view wx:for="{{categories}}" wx:for-item="category" wx:key="id"
+                  class="category-item {{category.isActive ? 'active' : ''}}"
+                  bindtap="changeCategory" data-id="{{category.id}}">
+                <text class="category-name">{{category.name}}</text>
+            </view>
+        </scroll-view>
+
+        <scroll-view class="seat-list-area" scroll-y>
+            <view class="seat-category-title">{{currentCategoryName}}</view>
+
+            <view wx:for="{{seatList}}" wx:for-item="seat" wx:key="id" 
+                  class="seat-item {{seat.isBooked ? 'booked' : 'bookable'}}"
+                  bindtap="{{seat.isBooked ? '' : 'onBookSeat'}}" 
+                  data-seat-id="{{seat.id}}" data-seat-name="{{seat.name}}" data-seat-desc="{{seat.description}}">
+
+                <view class="seat-image-wrapper">
+                    <image class="seat-image-placeholder" src="{{seat.imageUrl}}" mode="aspectFill"></image>
+                    <view class="seat-name-overlay">
+                        {{seat.name}}
+                    </view>
+                </view>
+                
+                <view class="seat-info">
+                    <view class="seat-name">{{seat.name}}</view>
+                    <view class="seat-desc">{{seat.description}}</view>
+                </view>
+                
+                <view class="seat-action-btn {{seat.isBooked ? 'booked-text' : 'book-btn'}}">
+                    {{seat.isBooked ? '已预定' : '可预定'}}
+                </view>
+            </view>
+            
+            <view wx:if="{{seatList.length === 0}}" class="empty-list-tip">
+                当前日期/分类暂无可用座位
+            </view>
+        </scroll-view>
+    </view>
+</view>

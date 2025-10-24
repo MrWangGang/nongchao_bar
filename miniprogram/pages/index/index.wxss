@@ -1,0 +1,201 @@
+/* pages/index/index.wxss */
+page {
+  background-color: #F7F7F7;
+  font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+}
+
+/* 顶部图片区域 */
+.header-section {
+  width: 100%;
+  height: 500rpx;
+  position: relative;
+}
+
+/* 背景图样式 */
+.header-bg-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+.logo-composite {
+  width: 300rpx;
+  height: 150rpx;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+}
+
+.vip-level-highlight-red {
+  /* 设置为红色 */
+  color: #E60026;
+  font-weight: bold;
+  margin: 0 5rpx;
+}
+
+/* 主体内容区域 */
+.main-content {
+  padding: 0 32rpx;
+  padding-bottom: 50rpx;
+}
+
+/* 会员卡片 */
+.membership-card {
+  background-color: #ffffff;
+  border-radius: 20rpx;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.05);
+  padding: 20rpx 30rpx;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: -40rpx;
+  position: relative;
+  z-index: 10;
+}
+
+.membership-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.membership-info .title {
+  font-size: 32rpx;
+  color: #333333;
+  font-weight: bold;
+  margin-bottom: 15rpx;
+}
+
+.membership-info .subtitle {
+  font-size: 24rpx;
+  color: #999999;
+  margin-top: 8rpx;
+}
+
+.login-btn {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 4rpx solid #ffffff;
+  box-shadow: 0 4rpx 10rpx rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.avatar-image {
+  width: 100%;
+  height: 100%;
+}
+
+/* 通用 Section 样式 */
+.section {
+  margin-top: 30rpx;
+}
+
+.section-title {
+  display: block;
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #333333;
+  margin-bottom: 25rpx;
+}
+
+/* 会员预订区域 */
+.reservation-container {
+  display: flex;
+  gap: 24rpx;
+}
+
+/* 左侧卡片样式 */
+.reservation-grid-card {
+  flex: 1.9;
+  display: flex;
+  flex-wrap: wrap;
+  background-color: #ffffff;
+  border-radius: 20rpx;
+  padding: -5rpx;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.05);
+}
+
+/* 【优化后的四宫格项目样式】 */
+.grid-item {
+  width: 50%; /* 确保所有格子在水平方向上等宽 */
+  height: 170rpx; /* 强制设置高度，确保所有格子在垂直方向上等高 */
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* 水平居中（图标和文字组合） */
+  justify-content: center; /* 垂直居中 */
+  box-sizing: border-box; 
+  padding: 0; 
+}
+
+.grid-item .icon {
+  width: 64rpx;
+  height: 64rpx;
+  margin-bottom: 16rpx;
+}
+
+/* 【关键对齐修改 1】文字容器：使用负 margin 将文字组合整体向左微调 */
+.item-text-container {
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+  gap: 10rpx;
+  /* 此负值用于将整个文字组合（“小酌 室外”）向左微移，使其在视觉上完美对齐到图标中心 */
+  margin-left: -12rpx; 
+}
+
+/* 【关键对齐修改 2】主标题：强制设置宽度并居中，确保所有主标题对齐 */
+.item-title {
+  font-size: 28rpx;
+  color: #333;
+  font-weight: 500;
+  
+  /* 强制宽度，让两个汉字的主标题占据相同的空间 */
+  width: 56rpx; 
+  text-align: center; /* 确保主标题文字在自身宽度内居中 */
+}
+
+.item-subtitle {
+  font-size: 22rpx;
+  color: #999;
+}
+
+/* 右侧带虚线边框的卡片 */
+.reservation-query-card {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #ffffff;
+  border-radius: 20rpx;
+  border: 3rpx dashed #DCDCDC;
+  box-sizing: border-box;
+}
+
+.query-icon {
+  width: 150rpx;
+  height: 150rpx;
+  margin-bottom: 20rpx;
+}
+
+.query-text {
+  font-size: 28rpx;
+  color: #333;
+  font-weight: 500;
+}
+
+/* 更多活动 */
+.activity-banner {
+  width: 100%;
+  height: 200rpx;
+  border-radius: 20rpx;
+  display: block;
+}

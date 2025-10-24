@@ -1,0 +1,94 @@
+<view class="header-section">
+    <image
+        class="header-bg-image"
+        src="cloud://cloud1-7gy6iiv5f0cbcb43.636c-cloud1-7gy6iiv5f0cbcb43-1379173903/素材/首页_主图.png"
+        mode="aspectFill">
+    </image>
+    
+    <image
+        class="logo-composite"
+        src=""
+        mode="aspectFit">
+    </image>
+</view>
+
+<view class="main-content">
+    <view class="membership-card" bindtap="onMemberCardClick">
+        
+        <view class="membership-info">
+            <block wx:if="{{userInfo}}">
+                <text class="title">{{userInfo.name}}</text>
+                <text class="subtitle">尊贵的会员，<text class="vip-level-highlight-red">VIP.{{userInfo.vipLevel || 0}}</text> 欢迎您</text>
+            </block>
+            <block wx:else>
+                <text class="title">您还不是本店会员</text>
+                <text class="subtitle">点击此处，立即登录</text>
+            </block>
+        </view>
+        
+        <view class="login-btn">
+            <image
+                class="avatar-image"
+                src="{{userInfo.avatar}}"
+                mode="aspectFill"
+                wx:if="{{userInfo && userInfo.avatar}}">
+            </image>
+            
+            <image
+                class="avatar-image"
+                src="cloud://cloud1-7gy6iiv5f0cbcb43.636c-cloud1-7gy6iiv5f0cbcb43-1379173903/素材/首页_默认头像.webp"
+                mode="aspectFill"
+                wx:else>
+            </image>
+        </view>
+    </view>
+
+    <block wx:if="{{userInfo}}">
+        <view class="section">
+            <text class="section-title">会员预订</text>
+            <view class="reservation-container">
+                <view class="reservation-grid-card">
+                    <view class="grid-item" bindtap="reserve" data-item="小酌">
+                        <image class="icon" src="cloud://cloud1-7gy6iiv5f0cbcb43.636c-cloud1-7gy6iiv5f0cbcb43-1379173903/素材/首页_小酌.png"></image>
+                        <view class="item-text-container">
+                            <text class="item-title">小酌</text>
+                            <text class="item-subtitle">室外</text>
+                        </view>
+                    </view>
+                    <view class="grid-item" bindtap="reserve" data-item="微醺">
+                        <image class="icon" src="cloud://cloud1-7gy6iiv5f0cbcb43.636c-cloud1-7gy6iiv5f0cbcb43-1379173903/素材/首页_微醺.png"></image>
+                        <view class="item-text-container">
+                            <text class="item-title">微醺</text>
+                            <text class="item-subtitle">室外</text>
+                        </view>
+                    </view>
+                    <view class="grid-item" bindtap="reserve" data-item="酣畅">
+                        <image class="icon" src="cloud://cloud1-7gy6iiv5f0cbcb43.636c-cloud1-7gy6iiv5f0cbcb43-1379173903/素材/首页_酣畅.png"></image>
+                        <view class="item-text-container">
+                            <text class="item-title">酣畅</text>
+                            <text class="item-subtitle">室内</text>
+                        </view>
+                    </view>
+                    <view class="grid-item" bindtap="reserve" data-item="酩酊">
+                        <image class="icon" src="cloud://cloud1-7gy6iiv5f0cbcb43.636c-cloud1-7gy6iiv5f0cbcb43-1379173903/素材/首页_酩酊.png"></image>
+                        <view class="item-text-container">
+                            <text class="item-title">酩酊</text>
+                            <text class="item-subtitle">室内</text>
+                        </view>
+                    </view>
+                </view>
+                <view class="reservation-query-card" bindtap="reserveQuery">
+                    <image class="query-icon" src="cloud://cloud1-7gy6iiv5f0cbcb43.636c-cloud1-7gy6iiv5f0cbcb43-1379173903/素材/首页_搜索.png"></image>
+                    <text class="query-text">预订查询</text>
+                </view>
+            </view>
+        </view>
+
+        <view class="section">
+            <text class="section-title">更多活动</text>
+            <image class="activity-banner" src="cloud://cloud1-7gy6iiv5f0cbcb43.636c-cloud1-7gy6iiv5f0cbcb43-1379173903/素材/首页_活动.png" mode="aspectFill"></image>
+        </view>
+    </block>
+</view>
+
+<authorize></authorize>

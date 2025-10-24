@@ -1,0 +1,42 @@
+/* pages/开发中页面/index.wxss */
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh; /* 占满整个屏幕高度 */
+  background-color: #f8f8f8; /* 轻微的背景色 */
+  padding: 0 40rpx;
+  box-sizing: border-box;
+}
+
+.icon-loading {
+  width: 160rpx; /* 图标或图片的宽度 */
+  height: 160rpx; /* 图标或图片的高度 */
+  margin-bottom: 20rpx;
+}
+
+.status-title {
+  font-size: 36rpx;
+  color: #333;
+  font-weight: bold;
+  margin-bottom: 20rpx;
+}
+
+.status-subtitle {
+  font-size: 28rpx;
+  color: #999;
+  margin-bottom: 80rpx;
+  text-align: center;
+}
+
+.back-home-btn {
+  width: 80%;
+  background-color: #ec650a; /* 使用您的主题色 */
+  color: white;
+  border-radius: 15rpx;
+  font-size: 32rpx;
+  line-height: 56rpx;
+  height: 90rpx;
+}

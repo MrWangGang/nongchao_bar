@@ -1,0 +1,317 @@
+/* /pages/myOrder/index.wxss */
+
+/* 基础设置 */
+.page-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: #f7f7f7;  
+}
+
+/* Tab 切换区域 - 调整顶部间距 */
+.tab-header {
+  display: flex;
+  /* 移除自定义导航栏的间距，紧贴系统导航栏 */
+  margin-top: 20rpx;  
+  margin-left: 30rpx;
+  margin-right: 30rpx;
+  position: relative;
+}
+.tab-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 32rpx;
+  color: #999;
+  position: relative;
+}
+.tab-item.active {
+  font-weight: bold;
+  color: #000;
+}
+.tab-underline {
+  position: absolute;
+  bottom: -20rpx;  
+  width: 60rpx;
+  height: 6rpx;
+  background-color: transparent;
+  border-radius: 3rpx;
+  transition: background-color 0.3s;
+}
+.tab-item.active .tab-underline {
+  background-color: #f00;  
+}
+
+/* 订单内容区域 */
+.order-content {
+  flex: 1;
+  margin-top: 40rpx; /* 间距不变 */
+}
+.safe-area-spacer {
+  /* 留出一定的通用安全高度 */
+  height: 20rpx;  
+  /* 兼容 iOS 底部 Home Indicator (小横条) */
+  height: calc(20rpx + constant(safe-area-inset-bottom));
+  height: calc(20rpx + env(safe-area-inset-bottom));
+}
+.reserve-list, .store-list { /* 兼容门店列表 */
+  margin-left: 30rpx;
+  margin-right: 30rpx;
+}
+
+/* 订单卡片样式 */
+.order-card {
+  background-color: #fff;
+  border-radius: 16rpx;
+  overflow: hidden;
+  margin-bottom: 20rpx;  
+  /* 【新增阴影】使用轻微的阴影效果模拟卡片的浮动感 */
+  box-shadow: 0 4rpx 10rpx rgba(0, 0, 0, 0.08);  
+  /* 移除 card-footer 独立控制的 padding-bottom */
+  padding-bottom: 0; 
+}
+
+/* Card Header (订单头) */
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 30rpx 30rpx 20rpx 30rpx;  
+  border-bottom: 1rpx solid #eee; /* 添加分隔线 */
+  padding-bottom: 20rpx;  
+}
+/* ⭐ 门店名称信息 (原门店信息样式，保留备用) */
+.store-name-info {
+  display: flex;
+  align-items: center;
+}
+.store-icon {
+  width: 32rpx;
+  height: 32rpx;
+  margin-right: 10rpx;
+}
+.store-name {
+  font-size: 30rpx;
+  font-weight: bold;
+  color: #333;
+}
+/* ⭐ 预定订单/新门店订单时间信息 */
+.time-info {
+  font-size: 26rpx;
+  color: #333;
+}
+.time-info .label {
+  color: #999;
+  margin-right: 10rpx;  
+}
+.status-info {
+  display: flex;
+  align-items: center;
+  font-size: 28rpx;
+  color: #f00;  
+}
+.arrow-right {
+  font-size: 24rpx;
+  margin-left: 10rpx;
+  color: #999;
+}
+
+/* Card Body (商品详情) */
+.card-body {
+  display: flex;
+  margin-left: 30rpx;
+  margin-right: 30rpx;
+  margin-bottom: 20rpx; /* 调整底部边距，给 footer 留出空间 */
+}
+
+/* --- 门店订单样式 (多图/数量) --- */
+
+/* 门店订单 - 多商品图片容器 */
+.product-images-wrapper {
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  max-width: 70%; 
+  position: relative;
+  height: 120rpx; /* 图片高度一致 */
+}
+
+/* 门店订单 - 单个商品图片的包装器 (小尺寸) */
+.image-wrapper-mini {
+  width: 120rpx; 
+  height: 120rpx; 
+  border-radius: 20rpx;
+  overflow: hidden;
+  margin-right: -10rpx; /* 图片堆叠效果：负边距 */
+  border: 4rpx solid #fff; 
+  box-sizing: content-box;
+  /* 基础 z-index 调低 */
+  z-index: 1; 
+  flex-shrink: 0; 
+}
+
+/* ⭐⭐⭐ 确保最左侧的图片在最上面 (递减 Z-index) ⭐⭐⭐ */
+.image-wrapper-mini:nth-child(1) {
+  z-index: 10;
+}
+.image-wrapper-mini:nth-child(2) {
+  z-index: 9;
+}
+.image-wrapper-mini:nth-child(3) {
+  z-index: 8;
+}
+.image-wrapper-mini:nth-child(4) { 
+  z-index: 7; /* 如果有第四张图，也应该高于 +N */
+}
+
+
+/* 门店订单 - 图片本身 */
+.image-wrapper-mini .combo-image-mini {
+  width: 100%;
+  height: 100%;
+}
+
+/* 门店订单 - +N 计数层 (与图片大小保持一致) */
+.product-image-count {
+  width: 120rpx; 
+  height: 120rpx;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #fff;
+  background-color: rgba(0, 0, 0, 0.4); 
+  border-radius: 20rpx;
+  border: 4rpx solid #fff; 
+  box-sizing: content-box;
+  
+  /* 确保 position: relative 和 z-index: 0 激活堆叠上下文并位于最底层 */
+  position: relative; 
+  z-index: 0; 
+  
+  margin-left: -10rpx; 
+  flex-shrink: 0;
+}
+
+
+/* 门店订单 - 商品总数详情（右侧区域，仅数量） */
+.store-item-count-details {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end; /* 数量信息靠下对齐 */
+  align-items: flex-end;
+  margin-left: 20rpx;
+  min-height: 120rpx; /* 保证高度与图片区域一致 */
+}
+
+.combo-item-count {
+  font-size: 28rpx;
+  color: #999;
+}
+
+
+/* --- 预定订单原有样式 (保留) --- */
+
+/* 图片和叠加层容器 (预定订单) */
+.image-wrapper {
+  position: relative;
+  width: 160rpx;
+  height: 160rpx;
+  border-radius: 8rpx;
+  overflow: hidden;
+  margin-right: 20rpx;
+}
+.combo-image {
+  width: 100%; 
+  height: 100%; 
+}
+/* 座位名称叠加层样式：全覆盖并居中 */
+.seat-overlay {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  
+  /* 使用 Flexbox 实现水平和垂直居中 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  
+  font-size: 28rpx; 
+  font-weight: bold;
+  color: #fff;
+  /* 保持半透明的黑色背景，实现遮罩感 */
+  background-color: rgba(0, 0, 0, 0.5);  
+}
+/* 预定订单详情 */
+.combo-details {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  flex: 1;
+  font-size: 26rpx;
+  color: #666;
+}
+.combo-name {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+}
+.combo-seat {
+  margin-top: -15rpx;  
+  color: #000;
+  font-weight: 500;
+}
+.combo-arrival {
+  margin-top: 5rpx;  
+  color: #999;
+}
+
+
+/* Card Footer (价格 - 预定订单 和 新门店订单 共用) */
+.card-footer {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding-right: 30rpx;
+  margin-top: 10rpx; /* 调整顶部间距 */
+  padding-bottom: 30rpx; /* 确保底部有足够的填充 */
+}
+.footer-price {
+  display: flex;
+  align-items: flex-end;
+  font-size: 28rpx;
+}
+.price-label {
+  color: #999;
+  margin-right: 10rpx;
+}
+.price-value {
+  font-size: 30rpx;
+  font-weight: bold;
+  color: rgb(245, 12, 12);
+  /* 【修改】使用相对定位向下微调，解决视觉居中问题 */
+  position: relative;
+  top: 4rpx;  
+}
+.price-value::before {
+  content: '¥';
+  font-size: 24rpx;
+  font-weight: bold;
+  margin-right: 5rpx;
+  position: relative;
+  top: -3rpx;
+}
+
+/* 空数据占位 */
+.empty-data {
+  text-align: center;
+  color: #999;
+  margin-top: 100rpx;
+}

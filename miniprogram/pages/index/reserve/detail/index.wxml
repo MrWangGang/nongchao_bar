@@ -1,0 +1,85 @@
+<view class="page-wrapper">
+  <view class="card summary-card">
+    <view class="card-content">
+      <view class="seat-box">
+        <view class="seat-name">{{seatInfo.name}}</view>
+        <view class="seat-meta">人数: {{packageInfo.capacity || '1-4人'}}</view>
+        <view class="seat-meta">套餐: {{packageInfo.name}}</view>
+      </view>
+      <view class="date-info">
+        <view class="booking-date">{{bookingDate.formattedDate}} {{bookingDate.dayOfWeek}}</view>
+        <view class="arrival-time">最晚到店: {{arrivalTime}}</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="card form-card">
+    <view class="card-content">
+      <view class="card-title-bar">
+        <text class="card-title">预订信息</text>
+        <view class="icons">
+          <image class="icon" bindtap="makePhoneCall" src="cloud://cloud1-7gy6iiv5f0cbcb43.636c-cloud1-7gy6iiv5f0cbcb43-1379173903/素材/首页_电话.png" />
+          <image class="icon" bindtap="openLocation" src="cloud://cloud1-7gy6iiv5f0cbcb43.636c-cloud1-7gy6iiv5f0cbcb43-1379173903/素材/首页_定位.png" />
+        </view>
+      </view>
+
+      <view class="form-item">
+        <text class="label">手机号</text>
+        <view class="input-wrapper">
+          <input class="input phone-input" placeholder="请输入手机号" placeholder-class="placeholder" type="number" maxlength="11" bindinput="handleInputChange" data-field="phone" value="{{phone}}" />
+          <view class="send-code-btn {{counting ? 'disabled' : ''}}" bindtap="sendVerificationCode">
+            {{countdownText}}
+          </view>
+        </view>
+      </view>
+
+      <view class="form-item">
+        <text class="label">验证码</text>
+        <input class="input" placeholder="请输入验证码" placeholder-class="placeholder" bindinput="handleInputChange" data-field="verificationCode" />
+      </view>
+
+      <view class="form-item">
+        <text class="label">姓名</text>
+        <input class="input" placeholder="请输入姓名" placeholder-class="placeholder" bindinput="handleInputChange" data-field="name" value="{{name}}" />
+      </view>
+
+      <view class="form-item">
+        <text class="label">身份证</text>
+        <input class="input" placeholder="请输入身份证" placeholder-class="placeholder" bindinput="handleInputChange" data-field="idCard" />
+      </view>
+
+      <picker mode="time" value="{{arrivalTime}}" start="09:00" end="23:00" bindchange="bindTimeChange">
+        <view class="form-item">
+          <text class="label">最晚到店时间</text>
+          <view class="value picker-value">
+            {{arrivalTime}}
+                <text class="arrow-right">></text>          
+            </view>
+        </view>
+      </picker>
+    </view>
+  </view>
+
+  <view class="card content-card">
+    <view class="card-content">
+      <view class="card-title-bar">
+        <text class="card-title">预订内容</text>
+      </view>
+      <view class="content-item">
+        <view class="image-wrapper">
+          <image class="item-image" src="{{packageInfo.imageUrl}}" mode="aspectFill" />
+          <view class="image-overlay">{{seatInfo.name}}</view>
+        </view>
+        <view class="item-details">
+          <view class="item-name">{{packageInfo.name}}</view>
+          <view class="item-desc">{{packageInfo.description}}</view>
+          <view class="item-price">¥ {{packageInfo.price}}</view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="bottom-bar">
+    <button class="submit-btn" bindtap="submitBooking">提交预订</button>
+  </view>
+</view>

@@ -1,0 +1,48 @@
+<view class="container">
+    <view class="order-card">
+        <scroll-view class="product-list-scroll" scroll-y>
+            <view class="product-list">
+                <view class="product-item" wx:for="{{orderItems}}" wx:key="id">
+                    <image class="product-image" src="{{item.image}}" mode="aspectFill"></image>
+                    <view class="product-info">
+                        <view class="product-name">{{item.name}}</view>
+                        <view class="product-spec-row">
+                            <text wx:if="{{item.formattedSpec}}" class="product-spec">{{item.formattedSpec}}</text>
+                        </view>
+                    </view>
+                    <view class="product-price-quantity">
+                        <view class="product-price">¥{{item.price}}</view>
+                        <view class="product-quantity">x{{item.quantity}}</view>
+                    </view>
+                </view>
+            </view>
+        </scroll-view>
+
+        <view class="summary">
+            <text>共{{totalCount}}件，合计</text>
+            <text class="summary-total">¥{{totalAmount}}</text>
+        </view>
+    </view>
+
+    <view class="remark-card">
+        <textarea 
+            class="remark-textarea" 
+            placeholder="请输入备注信息" 
+            value="{{remark}}" 
+            bindinput="onRemarkInput" 
+            maxlength="200"
+            auto-height
+        />
+    </view>
+</view>
+
+<view class="footer-bar-placeholder"></view>
+<view class="footer-bar">
+    <view class="total-display">
+        <text class="total-label">待支付</text>
+        <text class="total-amount">¥{{totalAmount}}</text>
+    </view>
+    <button class="submit-btn" bindtap="onSubmitOrder" disabled="{{isSubmitting}}">
+        提交订单
+    </button>
+</view>

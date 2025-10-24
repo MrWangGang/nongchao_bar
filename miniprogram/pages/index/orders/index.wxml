@@ -1,0 +1,147 @@
+<view class="page-container">
+  
+  <view class="tab-header">
+    <view 
+      class="tab-item {{currentTab === 'store' ? 'active' : ''}}" 
+      data-tab="store" 
+      bindtap="switchTab"
+    >
+      <text>门店订单</text>
+      <view class="tab-underline"></view>
+    </view>
+    <view 
+      class="tab-item {{currentTab === 'reserve' ? 'active' : ''}}" 
+      data-tab="reserve" 
+      bindtap="switchTab"
+    >
+      <text>预定订单</text>
+      <view class="tab-underline"></view>
+    </view>
+  </view>
+
+  <view class="order-content">
+    
+    <block wx:if="{{currentTab === 'store'}}">
+      <view class="store-list" wx:if="{{storeOrders.length > 0}}">
+        <view 
+          class="order-card" 
+          wx:for="{{storeOrders}}" 
+          wx:key="_id"
+          bindtap="goToDetail"
+          data-id="{{item._id}}"
+          data-type="store"
+        >
+          <view class="card-header">
+            <view class="time-info">
+              <text class="label">下单时间:</text>
+              <text class="value">{{item.createTime}}</text>
+            </view>
+            <view class="status-info">
+              <text class="status-text">{{item.orderStatus}}</text>
+              <text class="arrow-right">></text>
+            </view>
+          </view>
+          
+          <view class="card-body">
+            
+            <view class="product-images-wrapper">
+              
+              <block 
+                wx:for="{{item.displayProducts}}" 
+                wx:for-item="product" 
+                wx:for-index="index" 
+                wx:key="index"
+              >
+                <view 
+                  wx:if="{{item.products.length <= 4 && index < 4}}" 
+                  class="image-wrapper-mini"
+                >
+                  <image class="combo-image-mini" src="{{product.image}}" mode="aspectFill" />
+                </view>
+                
+                <view 
+                  wx:if="{{item.products.length > 4 && index < 3}}" 
+                  class="image-wrapper-mini"
+                >
+                  <image class="combo-image-mini" src="{{product.image}}" mode="aspectFill" />
+                </view>
+              </block>
+              
+              <view 
+                wx:if="{{(item.products.length || 0) > 4}}" 
+                class="product-image-count"
+              >
+                <text>+{{item.products.length - 3}}</text>
+              </view>
+              
+            </view>
+            
+            <view class="store-item-count-details">
+              <view class="combo-item-count">共 {{item.payment.totalCount}} 件商品</view>
+            </view>
+            
+          </view>
+
+          <view class="card-footer">
+            <view class="footer-price">
+              <text class="price-label">实付</text>
+              <text class="price-value">{{item.payment.paidAmount}}</text>
+            </view>
+          </view>
+          
+        </view>
+      </view>
+      <view class="empty-data" wx:else>
+        <text wx:if="{{!isLoading}}">暂无门店订单数据</text>
+        <text wx:else>加载中...</text>
+      </view>
+    </block>
+    
+    <block wx:if="{{currentTab === 'reserve'}}">
+      <view class="reserve-list" wx:if="{{reserveOrders.length > 0}}">
+        <view 
+          class="order-card" 
+          wx:for="{{reserveOrders}}" 
+          wx:key="_id"
+          bindtap="goToDetail"
+          data-id="{{item._id}}"
+          data-type="reserve"
+        >
+          <view class="card-header">
+            <view class="time-info">
+              <text class="label">下单时间:</text>
+              <text class="value">{{item.createTime}}</text>
+            </view>
+            <view class="status-info">
+              <text class="status-text">{{item.orderStatus}}</text>
+              <text class="arrow-right">></text>
+            </view>
+          </view>
+
+          <view class="card-body">
+            <view class="image-wrapper">
+              <image class="combo-image" src="{{item.packageInfo.imageUrl}}" mode="aspectFill" />
+              <view class="seat-overlay">{{item.seatInfo.name}}</view>  
+            </view>
+            <view class="combo-details">
+              <view class="combo-name">{{item.comboInfo.name}}</view>
+              <view class="combo-seat">{{item.seatInfo.seatType}} {{item.seatInfo.name}}</view>
+              <view class="combo-arrival">最晚到店时间: {{item.arrivalTime}}</view>
+            </view>
+          </view>
+
+          <view class="card-footer">
+            <view class="footer-price">
+              <text class="price-label">实付</text>
+              <text class="price-value">{{item.payment.paidAmount}}</text>
+            </view>
+          </view>
+        </view>
+      </view>
+      <view class="empty-data" wx:else>
+        <text>暂无预定订单</text>
+      </view>
+    </block>
+  </view>
+  <view class="safe-area-spacer"></view>
+</view>

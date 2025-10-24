@@ -1,0 +1,252 @@
+/* ------------------------------------------- */
+/* 极度严格的全局和根元素强制重置 */
+/* ------------------------------------------- */
+page {
+  margin: 0 !important;
+  padding: 0 !important;
+  box-sizing: border-box;
+  width: 100vw; /* 强制视口宽度 */
+  overflow-x: hidden;
+}
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background-color: #f7f7f7;
+  /* 严格的零边距和零内边距 */
+  margin: 0 !important;
+  padding: 0 !important;
+  box-sizing: border-box;  
+  width: 100vw; /* 强制宽度 */
+  position: relative;
+  left: 0;
+}
+
+/* 顶部日期导航栏样式 */
+.date-navbar {
+  width: 100%;
+  height: 70px;
+  white-space: nowrap;
+  background-color: #fff;
+  border-bottom: 1px solid #eee;
+  padding-left: 0 !important; /* 强制左侧零内边距 */
+  margin-left: 0 !important; /* 强制左侧零外边距 */
+  box-sizing: border-box;
+  display: flex;  
+  align-items: center;
+}
+
+.date-item {
+  display: inline-flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 80px;
+  padding: 0 5px;
+  box-sizing: border-box;
+  position: relative;
+  color: #999;
+  font-weight: normal;
+}
+
+.date-item.active {
+  color: #333;
+  font-weight: bold;
+}
+
+.date-text {
+  font-size: 15px;
+  line-height: 1.2;
+}
+
+.day-text {
+  font-size: 12px;
+  line-height: 1.2;
+  margin-top: 3px;
+}
+
+.date-item.active .date-underline {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 20px;
+  height: 3px;
+  background-color: #e51c23;  
+  border-radius: 1.5px;
+}
+
+/* ------------------------------------------- */
+/* 主要内容区域：分栏布局 */
+/* ------------------------------------------- */
+.main-content {
+  flex: 1;
+  display: flex;
+  overflow: hidden;  
+  margin: 0 !important;
+  padding: 0 !important;
+  position: relative;
+  left: 0;
+  width: 100%;
+}
+
+/* 左侧分类栏 - 绝对零边距，强制贴边 */
+.category-sidebar {
+  width: 100px;  
+  background-color: #f7f7f7;
+  height: 100%;
+  /* 确保绝对没有边距/内边距 */
+  margin: 0 !important;
+  padding: 0 !important;  
+  position: relative;  
+  left: 0; /* 强制从左侧 0 开始 */
+}
+
+.category-item {
+  width: 100%;  
+  /* 左对齐的内边距，确保文字不贴边 */
+  padding: 15px 10px 15px 10px;  
+  
+  border-left: 3px solid transparent;
+  
+  display: flex;
+  /* 文字从左侧开始对齐 */
+  justify-content: flex-start;  
+  align-items: center;
+  box-sizing: border-box;
+  margin: 0 !important; /* 确保项目没有外边距 */
+}
+
+.category-item.active {
+  background-color: #fff;
+  border-left-color: #e51c23;  
+}
+
+.category-name {
+  font-size: 16px;
+  font-weight: bold;
+  color: #333;
+}
+
+
+/* 右侧座位列表 */
+.seat-list-area {
+  flex: 1;
+  background-color: #fff;
+  height: 100%;
+  padding: 0 15px; /* 内部内容保留 15px 边距 */
+}
+
+.seat-category-title {
+  font-size: 18px;
+  font-weight: bold;
+  padding: 15px 0 10px 0;
+  color: #333;
+}
+
+.seat-item {
+  display: flex;
+  padding: 15px 0;
+  border-bottom: 1px solid #eee;
+  align-items: center;  
+}
+
+.seat-item.booked {
+  opacity: 0.6;
+}
+
+/* ------------------------------------------- */
+/* 新增：图片和覆盖层的容器 */
+.seat-image-wrapper {
+    position: relative; /* 确保子元素的绝对定位生效 */
+    width: 80px;
+    height: 80px;
+    margin-right: 10px;
+}
+
+.seat-image-placeholder {
+    width: 100%; /* 占满父容器 */
+    height: 100%; /* 占满父容器 */
+    background-color: #eee; 
+    border-radius: 5px;
+}
+
+/* 新增：座位名称透明覆盖层样式 */
+.seat-name-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    
+    /* 文本居中 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+
+    background-color: #000; /* 覆盖层背景色 */
+    color: #fff; /* 文本颜色 */
+    font-size: 14px;
+    font-weight: bold;
+    border-radius: 5px; /* 保持与图片一致的圆角 */
+
+    /* 核心：设置透明度 */
+    opacity: 0.5; 
+}
+/* ------------------------------------------- */
+
+.seat-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.seat-name {
+  font-size: 16px;
+  font-weight: bold;
+  color: #333;
+  line-height: 1.2;
+  margin-bottom: 5px;
+}
+.seat-item.booked .seat-name {
+  color: #999;
+}
+
+.seat-desc {
+  font-size: 12px;
+  color: #999;
+  line-height: 1.2;
+  margin-bottom: 5px;
+}
+
+.seat-action-btn {
+  padding: 8px 12px;
+  font-size: 14px;
+  border-radius: 10px;
+  margin-right: 13px;
+  margin-top: 90rpx;
+  text-align: center;
+  min-width: 60px;
+  box-sizing: border-box;
+  font-weight: bold;
+}
+
+.book-btn {
+  background-color: #e51c23;
+  color: #fff;
+}
+
+.booked-text {
+  background-color: #ccc;
+  color: #666;
+}
+
+.empty-list-tip {
+  text-align: center;
+  padding: 40px 0;
+  color: #999;
+  font-size: 14px;
+}

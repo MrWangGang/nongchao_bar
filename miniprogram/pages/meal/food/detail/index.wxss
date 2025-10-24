@@ -1,0 +1,219 @@
+/* /pages/orderConfirm/orderConfirm.wxss */
+page {
+  background-color: #f7f7f7;
+}
+
+/* --------------- 订单卡片样式 (全屏宽度) --------------- */
+.order-card  {
+  background-color: #fff;
+  /* 移除左右 margin，实现左右贴边 */
+  border-radius: 20rpx; 
+  padding: 25rpx; /* 外部容器不设置 padding */
+  box-shadow: 0 5rpx 20rpx rgba(0, 0, 0, 0.05);
+  margin-top: 30rpx;
+  width: 660rpx;
+}
+
+/* /pages/orderConfirm/orderConfirm.wxss (仅修改备注区域相关样式) */
+
+/* --------------- 备注区域 (调整为与屏幕边缘有间距，并有圆角) --------------- */
+.remark-card {
+  background-color: #fff;
+  margin: 20rpx 20rpx; 
+  border-radius: 15rpx;
+  padding: 25rpx 30rpx; /* 内部 padding */
+  box-shadow: 0 15rpx 20rpx rgba(0, 0, 0, 0.05);
+  background-color: #dad7d7;
+  margin-top: 30rpx !important;
+}
+
+.remark-label {
+  font-size: 30rpx;
+  color: #333;
+  min-width: 80rpx;
+  margin-bottom: 10rpx; /* 增加一点底部间距，让它和 textarea 分开 */
+  display: block; /* 确保它独占一行 */
+}
+
+/* 移除 .remark-input 样式 (因为不再使用 input) */
+
+.remark-textarea {
+
+  width: 660rpx !important; /* 宽度占满父容器 */
+  height: 200rpx !important; /* 设置最小高度 */
+  box-sizing: border-box;
+  font-size: 30rpx;
+  line-height: 1.5;
+  /* 移除 textarea 默认的 padding，让文本紧贴容器边缘 */
+  padding: 0; 
+}
+
+/* --------------- 商品列表滚动容器 (固定高度) --------------- */
+.product-list-scroll {
+  /* 【关键】：固定高度，请根据实际UI高度计算和调整此值 */
+  height: 800rpx; 
+  overflow: hidden; 
+}
+
+/* 商品列表容器 (内部内容需要左右 padding) */
+.product-list {
+  padding: 0 30rpx;
+}
+
+/* --------------- 商品列表项 --------------- */
+.product-item {
+  display: flex;
+  padding: 20rpx 0;
+  border-bottom: 1rpx solid #eee;
+}
+.product-list .product-item:last-child {
+  border-bottom: none; /* 最后一个不显示分割线 */
+}
+
+.product-image {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 8rpx;
+  margin-right: 20rpx;
+}
+
+.product-info {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.product-name {
+  font-size: 30rpx;
+  color: #333;
+  font-weight: 500;
+  /* 确保名字不会太长 */
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  max-width: 350rpx; 
+}
+
+.product-spec-row {
+  margin-top: 8rpx;
+}
+
+.product-spec {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.product-price-quantity {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: center;
+  min-width: 150rpx;
+}
+
+.product-price {
+  font-size: 28rpx;
+  color: #333;
+}
+
+.product-quantity {
+  font-size: 24rpx;
+  color: #666;
+  margin-top: 8rpx;
+}
+
+/* --------------- 总结行 --------------- */
+.summary {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 0rpx 30rpx; /* 增加左右 padding */
+  font-size: 28rpx;
+  color: #666;
+  margin-top: 60rpx;
+}
+
+.summary-total {
+  font-size: 30rpx;
+  font-weight: bold;
+  color: #cf2c24; /* 红色 */
+  margin-left: 10rpx;
+}
+
+/* --------------- 备注区域 (全屏宽度) --------------- */
+.remark-card {
+  display: flex;
+  align-items: center;
+  margin-top: 20rpx;
+  padding: 25rpx 30rpx; /* 内部 padding */
+}
+
+.remark-label {
+  font-size: 30rpx;
+  color: #333;
+  min-width: 80rpx;
+}
+
+.remark-input {
+  flex-grow: 1;
+  text-align: right;
+  font-size: 30rpx;
+  color: #999;
+}
+
+/* --------------- 底部栏样式 --------------- */
+.footer-bar-placeholder {
+  /* 底部栏高度 + 底部安全区高度 */
+  height: 160rpx; 
+}
+
+.footer-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 180rpx;
+  background-color: #fff;
+  box-shadow: 0 -2rpx 8rpx rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 30rpx;
+  /* 适配底部安全区 */
+  padding-bottom: env(safe-area-inset-bottom);
+  box-sizing: border-box;
+}
+
+.total-display {
+  display: flex;
+  align-items: baseline;
+}
+
+.total-label {
+  font-size: 28rpx;
+  color: #333;
+  margin-right: 10rpx;
+}
+
+.total-amount {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #cf2c24; 
+}
+
+.submit-btn {
+  width: 300rpx !important;
+  height: 75rpx;
+  line-height: 75rpx;
+  background-color: #cf2c24; 
+  color: #fff;
+  font-size: 28rpx;
+  border-radius: 45rpx;
+  margin-left: 165rpx !important;
+  padding: 0;
+}
+.submit-btn[disabled] {
+  background-color: #e0e0e0;
+  color: #a0a0a0;
+}

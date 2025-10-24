@@ -1,0 +1,6 @@
+<view class="container">
+  <view class="content">
+    <text class="tip-text">请扫描桌台两边的二维码进入点餐</text>
+    <button class="scan-button" bind:tap="scanCode">去扫码</button>
+  </view>
+</view>

@@ -1,0 +1,348 @@
+/* pages/orderDetail/index.wxss */
+page {
+  background-color: #f7f7f7;
+}
+
+.container {
+  padding-bottom: 20rpx;
+  position: relative; /* 确保绝对定位的卡片相对于容器定位 */
+}
+
+/* --------------- 顶部粉色背景区域 --------------- */
+.header-bg {
+  height: 130rpx; 
+  background-color: #fcebeb;
+}
+
+.nav-placeholder {
+  height: 100%; 
+  padding-top: 50rpx; 
+}
+
+/* --------------- 通用卡片样式 (保证卡片固定大小) --------------- */
+.info-card {
+  background-color: white;
+  border-radius: 16rpx;
+  padding: 30rpx;
+  box-shadow: 0 4rpx 15rpx rgba(0, 0, 0, 0.08); 
+  margin: 20rpx 30rpx 0rpx 30rpx; /* 其它卡片的留白 */
+  
+  z-index: 5;
+  position: relative;
+}
+
+/* --------------- 卡片 1: 订单状态卡片 (主要修改区域) --------------- */
+
+/* 关键新增：定位层，使用 absolute/left/right 替代 margin 来定义卡片宽度和位置 */
+.status-card-positioner {
+  position: absolute;
+  margin-top: 110rpx;
+  height: 150rpx;
+  top: 0;
+  /* 左右 30rpx 留白，实现卡片对齐 */
+  left: 30rpx; 
+  right: 30rpx;
+  /* 向上偏移 -120rpx，实现上浮效果 */
+  transform: translateY(-120rpx);
+  z-index: 10;
+}
+
+/* 原始卡片包裹层：不再控制位置 */
+.status-card-wrapper {
+  width: 100%; /* 继承 .status-card-positioner 的宽度 */
+  height: auto;
+  position: relative;
+  z-index: 10;
+}
+
+.status-card {
+  background-color: white;
+  border-radius: 16rpx;
+  /* 关键：彻底移除所有 padding，只依赖内部 margin */
+  box-shadow: 0 4rpx 15rpx rgba(0, 0, 0, 0.1); 
+  text-align: center;
+  height: 280rpx;
+  background-color: #f7f2f2;
+}
+
+/* 关键：内容包裹层，使用 margin 实现内部的 上下左右 30rpx 留白 */
+.status-content {
+  margin: 30rpx; 
+  box-sizing: border-box;
+  width: auto; 
+}
+
+
+/* ------------------ 内容元素样式 ------------------ */
+
+.status-main {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20rpx; 
+}
+
+.status-title {
+  font-size: 34rpx; 
+  font-weight: bold; 
+  color: #e64340; 
+  line-height: 1.2;
+}
+
+.status-timer {
+  font-size: 34rpx;
+  font-weight: bold;
+  color: #e64340;
+  margin-left: 20rpx;
+}
+
+.status-tip {
+  font-size: 24rpx;
+  color: #999;
+  margin-bottom: 30rpx; 
+  line-height: 1.4;
+}
+
+.status-actions {
+  display: flex;
+  justify-content: center;
+  gap: 30rpx;
+  margin: 0;
+}
+
+.action-btn {
+  box-sizing: border-box;
+  font-size: 28rpx;
+  height: 64rpx; 
+  line-height: 36rpx; 
+  border-radius: 12rpx; 
+  margin: 0;
+  font-weight: normal;
+  width: auto; 
+}
+
+.action-btn-cancel {
+  background-color: white;
+  color: rgb(255, 9, 9);
+  border: 1rpx solid #f10707; 
+  width: 220rpx !important; 
+}
+
+.action-btn-pay {
+  background-color: #e28935; 
+  color: white;
+  border: none;
+  width: 220rpx !important; 
+}
+
+
+/* --------------- 卡片 2: 商品列表卡片 --------------- */
+
+.product-card-v6 {
+  margin-top: 200rpx; 
+  padding-bottom: 20rpx;
+  width: 626rpx;
+
+}
+
+.store-info {
+  display: flex;
+  align-items: center;
+  padding-bottom: 20rpx;
+  border-bottom: 1rpx solid #f0f0f0; 
+  margin-bottom: 20rpx;
+}
+
+.store-name {
+  font-size: 30rpx; 
+  font-weight: bold;
+  flex-grow: 1;
+  color: #333;
+}
+
+.contact-icons {
+  display: flex;
+  align-items: center;
+}
+
+/* 【修改点】：新图标样式 */
+.contact-icon {
+  width: 40rpx; /* 设置图标大小 */
+  height: 40rpx;
+  margin-left: 30rpx; /* 控制图标间距 */
+  /* 替换了原来的 .icon-right 样式 */
+}
+
+/* --- 商品列表滚动容器 --- */
+.product-list-scroll-v7 {
+  max-height: 680rpx; 
+  box-sizing: border-box;
+}
+
+.product-item {
+  display: flex;
+  align-items: flex-start; 
+  margin: 15rpx 0;
+  padding-bottom: 15rpx;
+  border-bottom: 1rpx solid #eee; 
+}
+
+.product-list .product-item:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.product-image {
+  width: 140rpx; 
+  height: 140rpx;
+  border-radius: 8rpx;
+  margin-right: 20rpx;
+}
+
+.product-details {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  margin-top: 5rpx;
+}
+
+.product-name {
+  font-size: 28rpx;
+  color: #333;
+  font-weight: 500;
+}
+
+.product-spec {
+  font-size: 24rpx;
+  color: #999;
+  margin-top: 5rpx;
+}
+
+.product-price-quantity {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  min-width: 150rpx;
+  margin-top: 5rpx;
+}
+
+.product-price {
+  font-size: 28rpx;
+  color: #333;
+  font-weight: 500;
+}
+
+.product-quantity {
+  font-size: 24rpx;
+  color: #999;
+  margin-top: 5rpx;
+}
+
+.view-more {
+  text-align: center;
+  color: #e64340;
+  font-size: 26rpx;
+  padding: 20rpx 0 10rpx;
+  border-top: 1rpx solid #f0f0f0;
+  margin-top: 10rpx;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.arrow-down {
+  font-size: 24rpx;
+  margin-left: 10rpx;
+  transform: scaleY(0.8);
+}
+
+.total-summary-line {
+  text-align: right;
+  font-size: 28rpx;
+  margin-top: 20rpx; 
+  display: flex;
+  justify-content: flex-end;
+  align-items: baseline;
+  line-height: 1.4;
+}
+.total-summary-text {
+  color: #666; 
+}
+.count-value {
+  color: #333; 
+  margin: 0 5rpx;
+}
+.total-amount {
+  font-weight: bold;
+  color: rgb(241, 56, 56); 
+  font-size: 34rpx;
+  margin-left: 10rpx;
+}
+
+
+/* --------------- 卡片 3: 订单信息卡片 --------------- */
+.info-data-card-v6 {
+  margin-bottom: 20rpx; 
+  width: 630rpx;
+}
+
+.card-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  margin-bottom: 10rpx;
+  color: #333;
+}
+
+/* 新增的订单备注卡片样式 */
+.remark-card-v6 {
+    margin-top: 20rpx;
+    background-color: rgb(255, 255, 255);
+
+}
+
+/* *** 关键修改：设置固定高度和滚动条 *** */
+.remark-textarea {
+    width: 630rpx;
+    /* 设置一个固定的高度，例如 150rpx，大约是 3-4 行文本的高度 */
+    height: 150rpx; 
+    /* 启用垂直滚动条 */
+    overflow-y: scroll;
+    
+    /* 移除 textarea 默认的内边距和边框，使其看起来更像纯文本 */
+    padding: 0;
+    margin: 0;
+    border: none;
+    box-sizing: border-box;
+    font-size: 28rpx;
+    color: #333;
+    line-height: 1.5;
+    background-color: transparent; /* 确保背景透明 */
+}
+
+.info-row {
+  display: flex;
+  margin: 10rpx 0; 
+  font-size: 28rpx;
+}
+
+.info-label {
+  width: 150rpx;
+  flex-shrink: 0;
+  color: #999;
+}
+
+.info-value {
+  flex-grow: 1;
+  text-align: left;
+  color: #333; 
+  font-weight: 500;
+}
+
+.copy-btn {
+  color: #e64340;
+  margin-left: 20rpx;
+  font-weight: normal;
+}
+.safe-bottom {
+  height: 50rpx;
+}
