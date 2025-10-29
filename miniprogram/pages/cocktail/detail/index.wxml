@@ -1,0 +1,171 @@
+<view class="page-container">
+
+<view class="promo-banner-wrapper">
+  <image class="promo-banner-image" src="cloud://cloud1-7gy6iiv5f0cbcb43.636c-cloud1-7gy6iiv5f0cbcb43-1379173903/素材/首页_活动.png" mode="widthFix" />
+</view>
+
+<view class="product-search-wrapper">
+  <view class="product-search-bar">
+    <image class="search-icon" src="cloud://cloud1-7gy6iiv5f0cbcb43.636c-cloud1-7gy6iiv5f0cbcb43-1379173903/素材/菜单_搜索.png" mode="widthFix" />
+    <input 
+      class="search-input" 
+      placeholder="搜索商品名称" 
+      placeholder-class="placeholder-text" 
+      value="{{searchKeyword}}"
+      bindinput="onSearchInput"
+    />
+  </view>
+</view>
+
+<view class="main-content">
+  <scroll-view class="sidebar-menu" scroll-y="true">
+    <view wx:for="{{categoryList}}" wx:key="id" class="menu-item {{currentCategoryIndex === index ? 'active' : ''}}" bindtap="onCategoryTap" data-index="{{index}}">
+      <view class="menu-item-name-cn">{{item.name}}</view>
+      <view class="menu-item-name-en">{{item.enName}}</view>
+    </view>
+  </scroll-view>
+  
+  <scroll-view class="product-content" scroll-y="true">
+    <view wx:if="{{filteredProducts.length > 0}}" class="product-list">
+      <view wx:for="{{filteredProducts}}" wx:key="id" class="product-card">
+        <image class="product-image" src="{{item.image}}" />
+        <view class="product-info">
+          <view class="product-info-top">
+            <view class="product-name">{{item.name}}</view>
+            <view wx:if="{{item.tags && item.tags.length > 0}}" class="product-tags">
+              <view wx:if="{{item.tags[0]}}" class="tag-item tag-red">{{item.tags[0]}}</view>
+              <view wx:if="{{item.tags[1]}}" class="tag-item tag-black">{{item.tags[1]}}</view>
+              <view wx:if="{{item.tags[2]}}" class="tag-item tag-green">{{item.tags[2]}}</view>
+            </view>
+            <view class="product-desc one-line-truncate-list">{{item.desc}}</view> 
+          </view>
+          <view class="product-info-bottom">
+            <view class="product-price">¥{{item.price}}/ml</view>
+            <view class="product-actions">
+              <image 
+                class="btn-add-icon" 
+                src="cloud://cloud1-7gy6iiv5f0cbcb43.636c-cloud1-7gy6iiv5f0cbcb43-1379173903/素材/菜单_添加.png" 
+                mode="aspectFit" 
+                bindtap="onShowModal"
+                data-product="{{item}}"
+              />
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+    <view wx:else class="empty-state-placeholder">
+      <text>该分类下暂无商品</text>
+    </view>
+    <view class="cart-bar-placeholder"></view>
+  </scroll-view>
+</view>
+
+<view wx:if="{{cartCount > 0}}" class="cart-bar" >
+    <view class="cart-icon-wrapper" bindtap="onToggleCartModal">
+        <image class="cart-icon" src="cloud://cloud1-7gy6iiv5f0cbcb43.636c-cloud1-7gy6iiv5f0cbcb43-1379173903/素材/菜单_购物车.png" mode="widthFix" />
+        <view class="cart-count">{{cartCount}}</view>
+    </view>
+    <view class="cart-total-info">
+        <text class="cart-total-label">¥</text>
+        <text class="cart-total-value">{{cartTotal}}</text>
+    </view>
+    <view class="btn-checkout" bindtap="onCheckout">结算</view>
+</view>
+
+<view wx:if="{{showModal}}" class="modal-mask" bindtap="onHideModal"></view>
+<view wx:if="{{showModal}}" class="modal-content-wrapper modal-slide-in">
+  <view class="modal-product-card">
+    <image class="modal-product-image" src="{{selectedProduct.image}}" mode="aspectFill" />
+    <view class="modal-product-info">
+      <view class="modal-product-name">{{selectedProduct.name}}</view>
+      <view wx:if="{{selectedProduct.tags && selectedProduct.tags.length > 0}}" class="product-tags modal-tags">
+          <view wx:if="{{selectedProduct.tags[0]}}" class="tag-item tag-red">{{selectedProduct.tags[0]}}</view>
+          <view wx:if="{{selectedProduct.tags[1]}}" class="tag-item tag-black">{{selectedProduct.tags[1]}}</view>
+          <view wx:if="{{selectedProduct.tags[2]}}" class="tag-item tag-green">{{selectedProduct.tags[2]}}</view>
+      </view>
+      <view class="modal-product-price">¥{{selectedProduct.price}}/ml</view>
+    </view>
+    <view class="modal-close-btn" bindtap="onHideModal"><text>✕</text></view>
+  </view>
+  <view class="modal-options-section">
+    <view class="product-detail-desc two-line-truncate">{{selectedProduct.desc}}</view>
+    <view wx:for="{{dynamicOptions}}" wx:for-item="optionGroup" wx:key="key" class="option-group">
+      <view class="option-title">{{optionGroup.name}}</view>
+      <view class="option-items">
+        <view 
+          wx:for="{{optionGroup.items}}" wx:for-item="optionItem" wx:key="*this"
+          class="option-item {{selectedOptions[optionGroup.key] === optionItem ? 'active' : ''}}" 
+          bindtap="onSelectOption" data-key="{{optionGroup.key}}" data-value="{{optionItem}}"
+        >{{optionItem}}</view>
+      </view>
+    </view>
+  </view>
+  <view class="modal-footer">
+    <view class="modal-price">
+      <text class="modal-price-label">¥</text>
+      <text class="modal-price-value">{{totalPriceDisplay}}/ml</text>
+    </view>
+    <view class="quantity-controls-footer">
+      <view class="quantity-btn minus" bindtap="onQuantityChange" data-type="minus"><text style="font-size: 20rpx;margin-bottom:2rpx;">—</text></view>
+      <input class="quantity-input" type="number" value="{{quantity}}" bindinput="onQuantityInput" disabled="{{true}}"/>
+      <view class="quantity-btn plus" bindtap="onQuantityChange" data-type="plus"><text style="margin-bottom:2rpx;">+</text></view>
+    </view>
+    <view class="btn-add-cart" bindtap="onAddToCart">加入购物车</view>
+  </view>
+</view>
+
+<view wx:if="{{showCartModal}}" class="cart-modal-mask" bindtap="onHideCartModal"></view>
+<view wx:if="{{showCartModal}}" class="modal-content-wrapper cart-modal-container cart-modal modal-slide-in">
+  <view class="cart-modal-header">
+    <view class="cart-modal-title-group" bindtap="onHideCartModal">
+      <view class="cart-modal-title">购物车 ({{cartCount}})</view>
+    </view>
+    <view class="btn-clear-cart" bindtap="onShowClearCartConfirm">
+      <image class="clear-icon" src="cloud://cloud1-7gy6iiv5f0cbcb43.636c-cloud1-7gy6iiv5f0cbcb43-1379173903/素材/菜单_删除.png" mode="widthFix" />
+      <text>清空</text>
+    </view>
+  </view>
+  <scroll-view class="cart-list-scroll" scroll-y="true">
+    <view class="cart-item" wx:for="{{cartList}}" wx:key="id">
+      <view class="cart-item-info">
+        <image class="cart-item-image" src="{{item.image}}" mode="aspectFill" />
+        <view class="cart-item-detail">
+          <view class="cart-item-name">{{item.name}}</view>
+          <view class="cart-item-options">
+            <text wx:if="{{item.spec}}">{{item.spec}}</text>
+            <text wx:if="{{item.temp}}">{{item.spec ? ', ' : ''}}{{item.temp}}</text>
+            <text wx:if="{{item.topping}}">{{(item.spec || item.temp) ? ', ' : ''}}{{item.topping}}</text>
+          </view>
+          <view class="cart-item-price">¥{{item.priceDisplay}}/ml</view>
+        </view>
+      </view>
+      <view class="quantity-controls-cart">
+        <view class="quantity-btn-cart minus-icon-wrapper" bindtap="onCartItemQuantityChange" data-type="minus" data-id="{{item.id}}">
+          <image class="quantity-icon" src="cloud://cloud1-7gy6iiv5f0cbcb43.636c-cloud1-7gy6iiv5f0cbcb43-1379173903/素材/菜单_删除.png" mode="aspectFit"/>
+        </view>
+        <view class="quantity-input">{{item.quantity}}</view>
+        <view class="quantity-btn-cart plus-icon-wrapper" bindtap="onCartItemQuantityChange" data-type="plus" data-id="{{item.id}}">
+          <image class="quantity-icon" src="cloud://cloud1-7gy6iiv5f0cbcb43.636c-cloud1-7gy6iiv5f0cbcb43-1379173903/素材/菜单_添加.png" mode="aspectFit"/>
+        </view>
+      </view>
+    </view>
+    <view wx:if="{{cartCount === 0}}" class="empty-state-placeholder-cart">
+      <text>购物车空空如也~</text>
+    </view>
+  </scroll-view>
+</view>
+
+<view wx:if="{{showClearCartConfirm}}" class="confirm-mask" bindtap="onHideClearCartConfirm"></view>
+<view wx:if="{{showClearCartConfirm}}" class="confirm-content-wrapper">
+  <view class="confirm-box">
+    <view class="confirm-title">清空购物车</view>
+    <view class="confirm-message">确认清空购物车中所有商品吗？</view>
+    <view class="confirm-actions">
+      <view class="btn-confirm-cancel" bindtap="onHideClearCartConfirm">取消</view>
+      <view class="btn-confirm-cancel" bindtap="onClearCart">清空</view>
+    </view>
+  </view>
+</view>
+
+</view>

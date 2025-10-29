@@ -1,42 +1,338 @@
-/* pages/开发中页面/index.wxss */
+/* ------------------------------------
+ * 0. 基础设置与卡片结构
+ * ------------------------------------ */
+ .container {
+  padding-bottom: 220rpx; /* 为底部固定按钮留出空间 */
+  background-color: #f7f7f7;
+  min-height: 100vh;
+  padding-top: 20rpx;
+  position: relative;
+}
 
-.container {
+.content-wrapper {
+  margin: 0 40rpx;
+}
+
+.header-card {
+  background-color: #fff;
+  border-radius: 20rpx;
+  overflow: hidden;
+}
+
+/* ------------------------------------
+* 1. Tab 切换区域 
+* ------------------------------------ */
+.tabs-wrapper-underline {
+  display: flex;
+  justify-content: center;
+  padding: 30rpx 40rpx 0 40rpx;
+}
+
+.tab-item {
+  position: relative;
+  font-size: 34rpx;
+  font-weight: normal;
+  color: #333;
+  margin: 0 70rpx;
+  padding-bottom: 20rpx;
+}
+
+.tab-item.active {
+  font-weight: bold;
+}
+
+.tab-line {
+  position: absolute;
+  bottom: 10rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 70rpx;
+  height: 6rpx;
+  background-color: #f8746c;
+  border-radius: 3rpx;
+}
+
+/* ------------------------------------
+* 2. 排序区域 
+* ------------------------------------ */
+.sort-rules {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 20rpx 40rpx 30rpx 40rpx;
+}
+
+.sort-options {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.sort-item {
+  display: flex;
+  align-items: center;
+  color: #999;
+  font-size: 24rpx;
+}
+
+.sort-item.active {
+  color: #f8746c;
+  font-weight: bold;
+}
+
+.icon-arrow-down {
+  width: 0; height: 0; margin-left: 6rpx;
+  border: 6rpx solid transparent;
+  border-top-color: #999;
+  transform: translateY(2rpx);
+  transition: transform 0.2s ease;
+}
+
+.sort-item.active .icon-arrow-down {
+  border-top-color: #f8746c;
+}
+
+.sort-item.active .icon-arrow-down.desc {
+  transform: translateY(2rpx);
+}
+
+.sort-item.active .icon-arrow-down.asc {
+  transform: rotate(180deg) translateY(2rpx);
+}
+
+
+/* ------------------------------------
+* 3. 饮品列表项
+* ------------------------------------ */
+.drink-list { padding-top: 20rpx; padding-bottom: 0; }
+
+.cocktail-item {
+  display: flex;
+  background-color: #fff;
+  margin-bottom: 20rpx;
+  padding: 15rpx;
+  border-radius: 20rpx;
+  align-items: flex-start;
+  height: 190rpx;
+  overflow: hidden;
+}
+
+.cover-image {
+  width: 170rpx;
+  height: 170rpx;
+  object-fit: cover;
+  border-radius: 10rpx;
+  margin-right: 20rpx;
+  flex-shrink: 0;
+}
+
+.info {
+  position: relative;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100vh; /* 占满整个屏幕高度 */
-  background-color: #f8f8f8; /* 轻微的背景色 */
-  padding: 0 40rpx;
+  width: 245rpx;
+  height: 190rpx;
+  padding-bottom: 30rpx;
   box-sizing: border-box;
+  flex-shrink: 0;
+  justify-content: flex-start;
 }
 
-.icon-loading {
-  width: 160rpx; /* 图标或图片的宽度 */
-  height: 160rpx; /* 图标或图片的高度 */
-  margin-bottom: 20rpx;
-}
-
-.status-title {
-  font-size: 36rpx;
-  color: #333;
-  font-weight: bold;
-  margin-bottom: 20rpx;
-}
-
-.status-subtitle {
+.name {
   font-size: 28rpx;
+  font-weight: 600;
+  color: rgb(131, 128, 114);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 5rpx;
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  width: calc(110% + 100rpx);
+  margin-right: -100rpx;
+  max-height: 90rpx;
+  height: auto;
+  overflow: hidden;
+  margin-bottom: 10rpx;
+}
+
+.tag {
+  background-color: #f0f0f0;
+  color: #666;
+  font-size: 22rpx;
+  padding: 4rpx 10rpx;
+  border-radius: 8rpx;
+  margin-right: 15rpx;
+  margin-bottom: 10rpx;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.likes {
   color: #999;
-  margin-bottom: 80rpx;
+  font-size: 24rpx;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+}
+
+.actions {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  margin-left: 20rpx;
+  width: 220rpx;
+  height: 190rpx;
+  flex-shrink: 0;
+}
+
+.price {
+  font-size: 27rpx;
+  color: rgb(231, 71, 71);
+  font-weight: bold;
+  white-space: nowrap;
+  min-width: 100%;
+  text-align: right;
+  margin-bottom: 10rpx;
+  margin-right: 15rpx !important;
+}
+
+.action-buttons {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  font-size: 24rpx;
+  justify-content: flex-end;
+  width: 100%;
+  margin-right: 15rpx !important;
+
+}
+
+.action-btn {
+  display: flex;
+  align-items: center;
+  color: #666;
+  margin-left: 20rpx;
+  justify-content: flex-start;
+  white-space: nowrap;
+  margin-top: 20rpx !important;
+}
+
+.action-btn:first-child {
+  margin-left: 0;
+}
+
+.action-icon {
+  width: 26rpx;
+  height: 26rpx;
+  margin-right: 6rpx;
+  flex-shrink: 0;
+}
+
+.action-btn.followed {
+  color: #666;
+  font-weight: normal;
+}
+
+
+/* ------------------------------------
+* 4. 创建特调按钮 (底部悬浮) 
+* ------------------------------------ */
+.create-button-fixed {
+  position: fixed;
+  bottom: 230rpx;
+  /* 优化定位：使用 left/right + margin: auto 居中和限定最大宽度 */
+  left: 40rpx; 
+  right: 110rpx;
+  max-width: 570rpx;
+  margin-left: auto;
+  margin-right: auto;
+  z-index: 99999; /* 提高 z-index 确保显示 */
+}
+
+.create-btn {
+  display: flex;
+  align-items: center;
+  background-image: linear-gradient(to right, #f8746c, #ff9d85);
+  color: #fff;
+  padding: 20rpx 40rpx;
+  border-radius: 50rpx;
+  box-shadow: 0 8rpx 20rpx rgba(248, 116, 108, 0.4);
+  width: 100%;
+}
+
+/* 【新增】图片样式用于替换 + 号文本 */
+.icon-plus-image {
+  width: 40rpx; /* 图片尺寸 */
+  height: 40rpx;
+  margin-right: 20rpx;
+  flex-shrink: 0;
+}
+
+.button-text-group {
+  position: relative; /* 为伪元素提供定位参考 */
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex-grow: 1;
+  justify-content: space-between;
+}
+
+/* 伪元素创建居中分割线 */
+.button-text-group::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+
+    /* 定位：需要根据实际效果调整 left 值 */
+    left: 227rpx; 
+
+    /* 线条样式 */
+    width: 5rpx; 
+    height: 60%; 
+    background-color: rgba(255, 255, 255, 0.5); 
+    border-radius: 1rpx;
+}
+
+.button-main-text {
+  font-size: 30rpx;
+  font-weight: 500;
+  padding-right: 40rpx; /* 留出分割线和右侧文本的空间 */
+  margin-right: 0; 
+  white-space: nowrap;
+}
+
+.button-sub-text {
+  font-size: 22rpx;
+  opacity: 0.9;
+  white-space: nowrap;
+}
+
+/* ------------------------------------
+ * 5. 暂无数据提示 (新增)
+ * ------------------------------------ */
+.no-data-tip {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  padding: 100rpx 0;
+  color: #999;
+  font-size: 30rpx;
   text-align: center;
 }
 
-.back-home-btn {
-  width: 80%;
-  background-color: #ec650a; /* 使用您的主题色 */
-  color: white;
-  border-radius: 15rpx;
-  font-size: 32rpx;
-  line-height: 56rpx;
-  height: 90rpx;
+.no-data-icon {
+  width: 150rpx; /* 图标尺寸 */
+  height: 150rpx;
+  margin-bottom: 30rpx;
 }

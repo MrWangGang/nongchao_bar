@@ -1,7 +1,122 @@
 <view class="container">
-  <image class="icon-loading" src="cloud://cloud1-7gy6iiv5f0cbcb43.636c-cloud1-7gy6iiv5f0cbcb43-1379173903/素材/建设中.png"></image>
-  <text class="status-title">该功能正在加紧开发中</text>
-  <text class="status-subtitle">敬请期待，稍后将开放</text>
   
-  <button class="back-home-btn" bindtap="goToHome">返回首页</button>
+  <view class="content-wrapper">
+
+    <view class="header-card"> 
+      
+      <view class="tabs-wrapper-underline centered-tabs"> 
+        <view  
+          class="tab-item {{activeTab === 'diy' ? 'active' : ''}}"  
+          data-tab="diy"  
+          bindtap="switchTab"
+        >
+          自制特调
+          <view wx:if="{{activeTab === 'diy'}}" class="tab-line"></view>
+        </view>
+        
+        <view  
+          class="tab-item {{activeTab === 'my' ? 'active' : ''}}"  
+          data-tab="my"  
+          bindtap="switchTab"
+        >
+          我的特调
+          <view wx:if="{{activeTab === 'my'}}" class="tab-line"></view>
+        </view>
+      </view>
+
+      <view class="sort-rules">
+        <view class="sort-options">
+          
+          <text  style="margin-bottom: 3rpx !important;"
+            class="sort-item {{activeSort.key === '综合排序' ? 'active' : ''}}"  
+            data-key="综合排序"  
+            bindtap="sortBy"
+          >
+          <text>综合排序</text>
+
+          </text>
+          
+          <view  
+            class="sort-item {{activeSort.key === '点赞数量' ? 'active' : ''}}"  
+            data-key="点赞数量"  
+            bindtap="sortBy"
+          >
+            <text>点赞数量</text>
+            <text class="icon-arrow-down {{activeSort.key === '点赞数量' ? activeSort.order : ''}}"></text>
+          </view>
+          
+          <view  
+            class="sort-item {{activeSort.key === '收录时间' ? 'active' : ''}}"  
+            data-key="收录时间"  
+            bindtap="sortBy"
+          >
+            <text>收录时间</text>
+            <text class="icon-arrow-down {{activeSort.key === '收录时间' ? activeSort.order : ''}}"></text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view class="drink-list">
+      
+      <view class="no-data-tip" wx:if="{{activeList.length === 0}}">
+        <image 
+          class="no-data-icon" 
+          src="cloud://cloud1-7gy6iiv5f0cbcb43.636c-cloud1-7gy6iiv5f0cbcb43-1379173903/素材/暂无数据_默认图标.png" 
+          mode="aspectFit">
+        </image>
+        <text>暂无数据</text>
+      </view>
+      <block wx:for="{{activeList}}" wx:key="id">
+        <view class="cocktail-item">
+          <image class="cover-image" src="{{item.image}}" mode="aspectFill"></image>
+          
+          <view class="info">
+            <text class="name">{{item.name}}</text>
+            
+            <view class="tags">
+              <block wx:for="{{item.tags}}" wx:for-item="tagItem" wx:key="*this">
+                <text class="tag">{{tagItem}}</text>
+              </block>
+            </view>
+            
+            <text class="likes">{{item.likes}}人赞过</text>
+          </view>
+          
+          <view class="actions">
+            <text class="price">¥{{item.price}}</text>
+            <view class="action-buttons">
+              
+              <view class="action-btn" data-id="{{item.id}}" bindtap="handleOrder">
+                
+                <image class="action-icon" src="cloud://cloud1-7gy6iiv5f0cbcb43.636c-cloud1-7gy6iiv5f0cbcb43-1379173903/素材/下单.png"></image>
+                <text>下单</text>
+              </view>
+              
+              <view  
+                class="action-btn follow {{item.isFollowed ? 'followed' : ''}}"  
+                data-id="{{item.id}}"  
+                data-index="{{index}}"
+                bindtap="handleLike"
+              >
+                <image class="action-icon" src="{{item.isFollowed ? 'cloud://cloud1-7gy6iiv5f0cbcb43.636c-cloud1-7gy6iiv5f0cbcb43-1379173903/素材/收藏_true.png' : 'cloud://cloud1-7gy6iiv5f0cbcb43.636c-cloud1-7gy6iiv5f0cbcb43-1379173903/素材/收藏_false.png'}}"></image>
+                <text>{{item.isFollowed ? '点赞' : '取消'}}</text>
+              </view>
+            </view>
+          </view>
+        </view>
+      </block>
+    </view>
+
+  </view>
+  
+  <view class="create-button-fixed">
+    <view class="create-btn" bindtap="goToCreateCocktail">
+      <image class="icon-plus-image" src="cloud://cloud1-7gy6iiv5f0cbcb43.636c-cloud1-7gy6iiv5f0cbcb43-1379173903/素材/加号.png"></image>
+      <view class="button-text-group">
+        <text class="button-main-text">创建我的特调</text>
+        <text class="button-sub-text">DIY一款独属于你的特调~</text>
+      </view>
+    </view>
+  </view>
 </view>
