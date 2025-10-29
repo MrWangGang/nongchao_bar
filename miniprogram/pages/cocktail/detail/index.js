@@ -16,9 +16,9 @@ Page({
       filteredProducts: [],
 
       // 【弹窗相关数据】
-      showModal: false, // 是否显示商品选项弹窗
+      showModal: false, // 是否显示商品选项弹窗 [cite: 5]
       selectedProduct: {}, // 当前选中商品信息 
-      quantity: 1, // 购买数量 
+      quantity: 1, // 购买数量 [cite: 10]
       totalPriceDisplay: '0.00', // 用于安全显示总价 
 
       // 动态存储所有选中选项的键值对, 如: {spec: '半打', temp: '冰'}
@@ -26,13 +26,18 @@ Page({
       dynamicOptions: [], // 动态选项列表，用于 wx:for 渲染
 
       // 【新增】购物车数据
-      showCartModal: false, // 是否显示购物车详情弹窗 
+      showCartModal: false, // 是否显示购物车详情弹窗 [cite: 6]
       cartList: [], // 购物车商品列表 
       cartCount: 0, // 购物车商品总数 
       cartTotal: '0.00', // 购物车总价 
 
       // 【新增】清空确认弹框
       showClearCartConfirm: false, // 是否显示清空确认弹框
+
+      // 【新增】用于购物车输入数量弹窗
+      showCartInputModal: false, // 是否显示购物车数量输入弹窗
+      editingCartItemId: null, // 正在编辑的购物车项的ID
+      editingCartQuantity: 0, // 正在编辑的数量
 
       // 用于自定义导航栏的高度变量
       statusBarHeight: 0,
@@ -158,14 +163,9 @@ Page({
   },
 
   /**
-   * 【已修改】生命周期函数--监听页面加载
+   * 【修正】生命周期函数--监听页面加载，增加对不同云函数返回格式的兼容
    */
-// ... Page({}) 内的其余代码保持不变
-
-    /**
-     * 【修正】生命周期函数--监听页面加载，增加对不同云函数返回格式的兼容
-     */
-    onLoad: function(options) {
+  onLoad: function(options) {
       // 1. 获取导航栏高度
       var seatCode = options.code;
       const systemInfo = wx.getSystemInfoSync();
@@ -222,8 +222,6 @@ Page({
       });
 
   },
-
-// ... Page({}) 内的其余代码保持不变
 
   /**
    * 【新增】生命周期函数--监听页面显示
@@ -291,7 +289,7 @@ Page({
   /**
    * 显示商品规格弹窗
    */
-  onShowModal: function(e) {
+  onShowModal: function(e) { 
       const product = e.currentTarget.dataset.product;
       const dynamicOptions = product.options || [];
       const defaultSelectedOptions = {};
@@ -308,7 +306,7 @@ Page({
           selectedProduct: product,
           selectedOptions: defaultSelectedOptions, // 设置动态默认选中项
           dynamicOptions: dynamicOptions, // 传入动态选项列表
-          quantity: 1, // 默认数量为 1
+          quantity: 1, // 默认数量为 1 [cite: 10] 
       }, () => {
           this.calculateTotalPrice(product, 1);
       });
@@ -328,7 +326,7 @@ Page({
    */
   onToggleCartModal: function() {
       this.setData({
-          showCartModal: !this.data.showCartModal
+        showCartModal: !this.data.showCartModal // [cite: 6]
       });
   },
 
@@ -338,6 +336,95 @@ Page({
   onHideCartModal: function() {
       this.setData({
           showCartModal: false
+      });
+  },
+
+  /**
+   * 【新增函数】点击购物车数量显示输入弹窗
+   */
+  onCartQuantityTap: function(e) {
+      const itemId = e.currentTarget.dataset.id;
+      const quantity = parseInt(e.currentTarget.dataset.quantity);
+      
+      this.setData({
+          showCartInputModal: true,
+          editingCartItemId: itemId,
+          // 使用 Math.max(1, quantity) 确保默认值至少是 1
+          editingCartQuantity: Math.max(1, quantity)
+      });
+  },
+
+  /**
+   * 【新增函数】处理购物车输入弹窗的输入
+   */
+  onEditingQuantityInput: function(e) {
+      // 获取输入的原始值
+      let value = e.detail.value;
+      // 仅允许输入数字
+      value = value.replace(/[^0-9]/g, ''); 
+
+      // 如果输入为空，则设置为 0
+      if (value === '') {
+          this.setData({
+              editingCartQuantity: 0
+          });
+          return;
+      }
+      
+      // 转换为整数
+      let intValue = parseInt(value);
+      
+      this.setData({
+          // 保持数字格式
+          editingCartQuantity: intValue
+      });
+  },
+
+  /**
+   * 【新增函数】确认购物车输入弹窗的数量
+   */
+  onConfirmCartQuantity: function() {
+      const itemId = this.data.editingCartItemId;
+      let newQuantity = this.data.editingCartQuantity;
+
+      // 校验数量
+      if (typeof newQuantity !== 'number' || isNaN(newQuantity) || newQuantity < 1) {
+          newQuantity = 1; 
+      }
+
+      let cartList = wx.getStorageSync('cocktailList') || [];
+      const itemIndex = cartList.findIndex(item => item.id === itemId);
+
+      if (itemIndex === -1) {
+          this.onHideCartInputModal();
+          return;
+      }
+      
+      // 更新数量和总价
+      cartList[itemIndex].quantity = newQuantity;
+      cartList[itemIndex].totalPrice = (parseFloat(cartList[itemIndex].price) * newQuantity).toFixed(2);
+      
+      // 存入缓存
+      wx.setStorageSync('cocktailList', cartList);
+      // 更新页面数据
+      this.updateCartData();
+      // 隐藏弹窗
+      this.onHideCartInputModal();
+
+      // 如果更新后数量为0，则关闭购物车弹窗
+      if (this.data.cartCount === 0) {
+        this.onHideCartModal();
+      }
+  },
+
+  /**
+   * 【新增函数】隐藏购物车输入弹窗
+   */
+  onHideCartInputModal: function() {
+      this.setData({
+          showCartInputModal: false,
+          editingCartItemId: null,
+          editingCartQuantity: 0
       });
   },
 
@@ -427,8 +514,8 @@ Page({
    * 购物车商品数量增减 (购物车详情弹窗内)
    */
   onCartItemQuantityChange: function(e) {
-      const type = e.currentTarget.dataset.type;
-      const itemId = e.currentTarget.dataset.id;
+      const type = e.currentTarget.dataset.type; // [cite: 14]
+      const itemId = e.currentTarget.dataset.id; // [cite: 14]
       let cartList = wx.getStorageSync('cocktailList') || [];
 
       const itemIndex = cartList.findIndex(item => item.id === itemId);
@@ -436,13 +523,13 @@ Page({
       if (itemIndex === -1) return;
 
       if (type === 'plus') {
-          cartList[itemIndex].quantity += 1;
+          cartList[itemIndex].quantity += 1; // [cite: 14]
       } else if (type === 'minus') {
-          cartList[itemIndex].quantity -= 1;
+          cartList[itemIndex].quantity -= 1; // [cite: 14]
 
           if (cartList[itemIndex].quantity <= 0) {
               // 数量小于等于0时移除商品
-              cartList.splice(itemIndex, 1);
+              cartList.splice(itemIndex, 1); 
           }
       }
 
@@ -475,7 +562,38 @@ onCheckout: function() {
       });
       return;
   }
-
+  // =======================================================
+  // 【检查逻辑 1】: 检查购物车商品种类数是否超过 5 种
+  // =======================================================
+  const MAX_ITEM_TYPES = 5
+  if (cartList.length > MAX_ITEM_TYPES) {
+    wx.showToast({
+        title: `最多只能添加 ${MAX_ITEM_TYPES} 种不同酒类`,
+        icon: 'none',
+        duration: 2500
+    });
+    if (this.data.showCartModal) {
+        this.onHideCartModal();
+    }
+    return;
+}
+// =======================================================
+  // 【新增检查逻辑】: 检查购物车商品总数量是否等于 550
+  // =======================================================
+  const requiredQuantity = 550 ;
+  if (cartCount !== requiredQuantity) {
+      wx.showToast({
+          title: `请补足到 ${requiredQuantity}/ml`,
+          icon: 'none',
+          duration: 2000
+      });
+      // 可以选择性地关闭购物车弹窗，让用户看到数量
+      if (this.data.showCartModal) {
+          this.onHideCartModal();
+      }
+      return;
+  }
+  // =======================================================
   if (this.data.showCartModal) {
       this.onHideCartModal();
   }

@@ -7,6 +7,7 @@
 }
 
 /* --- Banner --- */
+/* 【移除此区块的样式定义】
 .promo-banner-wrapper {
   padding: 20rpx 20rpx;
 }
@@ -15,7 +16,8 @@
   width: 100%;
   border-radius: 16rpx;
   display: block;
-}
+} 
+*/
 
 /* --- 搜索框 --- */
 .product-search-wrapper {
@@ -66,7 +68,8 @@
 .main-content {
   display: flex;
   position: fixed;
-  top: 340rpx; /* 适配 Banner 和搜索框的高度 */
+  /* 【修改点 1】: 调整为搜索框占用的高度 */
+  top: 100rpx; 
   bottom: 0;
   left: 0;
   right: 0;
@@ -614,7 +617,7 @@
 .cart-modal-title {
   font-size: 32rpx;
   font-weight: 700;
-  color: #333;
+  color: rgb(153, 136, 136);
 }
 
 .close-cart-btn {
@@ -757,13 +760,19 @@
 
 .quantity-controls-cart .quantity-input {
   width: 60rpx;
-  height: 60rpx;
-  line-height: 60rpx;
+  height: 48rpx; /* 与加减号按钮高度保持一致 */
+  line-height: 48rpx;
   text-align: center;
   font-size: 28rpx;
   color: #333;
-  background-color: #fff;
+  /* 添加边框和背景色使其看起来可点击 */
+  border: 1rpx solid #e64340; 
+  border-radius: 8rpx;
+  background-color: #fff; /* 改为白色 */
+  margin: 0 10rpx; /* 增加左右间距 */
   flex-shrink: 0;
+  box-sizing: border-box;
+  font-weight: 700;
 }
 
 /* ====================================================================== */
