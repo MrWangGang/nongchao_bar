@@ -16,9 +16,9 @@ Page({
       filteredProducts: [],
 
       // 【弹窗相关数据】
-      showModal: false, // 是否显示商品选项弹窗 [cite: 5]
+      showModal: false, // 是否显示商品选项弹窗
       selectedProduct: {}, // 当前选中商品信息 
-      quantity: 1, // 购买数量 [cite: 10]
+      quantity: 1, // 购买数量 
       totalPriceDisplay: '0.00', // 用于安全显示总价 
 
       // 动态存储所有选中选项的键值对, 如: {spec: '半打', temp: '冰'}
@@ -26,18 +26,13 @@ Page({
       dynamicOptions: [], // 动态选项列表，用于 wx:for 渲染
 
       // 【新增】购物车数据
-      showCartModal: false, // 是否显示购物车详情弹窗 [cite: 6]
+      showCartModal: false, // 是否显示购物车详情弹窗 
       cartList: [], // 购物车商品列表 
       cartCount: 0, // 购物车商品总数 
       cartTotal: '0.00', // 购物车总价 
 
       // 【新增】清空确认弹框
       showClearCartConfirm: false, // 是否显示清空确认弹框
-
-      // 【新增】用于购物车输入数量弹窗
-      showCartInputModal: false, // 是否显示购物车数量输入弹窗
-      editingCartItemId: null, // 正在编辑的购物车项的ID
-      editingCartQuantity: 0, // 正在编辑的数量
 
       // 用于自定义导航栏的高度变量
       statusBarHeight: 0,
@@ -99,11 +94,11 @@ Page({
   },
 
   /**
-   * 【已修改】统一更新购物车数据（从缓存读取）
-   * 解决了单价不显示的问题，并优化了逻辑
+   * 【已修正】统一更新购物车数据（从缓存读取）
+   * 确保返回的 item 包含所有原始属性，包括 selectedSpecs 数组。
    */
   updateCartData: function() {
-      const storedCartList = wx.getStorageSync('cocktailList') || [];
+      const storedCartList = wx.getStorageSync('cartList') || [];
       let cartCount = 0;
       let cartTotal = 0;
 
@@ -113,7 +108,7 @@ Page({
           cartCount += item.quantity;
           cartTotal += parseFloat(item.price) * item.quantity;
 
-          // 返回一个包含格式化后单价的新对象，用于WXML渲染
+          // 确保所有原始属性（包括 selectedSpecs）都被复制，并添加 priceDisplay
           return Object.assign({}, item, {
               priceDisplay: parseFloat(item.price).toFixed(2)
           });
@@ -178,21 +173,16 @@ Page({
 
       // 2. 调用云函数获取数据
       wx.cloud.callFunction({
-          name: 'getCocktails', // 你的云函数名称
+          name: 'getProducts', // 你的云函数名称
           data: {},
           success: res => {
               let rawProducts = res.result;
 
               // 【核心修正逻辑】
-              // 如果 res.result 不是数组，但 res.result.data 是数组（常见的云函数返回格式）
               if (!Array.isArray(rawProducts) && rawProducts && Array.isArray(rawProducts.data)) {
                   rawProducts = rawProducts.data;
               }
               
-              // 如果是云开发数据库查询结果（如 { data: [..], errMsg: '...' }）
-              // 我们直接使用 rawProducts = res.result;
-              // 然后在下一步校验是否为数组
-
               if (rawProducts && Array.isArray(rawProducts)) {
                   const newCategoryList = this.processProducts(rawProducts);
                   this.setData({
@@ -289,7 +279,7 @@ Page({
   /**
    * 显示商品规格弹窗
    */
-  onShowModal: function(e) { 
+  onShowModal: function(e) {
       const product = e.currentTarget.dataset.product;
       const dynamicOptions = product.options || [];
       const defaultSelectedOptions = {};
@@ -306,7 +296,7 @@ Page({
           selectedProduct: product,
           selectedOptions: defaultSelectedOptions, // 设置动态默认选中项
           dynamicOptions: dynamicOptions, // 传入动态选项列表
-          quantity: 1, // 默认数量为 1 [cite: 10] 
+          quantity: 1, // 默认数量为 1
       }, () => {
           this.calculateTotalPrice(product, 1);
       });
@@ -326,7 +316,7 @@ Page({
    */
   onToggleCartModal: function() {
       this.setData({
-        showCartModal: !this.data.showCartModal // [cite: 6]
+          showCartModal: !this.data.showCartModal
       });
   },
 
@@ -336,95 +326,6 @@ Page({
   onHideCartModal: function() {
       this.setData({
           showCartModal: false
-      });
-  },
-
-  /**
-   * 【新增函数】点击购物车数量显示输入弹窗
-   */
-  onCartQuantityTap: function(e) {
-      const itemId = e.currentTarget.dataset.id;
-      const quantity = parseInt(e.currentTarget.dataset.quantity);
-      
-      this.setData({
-          showCartInputModal: true,
-          editingCartItemId: itemId,
-          // 使用 Math.max(1, quantity) 确保默认值至少是 1
-          editingCartQuantity: Math.max(1, quantity)
-      });
-  },
-
-  /**
-   * 【新增函数】处理购物车输入弹窗的输入
-   */
-  onEditingQuantityInput: function(e) {
-      // 获取输入的原始值
-      let value = e.detail.value;
-      // 仅允许输入数字
-      value = value.replace(/[^0-9]/g, ''); 
-
-      // 如果输入为空，则设置为 0
-      if (value === '') {
-          this.setData({
-              editingCartQuantity: 0
-          });
-          return;
-      }
-      
-      // 转换为整数
-      let intValue = parseInt(value);
-      
-      this.setData({
-          // 保持数字格式
-          editingCartQuantity: intValue
-      });
-  },
-
-  /**
-   * 【新增函数】确认购物车输入弹窗的数量
-   */
-  onConfirmCartQuantity: function() {
-      const itemId = this.data.editingCartItemId;
-      let newQuantity = this.data.editingCartQuantity;
-
-      // 校验数量
-      if (typeof newQuantity !== 'number' || isNaN(newQuantity) || newQuantity < 1) {
-          newQuantity = 1; 
-      }
-
-      let cartList = wx.getStorageSync('cocktailList') || [];
-      const itemIndex = cartList.findIndex(item => item.id === itemId);
-
-      if (itemIndex === -1) {
-          this.onHideCartInputModal();
-          return;
-      }
-      
-      // 更新数量和总价
-      cartList[itemIndex].quantity = newQuantity;
-      cartList[itemIndex].totalPrice = (parseFloat(cartList[itemIndex].price) * newQuantity).toFixed(2);
-      
-      // 存入缓存
-      wx.setStorageSync('cocktailList', cartList);
-      // 更新页面数据
-      this.updateCartData();
-      // 隐藏弹窗
-      this.onHideCartInputModal();
-
-      // 如果更新后数量为0，则关闭购物车弹窗
-      if (this.data.cartCount === 0) {
-        this.onHideCartModal();
-      }
-  },
-
-  /**
-   * 【新增函数】隐藏购物车输入弹窗
-   */
-  onHideCartInputModal: function() {
-      this.setData({
-          showCartInputModal: false,
-          editingCartItemId: null,
-          editingCartQuantity: 0
       });
   },
 
@@ -450,7 +351,7 @@ Page({
    * 清空购物车 (在确认弹框中点击确定后调用)
    */
   onClearCart: function() {
-      wx.removeStorageSync('cocktailList');
+      wx.removeStorageSync('cartList');
       this.updateCartData();
       this.onHideClearCartConfirm(); // 隐藏确认框
       this.onHideCartModal(); // 隐藏购物车详情
@@ -468,7 +369,6 @@ Page({
       const value = e.currentTarget.dataset.value;
 
       // 动态更新 selectedOptions 对象中的值
-      // 使用计算属性名 set
       this.setData({
           [`selectedOptions.${key}`]: value
       });
@@ -514,22 +414,22 @@ Page({
    * 购物车商品数量增减 (购物车详情弹窗内)
    */
   onCartItemQuantityChange: function(e) {
-      const type = e.currentTarget.dataset.type; // [cite: 14]
-      const itemId = e.currentTarget.dataset.id; // [cite: 14]
-      let cartList = wx.getStorageSync('cocktailList') || [];
+      const type = e.currentTarget.dataset.type;
+      const itemId = e.currentTarget.dataset.id;
+      let cartList = wx.getStorageSync('cartList') || [];
 
       const itemIndex = cartList.findIndex(item => item.id === itemId);
 
       if (itemIndex === -1) return;
 
       if (type === 'plus') {
-          cartList[itemIndex].quantity += 1; // [cite: 14]
+          cartList[itemIndex].quantity += 1;
       } else if (type === 'minus') {
-          cartList[itemIndex].quantity -= 1; // [cite: 14]
+          cartList[itemIndex].quantity -= 1;
 
           if (cartList[itemIndex].quantity <= 0) {
               // 数量小于等于0时移除商品
-              cartList.splice(itemIndex, 1); 
+              cartList.splice(itemIndex, 1);
           }
       }
 
@@ -539,7 +439,7 @@ Page({
       }
 
       // 存入缓存
-      wx.setStorageSync('cocktailList', cartList);
+      wx.setStorageSync('cartList', cartList);
       // 更新页面数据
       this.updateCartData();
 
@@ -549,150 +449,105 @@ Page({
       }
   },
 
-/**
- * 点击【结算】按钮的事件处理函数
- * 【最终修正】：移除所有 ES6+ 语法，使用 Object.assign 和 for 循环，彻底解决 Babel 运行时错误。
- */
-onCheckout: function() {
-  const { cartList, cartTotal, cartCount, categoryList } = this.data;
-  if (cartList.length === 0) {
-      wx.showToast({
-          title: '购物车为空',
-          icon: 'none'
-      });
-      return;
-  }
-  // =======================================================
-  // 【检查逻辑 1】: 检查购物车商品种类数是否超过 5 种
-  // =======================================================
-  const MAX_ITEM_TYPES = 5
-  if (cartList.length > MAX_ITEM_TYPES) {
-    wx.showToast({
-        title: `最多只能添加 ${MAX_ITEM_TYPES} 种不同酒类`,
-        icon: 'none',
-        duration: 2500
-    });
-    if (this.data.showCartModal) {
-        this.onHideCartModal();
-    }
-    return;
-}
-// =======================================================
-  // 【新增检查逻辑】: 检查购物车商品总数量是否等于 550
-  // =======================================================
-  const requiredQuantity = 550 ;
-  if (cartCount !== requiredQuantity) {
-      wx.showToast({
-          title: `请补足到 ${requiredQuantity}/ml`,
-          icon: 'none',
-          duration: 2000
-      });
-      // 可以选择性地关闭购物车弹窗，让用户看到数量
+  /**
+   * 点击【结算】按钮的事件处理函数
+   * 【核心修改】：将 selectedSpecs 结构从 cartList 原样传递给订单确认页。
+   */
+  onCheckout: function() {
+      const { cartList, cartTotal, cartCount, categoryList, seatCode } = this.data; 
+      if (cartList.length === 0) {
+          wx.showToast({
+              title: '购物车为空',
+              icon: 'none'
+          });
+          return;
+      }
+
       if (this.data.showCartModal) {
           this.onHideCartModal();
       }
-      return;
-  }
-  // =======================================================
-  if (this.data.showCartModal) {
-      this.onHideCartModal();
-  }
 
-  // 辅助函数：根据 productId 查找商品的完整原始信息
-  const findProductDetails = (productId) => {
-      // 【关键修正】：使用传统的 for 循环替换 for...of
-      for (var i = 0; i < categoryList.length; i++) {
-          var category = categoryList[i];
-          // 注意：find() 也是 ES6 语法，但它在小程序基础库中通常已支持。
-          // 为了保守起见，我们假设 find() 是支持的，否则需要替换为 for 循环查找。
-          var product = category.products.find(function(p) {
-              return p.id === productId;
-          });
+      // 辅助函数：根据 productId 查找商品的完整原始信息 
+      const findProductDetails = (productId) => {
+          for (var i = 0; i < categoryList.length; i++) {
+              var category = categoryList[i];
+              var product = category.products.find(function(p) {
+                  return p.id === productId;
+              });
+              
+              if (product) {
+                  return product; 
+              }
+          }
+          return null;
+      };
+
+
+      // 1. 准备订单数据：转换为 orderItems
+      const orderItems = cartList.map(function(item) {
+          var fullProduct = findProductDetails(item.productId);
           
-          if (product) {
-              return product; 
-          }
-      }
-      return null;
-  };
-
-
-  // 1. 准备订单数据：转换为 orderItems
-  const orderItems = cartList.map(function(item) {
-      var fullProduct = findProductDetails(item.productId);
-      
-      // 1.1 提取动态选项（规格、温度、加料等）
-      var options = {};
-      
-      // 【关键修正】：定义需要排除的核心字段数组
-      var coreKeys = ['id', 'productId', 'image', 'name', 'price', 'quantity', 'totalPrice', 'priceDisplay', 'desc', 'tags', 'category'];
-      
-      Object.keys(item).forEach(function(key) {
-          // 排除购物车自带的核心字段 (使用 indexOf 替换 includes)
-          if (coreKeys.indexOf(key) !== -1) { 
-              return;
-          }
-          options[key] = item[key]; // 收集动态选项，如 spec: '整瓶'
+          // 构造 orderItem
+          var finalOrderItem = {
+              // 购买信息
+              id: item.id,
+              quantity: item.quantity,
+              price: item.price,
+              totalPrice: item.totalPrice,
+              
+              // 基础信息
+              productId: item.productId,
+              name: item.name,
+              image: item.image,
+              desc: fullProduct ? fullProduct.desc : '信息缺失',
+              tags: fullProduct ? fullProduct.tags : [],
+              category: fullProduct ? fullProduct.category : { id: '', name: '未知', enName: 'Unknown' },
+              
+              // 【核心修改】：直接传递规格数组，它是自由化的关键
+              selectedSpecs: item.selectedSpecs || [] 
+          };
+          
+          return finalOrderItem;
       });
 
-      // 1.2 构造基础 orderItem
-      var baseItem = {
-          // 购买信息
-          id: item.id,
-          quantity: item.quantity,
-          price: item.price,
-          totalPrice: item.totalPrice,
-          
-          // 基础信息 (确保完整性)
-          productId: item.productId,
-          name: item.name,
-          image: item.image,
-          desc: fullProduct ? fullProduct.desc : '信息缺失',
-          tags: fullProduct ? fullProduct.tags : [],
-          category: fullProduct ? fullProduct.category : { id: '', name: '未知', enName: 'Unknown' }
+      // 2. 构造整个结算数据对象
+      var checkoutData = {
+          orderItems: orderItems,
+          totalAmount: cartTotal,
+          totalCount: cartCount,
       };
       
-      // 1.3 使用 Object.assign 合并对象 (替换对象展开语法)
-      // 注意：Object.assign() 在基础库 1.1.0 开始支持
-      var finalOrderItem = Object.assign(baseItem, options);
-      
-      return finalOrderItem;
-  });
+      // 3. 将复杂对象转换为 JSON 字符串并进行 URL 编码
+      var dataString;
+      try {
 
-  // 2. 构造整个结算数据对象
-  var checkoutData = {
-      orderItems: orderItems,
-      totalAmount: cartTotal,
-      totalCount: cartCount,
-  };
-  
-  // 3. 将复杂对象转换为 JSON 字符串并进行 URL 编码
-  var dataString;
-  try {
+          dataString = JSON.stringify(checkoutData);
+          var encodedData = encodeURIComponent(dataString);
+          
+          // 4. 跳转到订单确认/下单页面，通过 URL 参数传递数据
+          wx.redirectTo({
+              url: '/pages/meal/food/detail/index?data=' + encodedData +'&seatCode='+this.data.seatCode
+          });
 
-      dataString = JSON.stringify(checkoutData);
-      var encodedData = encodeURIComponent(dataString);
-      // 4. 跳转到订单确认/下单页面，通过 URL 参数传递数据
-      wx.redirectTo({
-          url: '/pages/cocktail/choose/detail/index?data=' + encodedData +'&seatCode='+this.data.seatCode
-      });
+      } catch (e) {
+          console.error("数据处理或跳转失败", e);
+          wx.showToast({
+              title: '数据过大或处理失败',
+              icon: 'none'
+          });
+      }
+  },
 
-  } catch (e) {
-      console.error("数据处理或跳转失败", e);
-      wx.showToast({
-          title: '数据过大或处理失败',
-          icon: 'none'
-      });
-  }
-},
   /**
    * 加入购物车逻辑
+   * 【核心修改】：将规格存储为 selectedSpecs 数组，而非平铺属性。
    */
   onAddToCart: function() {
       const {
           selectedProduct,
           selectedOptions,
-          quantity
+          quantity,
+          dynamicOptions // 使用 dynamicOptions 来获取规格的 'name' (例如: '规格', '温度')
       } = this.data;
 
       if (quantity <= 0) {
@@ -710,7 +565,25 @@ onCheckout: function() {
       const optionsString = optionsArray.join('_');
       const uniqueId = `${selectedProduct.id}_${optionsString}`;
 
-      // 2. 构造购物车商品对象
+      // 【核心修改 A】：构造 selectedSpecs 数组，包含 key, name, value
+      const selectedSpecs = [];
+      
+      // 遍历动态选项 dynamicOptions (来自云端商品数据)，查找用户选定的值
+      dynamicOptions.forEach(option => {
+          const specKey = option.key;   // 例如: 'spec'
+          const specName = option.name; // 例如: '规格'
+          
+          // 检查用户是否对该规格进行了选择
+          if (selectedOptions.hasOwnProperty(specKey)) {
+              selectedSpecs.push({
+                  key: specKey,
+                  name: specName,
+                  value: selectedOptions[specKey] // 用户选择的值
+              });
+          }
+      });
+
+      // 2. 构造购物车商品对象 (cartItem)
       const cartItem = {
           id: uniqueId,
           productId: selectedProduct.id,
@@ -719,40 +592,41 @@ onCheckout: function() {
           price: parseFloat(selectedProduct.price),
           quantity: quantity,
           totalPrice: (parseFloat(selectedProduct.price) * quantity).toFixed(2),
+          
+          // 【核心修改 B】：将规格数组添加到 cartItem
+          selectedSpecs: selectedSpecs 
       };
 
-      // 使用 Object.keys 遍历赋值，避免使用 ... 扩展运算符
-      Object.keys(selectedOptions).forEach(key => {
-          cartItem[key] = selectedOptions[key];
-      });
-
-
       // 3. 从缓存中读取购物车
-      let cartList = wx.getStorageSync('cocktailList') || [];
-
-      // 4. 检查购物车中是否已存在相同规格的商品
+      let cartList = wx.getStorageSync('cartList') || [];
       const existingIndex = cartList.findIndex(item => item.id === cartItem.id);
 
       if (existingIndex !== -1) {
           // 存在则更新数量
           cartList[existingIndex].quantity += quantity;
           cartList[existingIndex].totalPrice = (parseFloat(cartList[existingIndex].price) * cartList[existingIndex].quantity).toFixed(2);
+          
+          // ⭐【BUG FIX】：确保在更新数量时，selectedSpecs 存在（防止旧数据或逻辑错误导致丢失）
+          if (!cartList[existingIndex].selectedSpecs || cartList[existingIndex].selectedSpecs.length === 0) {
+              cartList[existingIndex].selectedSpecs = selectedSpecs;
+          }
+
       } else {
           // 不存在则添加新商品
           cartList.push(cartItem);
       }
 
-      // 5. 存入缓存
+      // 4. 存入缓存
       try {
-          wx.setStorageSync('cocktailList', cartList);
+          wx.setStorageSync('cartList', cartList);
           wx.showToast({
               title: '添加购物车成功',
               icon: 'success',
               duration: 1000
           });
-          // 6. 关闭弹窗
+          // 5. 关闭弹窗
           this.onHideModal();
-          // 7. 更新购物车数据
+          // 6. 更新购物车数据
           this.updateCartData();
 
       } catch (e) {
