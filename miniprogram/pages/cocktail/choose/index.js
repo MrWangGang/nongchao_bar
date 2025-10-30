@@ -673,7 +673,7 @@ onCheckout: function() {
       dataString = JSON.stringify(checkoutData);
       var encodedData = encodeURIComponent(dataString);
       // 4. 跳转到订单确认/下单页面，通过 URL 参数传递数据
-      wx.navigateTo({
+      wx.redirectTo({
           url: '/pages/cocktail/choose/detail/index?data=' + encodedData +'&seatCode='+this.data.seatCode
       });
 
