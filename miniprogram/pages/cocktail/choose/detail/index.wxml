@@ -28,7 +28,7 @@
         <view class="remark-left">
             <textarea
                 class="remark-textarea"
-                placeholder="请输入备注信息"
+                placeholder="请输入制作流程"
                 value="{{remark}}"
                 bindinput="onRemarkInput"
                 maxlength="200"
@@ -57,6 +57,6 @@
         <text class="total-amount">¥{{totalAmount}}</text>
     </view>
     <button class="submit-btn" bindtap="onSubmitOrder" disabled="{{isSubmitting}}">
-        提交订单
+        提交配方
     </button>
 </view>

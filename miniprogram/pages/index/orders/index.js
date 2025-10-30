@@ -41,6 +41,13 @@ Page({
     } else if (this.data.currentTab === 'reserve' && this.data.reserveOrders.length === 0) {
       this.fetchReserveOrders();
     }
+    var shouldRefresh = wx.getStorageSync('orderListShouldRefresh');
+    if (shouldRefresh) {
+      this.fetchStoreOrders();
+      this.fetchReserveOrders();
+      // ⭐ 清除标记，防止下次不必要的刷新
+      wx.removeStorageSync('orderListShouldRefresh');
+  }
   },
 
   switchTab(e) {

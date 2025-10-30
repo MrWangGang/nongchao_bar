@@ -63,12 +63,12 @@
 
 <view wx:if="{{cartCount > 0}}" class="cart-bar" >
     <view class="cart-icon-wrapper" bindtap="onToggleCartModal">
-        <image class="cart-icon" src="cloud://cloud1-7gy6iiv5f0cbcb43.636c-cloud1-7gy6iiv5f0cbcb43-1379173903/素材/菜单_购物车.png" mode="widthFix" />
-        <view class="cart-count">{{cartCount}}</view>
+      <image class="cart-icon" src="cloud://cloud1-7gy6iiv5f0cbcb43.636c-cloud1-7gy6iiv5f0cbcb43-1379173903/素材/菜单_购物车.png" mode="widthFix" />
+      <view class="cart-count">{{cartCount}}</view>
     </view>
     <view class="cart-total-info">
-        <text class="cart-total-label">¥</text>
-        <text class="cart-total-value">{{cartTotal}}</text>
+      <text class="cart-total-label">¥</text>
+      <text class="cart-total-value">{{cartTotal}}</text>
     </view>
     <view class="btn-checkout" bindtap="onCheckout">结算</view>
 </view>
@@ -132,11 +132,16 @@
         <image class="cart-item-image" src="{{item.image}}" mode="aspectFill" />
         <view class="cart-item-detail">
           <view class="cart-item-name">{{item.name}}</view>
+          
           <view class="cart-item-options">
-            <text wx:if="{{item.spec}}">{{item.spec}}</text>
-            <text wx:if="{{item.temp}}">{{item.spec ? ', ' : ''}}{{item.temp}}</text>
-            <text wx:if="{{item.topping}}">{{(item.spec || item.temp) ? ', ' : ''}}{{item.topping}}</text>
+              <view class="inner-specs"> 
+                  <text wx:for="{{item.selectedSpecs}}" wx:for-item="specItem" wx:key="key">
+                      {{specItem.value}}{{index === item.selectedSpecs.length - 1 ? '' : '，'}}
+                  </text>
+                  <text wx:if="{{!item.selectedSpecs || item.selectedSpecs.length === 0}}"> </text>
+              </view>
           </view>
+          
           <view class="cart-item-price">¥{{item.priceDisplay}}</view>
         </view>
       </view>

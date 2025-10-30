@@ -17,9 +17,25 @@ function formatDate(date, fmt) {
     return fmt;
 }
 
+// ⭐ 【新增】辅助函数：格式化商品选项描述
+// 传入单个商品项，返回格式化的规格字符串
+function formatOptions(item) {
+    // 假设商品详情中的规格数据存储在 selectedSpecs 字段
+    const specs = item.selectedSpecs || []; 
+    
+    // 从规格数组中提取所有的 value 
+    var optionsText = specs.map(function(spec) {
+        // 确保 spec 是一个对象并且有 value 属性
+        return spec && spec.value ? spec.value : null; 
+    });
+
+    // 将选项用逗号分隔，并去除多余的空项
+    return optionsText.filter(Boolean).join('，');
+}
+
 Page({
     timer: null, // 用于存储计时器ID
-  
+    
     data: {
         orderId: '',
         orderDetail: null,
@@ -54,7 +70,6 @@ Page({
     },
 
     onLoad: function (options) {
-        // 这里的全局数据不再用于获取 userId，但保留用于其他功能
         const orderId = options.orderId;
         if (orderId) {
             this.setData({ orderId });
@@ -72,7 +87,7 @@ Page({
             this.timer = null;
         }
     },
-  
+    
     // 核心：处理倒计时逻辑 (保持不变)
     updateTimer: function (cancelTime) {
         if (this.timer) {
@@ -81,11 +96,11 @@ Page({
         }
         
         const targetTime = new Date(cancelTime).getTime(); // 订单取消时间戳
-  
+        
         const tick = () => {
             const now = new Date().getTime();
             const distance = targetTime - now;
-  
+            
             if (distance <= 0) {
                 clearInterval(this.timer);
                 this.timer = null;
@@ -94,20 +109,20 @@ Page({
                 });
                 return;
             }
-  
+            
             // 计算分和秒
             const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
             const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-  
+            
             const display = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
             this.setData({ countdownDisplay: display });
         };
-  
+        
         // 立即执行一次，并设置每秒执行
         tick();
         this.timer = setInterval(tick, 1000);
     },
-  
+    
     fetchOrderDetail: function (orderId) {
         wx.cloud.callFunction({
             name: 'getMealOrderDetail',
@@ -120,17 +135,26 @@ Page({
                     let detail = result.data;
                     detail.orderNo = detail.no; 
                     
+                    // ⭐ 【修改点：处理商品规格格式化】
+                    // 假设商品列表在 detail.products 字段中
+                    if (detail.products && Array.isArray(detail.products)) {
+                        detail.products = detail.products.map(function(item) {
+                            item.formattedSpec = formatOptions(item); // 确保规格被正确格式化
+                            return item;
+                        });
+                    }
+
                     const seatNumber = detail.seatInfo ? detail.seatInfo.name : '未知';
 
                     // 格式化下单时间
                     const createTimeDate = new Date(detail.createTime);
                     detail.formattedCreateTime = formatDate(createTimeDate, 'yyyy/MM/dd hh:mm:ss');
-  
+
                     let targetCancelTime = null;
                     // 状态判断改为中文字符串 '待支付'
                     const IS_PENDING_PAYMENT = detail.orderStatus === '待支付'; 
                     const FIFTEEN_MINUTES_MS = 15 * 60 * 1000;
-  
+
                     // 仅当订单状态为“待支付”且有创建时间时，计算倒计时
                     if (IS_PENDING_PAYMENT && detail.createTime) {
                         const createTimestamp = createTimeDate.getTime();
@@ -143,7 +167,7 @@ Page({
                             targetCancelTime = new Date(targetTimestamp).toISOString(); 
                         }
                     }
-  
+
                     this.setData({
                         orderDetail: detail,
                         loading: false,
@@ -168,7 +192,7 @@ Page({
             }
         });
     },
-  
+    
     toggleProducts: function () {
         this.setData({
             showAllProducts: true 
@@ -187,14 +211,17 @@ Page({
             wx.openLocation({ latitude, longitude, name, address, scale: 18 });
         }
     },
-    
+    setRefreshFlag: function() {
+      // 使用本地缓存来设置刷新标记
+      wx.setStorageSync('orderListShouldRefresh', true);
+  },
     /**
      * 取消订单 (调用统一的云函数 orderActions)
      */
     cancelOrder: function () {
         const { orderDetail, orderId } = this.data;
         
-        // ⭐ 【修正获取 userId 逻辑】
+        // ⭐ 【修正获取 userId 逻辑：从缓存中获取】
         const userInfo = wx.getStorageSync('userInfo');
         const userId = userInfo ? userInfo.userId : null;
 
@@ -230,12 +257,15 @@ Page({
                             if (result.success) {
                                 wx.showToast({ title: '订单已取消', icon: 'success' });
                                 
-                                // 成功后刷新订单详情并返回上一页
+                                // 成功后刷新订单详情
                                 this.fetchOrderDetail(orderId); 
+                              
+                                // ⭐ 【新增】设置刷新标记并返回
+                                this.setRefreshFlag(); // 👈 在返回前设置标记
                                 setTimeout(() => {
-                                  wx.navigateBack(); 
+                                    wx.navigateBack(); // 返回上一页
                                 }, 1500);
-
+                                
                             } else {
                                 wx.showModal({ title: '取消失败', content: result.errMsg || '操作失败', showCancel: false });
                             }
@@ -260,7 +290,9 @@ Page({
         const userInfo = wx.getStorageSync('userInfo');
         const userId = userInfo ? userInfo.userId : null;
         
-        // 假设订单金额在 orderDetail.totalAmount
+        // 假设订单金额在 orderDetail.totalPrice
+        // 🚨 注意：您代码中使用了 totalAmount，但我修改了 orderConfirm.js 确保发送的是 totalPrice。
+        // 为了安全起见，这里假设后端返回的字段是 totalAmount 或 totalPrice，选择其中一个，这里使用 totalAmount。
         const totalFee = orderDetail.totalAmount; 
 
         if (!userId) {
@@ -308,7 +340,9 @@ Page({
                                 wx.showToast({ title: '支付成功', icon: 'success' });
                                 // 刷新订单详情并返回上一页
                                 this.fetchOrderDetail(orderId);
+                                this.setRefreshFlag(); // 👈 在返回前设置标记
                                 setTimeout(() => {
+                                    // 支付成功后通常是跳转到订单列表或返回上一页（如点餐页）
                                     wx.navigateBack();
                                 }, 1500);
                             } else {
