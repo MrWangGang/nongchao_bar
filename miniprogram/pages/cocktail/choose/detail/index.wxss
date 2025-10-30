@@ -1,0 +1,290 @@
+/* /pages/orderConfirm/orderConfirm.wxss */
+page {
+  background-color: #f7f7f7;
+}
+
+/* --------------- 容器调整 --------------- */
+.container {
+    padding: 0 20rpx;
+}
+
+/* --------------- 订单卡片样式 (全屏宽度) --------------- */
+.order-card {
+  background-color: #fff;
+  border-radius: 20rpx;
+  padding: 25rpx; 
+  box-shadow: 0 5rpx 20rpx rgba(0, 0, 0, 0.05);
+  margin-top: 30rpx;
+  width: 100%; 
+  box-sizing: border-box;
+}
+
+/* --------------- 备注区域 (左备注 + 右图片) --------------- */
+.remark-card {
+  background-color: #fff;
+  margin: 20rpx 0; 
+  border-radius: 15rpx;
+  padding: 25rpx 30rpx; 
+  box-shadow: 0 15rpx 20rpx rgba(0, 0, 0, 0.05);
+  background-color: #dad7d7;
+  margin-top: 30rpx !important;
+  width: 100%; 
+  box-sizing: border-box;
+
+  display: flex;
+  justify-content: space-between; 
+  align-items: flex-start; 
+  min-height: 150rpx; 
+}
+
+/* 左侧：备注文本框容器 */
+.remark-left {
+    /* 占据 70% 弹性空间 */
+    flex: 6; 
+    margin-right: 30rpx; 
+    overflow: hidden; 
+}
+
+/* 文本框样式 */
+.remark-textarea {
+  width: 100% !important; 
+  box-sizing: border-box;
+  font-size: 30rpx;
+  line-height: 1.5;
+  padding: 0;
+  
+  /* 滚动控制 */
+  min-height: 220rpx; 
+  max-height: 220rpx; 
+  height: 220rpx; 
+  overflow-y: scroll; 
+}
+
+/* 右侧：图片上传/预览区域 */
+.remark-right {
+    /* 占据 30% 弹性空间 */
+    flex: 4; 
+    flex-shrink: 0; 
+    display: flex;
+    flex-direction: row; 
+    justify-content: flex-end; 
+    align-items: flex-end; 
+    
+    min-width: 100rpx; 
+}
+
+/* 上传按钮样式 */
+.upload-btn {
+    width: 220rpx;
+    height: 220rpx;
+    border: 5rpx dashed rgb(165, 155, 155); 
+    border-radius: 8rpx;
+    display: flex;
+    flex-direction: column; /* 保持 flex-direction 为 column */
+    justify-content: center; /* 垂直居中 */
+    align-items: center; /* 水平居中 */
+    color: rgb(160, 148, 148);
+    background-color: #e04141;
+    /* 【核心修改 2】：将背景色设为透明 */
+    background-color: transparent;
+    opacity: 0.9;
+}
+
+.plus-icon {
+    /* 【核心修改 1】：加号图标增大到 80rpx */
+    font-size: 80rpx;
+    line-height: 1;
+}
+
+.upload-text {
+    /* 【核心修改 2】：隐藏“上传”文字 */
+    display: none; 
+}
+
+/* 图片列表容器 (只包含一张图片) */
+.image-list {
+    display: flex;
+    flex-direction: row; 
+    margin-right: 15rpx; 
+}
+
+/* 单个已上传图片预览 */
+.uploaded-image-wrapper {
+    /* 配合按钮尺寸 */
+    width: 130rpx;
+    height: 130rpx;
+    position: relative;
+    border-radius: 8rpx;
+    overflow: hidden;
+    box-shadow: 0 0 5rpx rgba(0, 0, 0, 0.1); 
+}
+
+.uploaded-image {
+    width: 100%;
+    height: 100%;
+}
+
+
+/* 移除不再需要的旧样式 */
+.remark-label {
+  display: none; 
+}
+.remark-input {
+  display: none; 
+}
+
+
+/* --------------- 商品列表滚动容器 (固定高度) --------------- */
+.product-list-scroll {
+  max-height: 800rpx;
+  overflow: hidden;
+}
+
+/* 商品列表容器 (内部内容需要左右 padding) */
+.product-list {
+  padding: 0 30rpx;
+}
+
+/* --------------- 商品列表项 --------------- */
+.product-item {
+  display: flex;
+  padding: 20rpx 0;
+  border-bottom: 1rpx solid #eee;
+}
+.product-list .product-item:last-child {
+  border-bottom: none; 
+}
+
+.product-image {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 8rpx;
+  margin-right: 20rpx;
+}
+
+.product-info {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.product-name {
+  font-size: 30rpx;
+  color: #333;
+  font-weight: 500;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  max-width: 350rpx;
+}
+
+.product-spec-row {
+  margin-top: 8rpx;
+}
+
+.product-spec {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.product-price-quantity {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: center;
+  min-width: 150rpx;
+}
+
+.product-price {
+  font-size: 28rpx;
+  color: rgb(241, 108, 108);
+}
+
+.product-quantity {
+  font-size: 24rpx;
+  color: #666;
+  margin-top: 8rpx;
+}
+
+/* --------------- 总结行 --------------- */
+.summary {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 0rpx 30rpx; 
+  font-size: 28rpx;
+  color: #666;
+  margin-top: 60rpx;
+}
+
+.summary-total {
+  font-size: 30rpx;
+  font-weight: bold;
+  color: #cf2c24; 
+  margin-left: 10rpx;
+}
+
+/* --------------- 底部栏样式 --------------- */
+.footer-bar-placeholder {
+  height: 130rpx; 
+}
+
+.footer-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 100rpx; 
+  background-color: #fff;
+  box-shadow: 0 -2rpx 8rpx rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 30rpx;
+  padding-bottom: env(safe-area-inset-bottom);
+  box-sizing: content-box; 
+}
+
+.total-display {
+  display: flex;
+  align-items: baseline;
+  flex-shrink: 0;
+  max-width: 60%;
+}
+
+.total-label {
+  font-size: 26rpx; 
+  color: #333;
+  margin-right: 10rpx;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.total-amount {
+  font-size: 36rpx; 
+  font-weight: bold;
+  color: #cf2c24;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  flex-shrink: 1;
+  min-width: 0;
+}
+
+.submit-btn {
+  width: 250rpx !important;
+  height: 75rpx;
+  line-height: 75rpx;
+  background-color: #cf2c24;
+  color: #fff;
+  font-size: 30rpx; 
+  border-radius: 45rpx;
+  margin: 0 !important;
+  padding: 0;
+  flex-shrink: 0; 
+}
+.submit-btn[disabled] {
+  background-color: #e0e0e0;
+  color: #a0a0a0;
+}

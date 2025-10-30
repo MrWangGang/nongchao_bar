@@ -196,6 +196,6 @@ Page({
    * 跳转到创建特调页
    */
   goToCreateCocktail() {
-    wx.navigateTo({ url: '/pages/cocktail/detail/index' });
+    wx.navigateTo({ url: '/pages/cocktail/choose/index' });
   }
 })
