@@ -22,6 +22,7 @@
     <view wx:for="{{categoryList}}" wx:key="id" class="menu-item {{currentCategoryIndex === index ? 'active' : ''}}" bindtap="onCategoryTap" data-index="{{index}}">
       <view class="menu-item-name-cn">{{item.name}}</view>
       <view class="menu-item-name-en">{{item.enName}}</view>
+ 
     </view>
   </scroll-view>
   
@@ -33,21 +34,24 @@
           <view class="product-info-top">
             <view class="product-name">{{item.name}}</view>
             <view wx:if="{{item.tags && item.tags.length > 0}}" class="product-tags">
-              <view wx:if="{{item.tags[0]}}" class="tag-item tag-red">{{item.tags[0]}}</view>
+          
+          <view wx:if="{{item.tags[0]}}" class="tag-item tag-red">{{item.tags[0]}}</view>
               <view wx:if="{{item.tags[1]}}" class="tag-item tag-black">{{item.tags[1]}}</view>
               <view wx:if="{{item.tags[2]}}" class="tag-item tag-green">{{item.tags[2]}}</view>
             </view>
             <view class="product-desc one-line-truncate-list">{{item.desc}}</view> 
           </view>
           <view class="product-info-bottom">
-            <view class="product-price">¥{{item.price}}</view>
+           
+          <view class="product-price">¥{{item.price}}/ml</view>
             <view class="product-actions">
               <image 
                 class="btn-add-icon" 
                 src="cloud://cloud1-7gy6iiv5f0cbcb43.636c-cloud1-7gy6iiv5f0cbcb43-1379173903/素材/菜单_添加.png" 
                 mode="aspectFit" 
                 bindtap="onShowModal"
-                data-product="{{item}}"
+   
+              data-product="{{item}}"
               />
             </view>
           </view>
@@ -62,15 +66,16 @@
 </view>
 
 <view wx:if="{{cartCount > 0}}" class="cart-bar" >
-    <view class="cart-icon-wrapper" bindtap="onToggleCartModal">
+    <view 
+    class="cart-icon-wrapper" bindtap="onToggleCartModal">
       <image class="cart-icon" src="cloud://cloud1-7gy6iiv5f0cbcb43.636c-cloud1-7gy6iiv5f0cbcb43-1379173903/素材/菜单_购物车.png" mode="widthFix" />
-      <view class="cart-count">{{cartCount}}</view>
+      <view class="cart-count">{{cartCount}}ml</view>
     </view>
     <view class="cart-total-info">
       <text class="cart-total-label">¥</text>
-      <text class="cart-total-value">{{cartTotal}}</text>
+      <text class="cart-total-value">{{cartTotal}}/ml</text>
     </view>
-    <view class="btn-checkout" bindtap="onCheckout">结算</view>
+    <view class="btn-checkout" bindtap="onCheckout">制作</view>
 </view>
 
 <view wx:if="{{showModal}}" class="modal-mask" bindtap="onHideModal"></view>
@@ -80,11 +85,12 @@
     <view class="modal-product-info">
       <view class="modal-product-name">{{selectedProduct.name}}</view>
       <view wx:if="{{selectedProduct.tags && selectedProduct.tags.length > 0}}" class="product-tags modal-tags">
+       
           <view wx:if="{{selectedProduct.tags[0]}}" class="tag-item tag-red">{{selectedProduct.tags[0]}}</view>
           <view wx:if="{{selectedProduct.tags[1]}}" class="tag-item tag-black">{{selectedProduct.tags[1]}}</view>
           <view wx:if="{{selectedProduct.tags[2]}}" class="tag-item tag-green">{{selectedProduct.tags[2]}}</view>
       </view>
-      <view class="modal-product-price">¥{{selectedProduct.price}}</view>
+      <view class="modal-product-price">¥{{selectedProduct.price}}/ml</view>
     </view>
     <view class="modal-close-btn" bindtap="onHideModal"><text>✕</text></view>
   </view>
@@ -94,8 +100,9 @@
       <view class="option-title">{{optionGroup.name}}</view>
       <view class="option-items">
         <view 
+   
           wx:for="{{optionGroup.items}}" wx:for-item="optionItem" wx:key="*this"
-          class="option-item {{selectedOptions[optionGroup.key] === optionItem ? 'active' : ''}}" 
+          class="option-item {{selectedOptions[optionGroup.key] === optionItem ?'active' : ''}}" 
           bindtap="onSelectOption" data-key="{{optionGroup.key}}" data-value="{{optionItem}}"
         >{{optionItem}}</view>
       </view>
@@ -104,12 +111,19 @@
   <view class="modal-footer">
     <view class="modal-price">
       <text class="modal-price-label">¥</text>
-      <text class="modal-price-value">{{totalPriceDisplay}}</text>
+      <text class="modal-price-value">{{totalPriceDisplay}}/ml</text>
     </view>
     <view class="quantity-controls-footer">
       <view class="quantity-btn minus" bindtap="onQuantityChange" data-type="minus"><text style="font-size: 20rpx;margin-bottom:2rpx;">—</text></view>
-      <input class="quantity-input" type="number" value="{{quantity}}" bindinput="onQuantityInput" disabled="{{true}}"/>
-      <view class="quantity-btn plus" bindtap="onQuantityChange" data-type="plus"><text style="margin-bottom:2rpx;">+</text></view>
+      <input 
+        class="quantity-input" 
+        type="number" 
+        value="{{quantity}}" 
+        bindinput="onQuantityInput"
+        maxlength="3" 
+      />
+      <view class="quantity-btn plus" bindtap="onQuantityChange" data-type="plus"><text 
+      style="margin-bottom:2rpx;">+</text></view>
     </view>
     <view class="btn-add-cart" bindtap="onAddToCart">加入购物车</view>
   </view>
@@ -119,7 +133,7 @@
 <view wx:if="{{showCartModal}}" class="modal-content-wrapper cart-modal-container cart-modal modal-slide-in">
   <view class="cart-modal-header">
     <view class="cart-modal-title-group" bindtap="onHideCartModal">
-      <view class="cart-modal-title">购物车 ({{cartCount}})</view>
+      <view class="cart-modal-title">购物车 ({{cartCount}}/ml)</view>
     </view>
     <view class="btn-clear-cart" bindtap="onShowClearCartConfirm">
       <image class="clear-icon" src="cloud://cloud1-7gy6iiv5f0cbcb43.636c-cloud1-7gy6iiv5f0cbcb43-1379173903/素材/菜单_删除.png" mode="widthFix" />
@@ -130,30 +144,42 @@
     <view class="cart-item" wx:for="{{cartList}}" wx:key="id">
       <view class="cart-item-info">
         <image class="cart-item-image" src="{{item.image}}" mode="aspectFill" />
+ 
         <view class="cart-item-detail">
           <view class="cart-item-name">{{item.name}}</view>
           
           <view class="cart-item-options">
               <view class="inner-specs"> 
                   <text wx:for="{{item.selectedSpecs}}" wx:for-item="specItem" wx:key="key">
-                      {{specItem.value}}{{index === item.selectedSpecs.length - 1 ? '' : '，'}}
+                      {{specItem.value}}{{index 
+                      === item.selectedSpecs.length - 1 ? '' : '，'}}
                   </text>
                   <text wx:if="{{!item.selectedSpecs || item.selectedSpecs.length === 0}}"> </text>
               </view>
           </view>
           
-          <view class="cart-item-price">¥{{item.priceDisplay}}</view>
+          <view class="cart-item-price">¥{{item.priceDisplay}}/ml</view>
+      
         </view>
       </view>
       <view class="quantity-controls-cart">
         <view class="quantity-btn-cart minus-icon-wrapper" bindtap="onCartItemQuantityChange" data-type="minus" data-id="{{item.id}}">
           <image class="quantity-icon" src="cloud://cloud1-7gy6iiv5f0cbcb43.636c-cloud1-7gy6iiv5f0cbcb43-1379173903/素材/菜单_删除.png" mode="aspectFit"/>
         </view>
-        <view class="quantity-input">{{item.quantity}}</view>
+        
+        <view 
+            class="quantity-input_1" 
+            bindtap="onShowQuantityInputModal"
+            data-id="{{item.id}}"
+            data-quantity="{{item.quantity}}"
+            >{{item.quantity}}
+        </view>
+        
         <view class="quantity-btn-cart plus-icon-wrapper" bindtap="onCartItemQuantityChange" data-type="plus" data-id="{{item.id}}">
           <image class="quantity-icon" src="cloud://cloud1-7gy6iiv5f0cbcb43.636c-cloud1-7gy6iiv5f0cbcb43-1379173903/素材/菜单_添加.png" mode="aspectFit"/>
         </view>
       </view>
+  
     </view>
     <view wx:if="{{cartCount === 0}}" class="empty-state-placeholder-cart">
       <text>购物车空空如也~</text>
@@ -173,4 +199,25 @@
   </view>
 </view>
 
+
+<view wx:if="{{showQuantityInputModal}}" class="confirm-mask" bindtap="onHideQuantityInputModal"></view>
+<view wx:if="{{showQuantityInputModal}}" class="confirm-content-wrapper">
+  <view class="confirm-box quantity-input-modal">
+    <view class="confirm-title">修改数量</view>
+    <view class="quantity-input-wrapper-simple">
+        <input 
+            class="input-modal-only" 
+            type="number" 
+            value="{{inputQuantityValue}}" 
+            bindinput="onInputModalQuantity"
+            maxlength="3"
+            focus="{{true}}"
+        />
+    </view>
+    <view class="confirm-actions">
+      <view class="btn-confirm-cancel" bindtap="onHideQuantityInputModal">取消</view>
+      <view class="btn-confirm-ok" bindtap="onQuantityInputModalConfirm">确定</view>
+    </view>
+  </view>
+</view>
 </view>

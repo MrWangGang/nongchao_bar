@@ -67,7 +67,8 @@
 .main-content {
     display: flex;
     position: fixed;
-    top: 340rpx; /* 适配 Banner 和搜索框的高度 */
+    top: 340rpx;
+    /* 适配 Banner 和搜索框的高度 */
     bottom: 0;
     left: 0;
     right: 0;
@@ -425,7 +426,7 @@
 }
 
 .modal-price-value {
-    font-size: 40rpx;
+    font-size: 35rpx;
     font-weight: 700;
     color: #e64340;
 }
@@ -465,8 +466,22 @@
     display: block;
     line-height: 1;
 }
-
-.quantity-input {
+/* 统一输入框/数量显示样式 */
+.quantity-input_1 { 
+  width: 70rpx;
+  height: 60rpx;
+  line-height: 60rpx;
+  text-align: center;
+  font-size: 28rpx;
+  color: rgb(92, 79, 79);
+  background-color: rgb(255, 255, 255);
+  /* 确保 view 元素也能居中对齐 */
+  display: flex; 
+  justify-content: center;
+  align-items: center;
+}
+/* 统一输入框/数量显示样式 */
+.quantity-input { 
     width: 60rpx;
     height: 60rpx;
     line-height: 60rpx;
@@ -474,7 +489,17 @@
     font-size: 28rpx;
     color: #333;
     background-color: #fff;
+    /* 确保 view 元素也能居中对齐 */
+    display: flex; 
+    justify-content: center;
+    align-items: center;
 }
+/* 🌟 MODIFICATION 5: 弹窗内输入框（Modal Footer）恢复 input 默认样式 */
+.quantity-controls-footer .quantity-input {
+    padding: 0; /* 确保 input 在边界内 */
+    box-sizing: border-box;
+}
+
 
 .btn-add-cart {
     width: 210rpx;
@@ -555,7 +580,8 @@
 }
 
 .cart-total-value {
-    font-size: 40rpx;
+    font-size: 35rpx;
+    color: rgb(235, 103, 103);
 }
 
 .btn-checkout {
@@ -615,7 +641,7 @@
 .cart-modal-title {
     font-size: 32rpx;
     font-weight: 700;
-    color: #333;
+    color: rgb(228, 102, 102);
 }
 
 .close-cart-btn {
@@ -677,7 +703,7 @@
     display: flex;
     align-items: center;
     flex-grow: 1;
-    max-width: calc(100% - 180rpx); 
+    max-width: calc(100% - 180rpx);
 }
 
 .cart-item-image {
@@ -719,15 +745,16 @@
 
 /* ⭐ 新增样式：强制规格文本在单行显示并允许横向溢出 */
 .inner-specs {
-    display: flex; 
+    display: flex;
     white-space: nowrap; /* 强制所有内容不换行 */
     overflow: visible; /* 允许内容溢出 inner-specs 容器 */
-    flex-shrink: 0; /* 确保它不会被压缩 */
+    flex-shrink: 0;
+    /* 确保它不会被压缩 */
 }
 
 .inner-specs text {
     /* 确保内层文本继承 nowrap 属性 */
-    white-space: nowrap; 
+    white-space: nowrap;
 }
 
 
@@ -775,6 +802,7 @@
     height: 100%;
 }
 
+/* 购物车中的数量输入框/显示框样式，继承 .quantity-input */
 .quantity-controls-cart .quantity-input {
     width: 60rpx;
     height: 60rpx;
@@ -784,10 +812,12 @@
     color: #333;
     background-color: #fff;
     flex-shrink: 0;
+    /* 🌟 MODIFICATION 6: 确保 view 元素的边框可见 */
+    border: 1rpx solid #ddd; 
 }
 
 /* ====================================================================== */
-/* --- 清空确认弹框 (z-index: 2000 / 2001) --- */
+/* --- 清空确认弹框/数量输入弹框 (z-index: 2000 / 2001) --- */
 /* ====================================================================== */
 .confirm-mask {
     position: fixed;
@@ -853,4 +883,27 @@
 .btn-confirm-ok {
     color: #e64340;
     font-weight: 700;
+}
+
+/* 🌟 MODIFICATION 7: 简化的数量输入对话框的容器样式 */
+.quantity-input-modal .quantity-input-wrapper-simple {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* 减少 padding 让输入框看起来更紧凑 */
+    padding: 20rpx 0 40rpx 0; 
+}
+
+/* 🌟 MODIFICATION 8: 弹框内输入框的样式，使其更小巧 */
+.quantity-input-modal .input-modal-only {
+    width: 250rpx; /* 减小宽度 */
+    height: 70rpx; /* 减小高度 */
+    line-height: 70rpx;
+    font-size: 36rpx; /* 字体可以略大 */
+    text-align: center;
+    border: 3rpx solid #c9c4c4; /* 使用品牌色边框突出 */
+    border-radius: 8rpx;
+    margin: 0;
+    background-color: #ffffff; /* 浅背景色 */
+    color: rgb(228, 39, 39);
 }
