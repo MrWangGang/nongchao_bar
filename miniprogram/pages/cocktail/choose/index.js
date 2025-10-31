@@ -111,7 +111,7 @@ Page({
    * 确保返回的 item 包含所有原始属性，包括 selectedSpecs 数组。
    */
   updateCartData: function() {
-      const storedCartList = wx.getStorageSync('cartList') || [];
+      const storedCartList = wx.getStorageSync('cocktailList') || [];
       let cartCount = 0;
       let cartTotal = 0;
 
@@ -364,7 +364,7 @@ Page({
    * 清空购物车 (在确认弹框中点击确定后调用)
    */
   onClearCart: function() {
-      wx.removeStorageSync('cartList');
+      wx.removeStorageSync('cocktailList');
       this.updateCartData();
       this.onHideClearCartConfirm(); // 隐藏确认框
       this.onHideCartModal(); // 隐藏购物车详情
@@ -503,7 +503,7 @@ Page({
       newQuantity = Math.max(1, newQuantity);
       
       const itemId = this.data.targetItemId;
-      let cartList = wx.getStorageSync('cartList') || [];
+      let cartList = wx.getStorageSync('cocktailList') || [];
       const itemIndex = cartList.findIndex(item => item.id === itemId);
 
       if (itemIndex !== -1) {
@@ -525,7 +525,7 @@ Page({
   onCartItemQuantityChange: function(e) {
       const type = e.currentTarget.dataset.type;
       const itemId = e.currentTarget.dataset.id;
-      let cartList = wx.getStorageSync('cartList') || [];
+      let cartList = wx.getStorageSync('cocktailList') || [];
 
       const itemIndex = cartList.findIndex(item => item.id === itemId);
 
@@ -559,7 +559,7 @@ Page({
   updateCartItem: function(cartList, itemIndex) {
       // 检查列表是否为空
       if (cartList.length === 0) {
-          wx.removeStorageSync('cartList');
+          wx.removeStorageSync('cocktailList');
           this.updateCartData(); 
           this.onHideCartModal(); // 购物车清空时关闭详情弹窗
           return;
@@ -571,7 +571,7 @@ Page({
       }
       
       // 存入缓存
-      wx.setStorageSync('cartList', cartList);
+      wx.setStorageSync('cocktailList', cartList);
       // 更新页面数据
       this.updateCartData();
   },
@@ -675,7 +675,7 @@ Page({
           
           // 7. 跳转到订单确认/下单页面，通过 URL 参数传递数据
           wx.redirectTo({
-              url: '/pages/meal/food/detail/index?data=' + encodedData +'&seatCode='+this.data.seatCode
+              url: '/pages/cocktail/choose/detail/index?data=' + encodedData +'&seatCode='+this.data.seatCode
           });
 
       } catch (e) {
@@ -754,7 +754,7 @@ Page({
       };
 
       // 3. 从缓存中读取购物车
-      let cartList = wx.getStorageSync('cartList') || [];
+      let cartList = wx.getStorageSync('cocktailList') || [];
       const existingIndex = cartList.findIndex(item => item.id === cartItem.id);
 
       if (existingIndex !== -1) {
@@ -784,7 +784,7 @@ Page({
 
       // 4. 存入缓存
       try {
-          wx.setStorageSync('cartList', cartList);
+          wx.setStorageSync('cocktailList', cartList);
           // 5. 显示成功提示
           wx.showToast({
               title: '添加购物车成功',

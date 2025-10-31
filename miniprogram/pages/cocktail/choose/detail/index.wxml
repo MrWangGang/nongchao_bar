@@ -36,19 +36,30 @@
         </view>
         
         <view class="remark-right">
-            <view class="upload-btn" bindtap="onChooseImage">
-                <text class="plus-icon">+</text>
-                <text class="upload-text">上传</text>
-            </view>
-
-            <view class="image-list">
-                <view class="uploaded-image-wrapper" wx:for="{{uploadedImages}}" wx:key="*this">
-                    <image class="uploaded-image" src="{{item}}" mode="aspectFill"></image>
+            <view class="upload-area-wrapper">
+                
+                <view class="uploaded-image-wrapper" 
+                      wx:if="{{uploadedImages.length > 0}}"
+                      bindtap="onChooseImage"
+                >
+                    <image class="uploaded-image" 
+                           src="{{uploadedImages[0]}}" 
+                           mode="aspectFill">
+                    </image>
                 </view>
+
+                <view class="upload-btn" 
+                      wx:else 
+                      bindtap="onChooseImage"
+                >
+                    <text class="plus-icon">+</text>
+                    <text class="upload-text">上传</text>
+                </view>
+                
             </view>
         </view>
-    </view>
-    </view>
+        </view>
+</view>
 
 <view class="footer-bar-placeholder"></view>
 <view class="footer-bar">

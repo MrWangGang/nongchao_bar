@@ -20,7 +20,7 @@ Page({
       remark: '',         
       isSubmitting: false, 
       uploadedImages: [], // 存储云存储 fileID 列表 (最多只有1个元素)
-      MAX_IMAGE_COUNT: 1, // 【关键修改】最大图片数量限制为 1
+      MAX_IMAGE_COUNT: 1, // 最大图片数量限制为 1
   },
 
   /**
@@ -71,53 +71,44 @@ Page({
   },
   
   /**
-   * 【关键修改】图片选择和上传功能 (覆盖模式)
+   * 【已修改】图片选择和上传功能 (避免使用 async/await)
    */
-  onChooseImage: async function() {
+  onChooseImage: function() {
       const that = this;
       
-      try {
-          // 1. 选择图片 (count 强制为 1)
-          const res = await wx.chooseImage({
-              count: 1, // 只允许选择一张图片
-              sizeType: ['compressed'], 
-              sourceType: ['album', 'camera'], 
-          });
-
+      wx.chooseImage({
+          count: 1, // 只允许选择一张图片
+          sizeType: ['compressed'], 
+          sourceType: ['album', 'camera'], 
+      })
+      .then(res => {
           const tempFilePath = res.tempFilePaths[0];
           wx.showLoading({ title: '上传中...', mask: true });
           
-          // 可选：删除旧图片（如果存在），以释放云存储空间
-          /*
-          if (that.data.uploadedImages.length > 0) {
-              wx.cloud.deleteFile({ fileList: that.data.uploadedImages })
-              .catch(err => console.error("旧图片删除失败", err));
-          }
-          */
-
           // 2. 上传新图片
           const cloudPath = `cocktail-recipes/${Date.now()}-${tempFilePath.match(/\.[^.]+?$/)[0]}`;
           
-          const uploadResult = await wx.cloud.uploadFile({
+          return wx.cloud.uploadFile({
               cloudPath: cloudPath,
               filePath: tempFilePath,
           });
-
+      })
+      .then(uploadResult => {
           const newFileId = uploadResult.fileID;
 
-          // 3. 【关键逻辑】：用新 fileID 覆盖旧的数组
+          // 3. 用新 fileID 覆盖旧的数组
           that.setData({
               uploadedImages: [newFileId] // 始终只存储一个元素
           });
 
           wx.hideLoading();
           wx.showToast({ title: '图片已上传/更新', icon: 'success' });
-
-      } catch (e) {
+      })
+      .catch(e => {
           wx.hideLoading();
           console.error('图片上传失败', e);
           wx.showToast({ title: '上传失败，请重试', icon: 'none' });
-      }
+      });
   },
 
   /**
@@ -127,13 +118,11 @@ Page({
       var that = this; 
       if (that.data.isSubmitting) return;
 
-      // 1. 备注和图片校验 (已更新)
+      // 1. 备注和图片校验
       if (!that.data.remark.trim()) {
           wx.showToast({ title: '请输入制作流程/备注', icon: 'none' });
           return;
       }
-
-      // 检查图片数量 (数量必须等于 1)
       if (that.data.uploadedImages.length !== 1) {
           wx.showToast({ title: '请上传一张配方图片', icon: 'none' });
           return;
@@ -167,7 +156,7 @@ Page({
           mask: true
       });
 
-      // 4. 调用云函数 createStockOrder
+      // 4. 【已修改】调用云函数 createStockOrder (避免使用 async/await)
       wx.cloud.callFunction({
           name: 'createStockOrder', 
           data: {

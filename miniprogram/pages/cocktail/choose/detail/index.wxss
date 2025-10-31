@@ -33,7 +33,7 @@ page {
 
   display: flex;
   justify-content: space-between; 
-  align-items: flex-start; 
+  align-items: flex-start; /* 保持内容顶部对齐 */
   min-height: 150rpx; 
 }
 
@@ -66,57 +66,60 @@ page {
     flex: 4; 
     flex-shrink: 0; 
     display: flex;
-    flex-direction: row; 
-    justify-content: flex-end; 
-    align-items: flex-end; 
+    flex-direction: column; 
+    justify-content: flex-start; 
+    align-items: flex-end; /* 【关键调整】靠右侧对齐 */
     
-    min-width: 100rpx; 
+    min-width: 150rpx; 
+}
+
+/* 【新增】统一的上传/预览区域尺寸容器，控制大小 */
+.upload-area-wrapper {
+    width: 220rpx; /* 统一的宽度 */
+    height: 220rpx; /* 统一的高度 */
+    position: relative;
 }
 
 /* 上传按钮样式 */
 .upload-btn {
-    width: 220rpx;
-    height: 220rpx;
+    width: 100%; /* 占满父容器 220rpx */
+    height: 100%; /* 占满父容器 220rpx */
     border: 5rpx dashed rgb(165, 155, 155); 
     border-radius: 8rpx;
     display: flex;
-    flex-direction: column; /* 保持 flex-direction 为 column */
+    flex-direction: column; 
     justify-content: center; /* 垂直居中 */
     align-items: center; /* 水平居中 */
     color: rgb(160, 148, 148);
-    background-color: #e04141;
-    /* 【核心修改 2】：将背景色设为透明 */
     background-color: transparent;
     opacity: 0.9;
+    /* 移除 margin-left/margin-right */
 }
 
 .plus-icon {
-    /* 【核心修改 1】：加号图标增大到 80rpx */
     font-size: 80rpx;
     line-height: 1;
 }
 
 .upload-text {
-    /* 【核心修改 2】：隐藏“上传”文字 */
-    display: none; 
+    font-size: 24rpx;
 }
 
-/* 图片列表容器 (只包含一张图片) */
+/* 图片列表容器 (已移除，逻辑整合到 upload-area-wrapper) */
 .image-list {
-    display: flex;
-    flex-direction: row; 
-    margin-right: 15rpx; 
+    /* 不再需要此样式，或确保其内容为空 */
 }
 
-/* 单个已上传图片预览 */
+/* 单个已上传图片预览容器 */
 .uploaded-image-wrapper {
-    /* 配合按钮尺寸 */
-    width: 130rpx;
-    height: 130rpx;
-    position: relative;
+    width: 100%; /* 占满父容器 220rpx */
+    height: 100%; /* 占满父容器 220rpx */
+    position: absolute; /* 【关键调整】绝对定位，覆盖 upload-btn 所在的区域 */
+    top: 0;
+    left: 0;
     border-radius: 8rpx;
     overflow: hidden;
-    box-shadow: 0 0 5rpx rgba(0, 0, 0, 0.1); 
+    box-shadow: 0 0 5rpx rgba(0, 0, 0, 0.2); 
 }
 
 .uploaded-image {
