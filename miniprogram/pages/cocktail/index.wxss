@@ -20,8 +20,8 @@
   background-color: #fff;
   border-radius: 20rpx;
   overflow: hidden;
-  width: 680rpx;
-  height:180rpx;
+  width: 695rpx;
+  height: 180rpx;
 
 }
 
@@ -88,7 +88,9 @@
 
 /* 箭头图标基础样式 */
 .icon-arrow-down {
-  width: 0; height: 0; margin-left: 6rpx;
+  width: 0;
+  height: 0;
+  margin-left: 6rpx;
   border: 6rpx solid transparent;
   border-top-color: #999;
   transform: translateY(2rpx);
@@ -111,7 +113,10 @@
 /* ------------------------------------
 * 3. 饮品列表项
 * ------------------------------------ */
-.drink-list { padding-top: 20rpx; padding-bottom: 0; }
+.drink-list {
+  padding-top: 20rpx;
+  padding-bottom: 0;
+}
 
 .cocktail-item {
   display: flex;
@@ -178,6 +183,20 @@
   flex-shrink: 0;
 }
 
+/* 【新增】独立的收录时间悬浮样式 */
+.time-stamp-float {
+  position: absolute; /* 绝对定位，实现“悬浮”且不影响流式布局 */
+  bottom: 40rpx; /* 定位在底部点赞数上方 */
+  left: 0;
+  color: #c0c0c0;
+  font-size: 22rpx;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%; /* 确保在 info 区域内 */
+}
+
+
 .likes {
   color: #999;
   font-size: 24rpx;
@@ -197,6 +216,7 @@
   height: 190rpx;
   flex-shrink: 0;
 }
+/* ... (actions 区域后的样式不变) ... */
 
 .price {
   font-size: 27rpx;
@@ -257,7 +277,7 @@
   position: fixed;
   bottom: 230rpx;
   /* 优化定位：使用 left/right + margin: auto 居中和限定最大宽度 */
-  left: 40rpx; 
+  left: 40rpx;
   right: 110rpx;
   max-width: 570rpx;
   margin-left: auto;
@@ -301,12 +321,12 @@
   transform: translateY(-50%);
 
   /* 定位：需要根据实际效果调整 left 值 */
-  left: 227rpx; 
+  left: 227rpx;
 
   /* 线条样式 */
-  width: 5rpx; 
-  height: 60%; 
-  background-color: rgba(255, 255, 255, 0.5); 
+  width: 5rpx;
+  height: 60%;
+  background-color: rgba(255, 255, 255, 0.5);
   border-radius: 1rpx;
 }
 
@@ -314,7 +334,7 @@
   font-size: 30rpx;
   font-weight: 500;
   padding-right: 40rpx; /* 留出分割线和右侧文本的空间 */
-  margin-right: 0; 
+  margin-right: 0;
   white-space: nowrap;
 }
 

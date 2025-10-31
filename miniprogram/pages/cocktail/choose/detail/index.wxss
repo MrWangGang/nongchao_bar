@@ -5,7 +5,9 @@ page {
 
 /* --------------- 容器调整 --------------- */
 .container {
-    padding: 0 20rpx;
+  padding: 0 20rpx;
+  /* 底部留出更多空间，防止内容被底部栏遮挡，这个值应该大于 footer-bar-placeholder 的高度 */
+  padding-bottom: 150rpx; 
 }
 
 /* --------------- 订单卡片样式 (全屏宽度) --------------- */
@@ -59,10 +61,10 @@ page {
 
 /* 左侧：备注文本框容器 */
 .remark-left {
-    /* 占据 70% 弹性空间 */
-    flex: 6; 
-    margin-right: 30rpx; 
-    overflow: hidden; 
+  /* 占据 70% 弹性空间 */
+  flex: 6; 
+  margin-right: 30rpx; 
+  overflow: hidden; 
 }
 
 /* 文本框样式 */
@@ -82,63 +84,63 @@ page {
 
 /* 右侧：图片上传/预览区域 */
 .remark-right {
-    /* 占据 30% 弹性空间 */
-    flex: 4; 
-    flex-shrink: 0; 
-    display: flex;
-    flex-direction: column; 
-    justify-content: flex-start; 
-    align-items: flex-end; /* 靠右侧对齐 */
-    
-    min-width: 150rpx; 
+  /* 占据 30% 弹性空间 */
+  flex: 4; 
+  flex-shrink: 0; 
+  display: flex;
+  flex-direction: column; 
+  justify-content: flex-start; 
+  align-items: flex-end; /* 靠右侧对齐 */
+  
+  min-width: 150rpx; 
 }
 
 /* 【关键新增】统一的上传/预览区域尺寸容器，控制大小 */
 .upload-area-wrapper {
-    width: 220rpx; /* 统一的宽度 */
-    height: 220rpx; /* 统一的高度 */
-    position: relative;
+  width: 220rpx; /* 统一的宽度 */
+  height: 220rpx; /* 统一的高度 */
+  position: relative;
 }
 
 /* 上传按钮样式 */
 .upload-btn {
-    width: 100%; /* 占满父容器 220rpx */
-    height: 100%; /* 占满父容器 220rpx */
-    border: 5rpx dashed rgb(165, 155, 155); 
-    border-radius: 8rpx;
-    display: flex;
-    flex-direction: column; 
-    justify-content: center; /* 垂直居中 */
-    align-items: center; /* 水平居中 */
-    color: rgb(160, 148, 148);
-    background-color: transparent;
-    opacity: 0.9;
+  width: 100%; /* 占满父容器 220rpx */
+  height: 100%; /* 占满父容器 220rpx */
+  border: 5rpx dashed rgb(165, 155, 155); 
+  border-radius: 8rpx;
+  display: flex;
+  flex-direction: column; 
+  justify-content: center; /* 垂直居中 */
+  align-items: center; /* 水平居中 */
+  color: rgb(160, 148, 148);
+  background-color: transparent;
+  opacity: 0.9;
 }
 
 .plus-icon {
-    font-size: 80rpx;
-    line-height: 1;
+  font-size: 80rpx;
+  line-height: 1;
 }
 
 .upload-text {
-    font-size: 24rpx;
+  font-size: 24rpx;
 }
 
 /* 单个已上传图片预览容器 */
 .uploaded-image-wrapper {
-    width: 100%; /* 占满父容器 220rpx */
-    height: 100%; /* 占满父容器 220rpx */
-    position: absolute; /* 绝对定位，覆盖 upload-btn 所在的区域 */
-    top: 0;
-    left: 0;
-    border-radius: 8rpx;
-    overflow: hidden;
-    box-shadow: 0 0 5rpx rgba(0, 0, 0, 0.2); 
+  width: 100%; /* 占满父容器 220rpx */
+  height: 100%; /* 占满父容器 220rpx */
+  position: absolute; /* 绝对定位，覆盖 upload-btn 所在的区域 */
+  top: 0;
+  left: 0;
+  border-radius: 8rpx;
+  overflow: hidden;
+  box-shadow: 0 0 5rpx rgba(0, 0, 0, 0.2); 
 }
 
 .uploaded-image {
-    width: 100%;
-    height: 100%;
+  width: 100%;
+  height: 100%;
 }
 
 
@@ -150,7 +152,7 @@ page {
   display: none; 
 }
 .image-list {
-    /* 移除 */
+  /* 移除 */
 }
 
 
@@ -175,12 +177,39 @@ page {
   border-bottom: none; 
 }
 
-.product-image {
+/* 【新增】图片容器，用于定位标签 */
+.product-image-wrapper {
   width: 120rpx;
   height: 120rpx;
   border-radius: 8rpx;
   margin-right: 20rpx;
+  position: relative; /* 关键：相对定位，让子元素可以绝对定位 */
+  overflow: hidden; /* 确保子元素不会溢出圆角 */
 }
+
+.product-image {
+  width: 100%;
+  height: 100%;
+  /* border-radius: 8rpx;  不再需要，由父容器控制 */
+}
+
+/* 【新增】sampleName 标签样式 */
+.product-sample-name-badge.order-confirm-badge {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: rgba(15, 12, 12, 0.8); /* 半透明黑色背景 */
+  color: #fff;
+  font-size: 20rpx;
+  padding: 4rpx 8rpx;
+  border-bottom-right-radius: 8rpx; /* 左上角无需圆角，右下角圆角 */
+  white-space: nowrap; /* 不换行 */
+  max-width: 100%; /* 确保不超过图片宽度 */
+  overflow: hidden; /* 超出隐藏 */
+  text-overflow: ellipsis; /* 超出显示省略号 */
+  z-index: 10; /* 确保在图片上方 */
+}
+
 
 .product-info {
   flex-grow: 1;
@@ -247,7 +276,7 @@ page {
 
 /* --------------- 底部栏样式 --------------- */
 .footer-bar-placeholder {
-  height: 130rpx; 
+  height: 130rpx; /* 给底部栏预留空间 */
 }
 
 .footer-bar {
@@ -262,8 +291,12 @@ page {
   align-items: center;
   justify-content: space-between;
   padding: 0 30rpx;
+  box-sizing: content-box; /* 确保 padding 不会增加总高度 */
+}
+
+/* 【新增】底部安全区样式 */
+.footer-bar.safe-area-bottom {
   padding-bottom: env(safe-area-inset-bottom);
-  box-sizing: content-box; 
 }
 
 .total-display {

@@ -67,8 +67,7 @@
 .main-content {
     display: flex;
     position: fixed;
-    top: 340rpx;
-    /* 适配 Banner 和搜索框的高度 */
+    top: 340rpx; 
     bottom: 0;
     left: 0;
     right: 0;
@@ -144,12 +143,14 @@
     padding-bottom: 100rpx;
 }
 
+/* ⭐ 列表卡片容器：恢复默认样式，交给图片包裹器控制定位 ⭐ */
 .product-card {
     display: flex;
     margin-bottom: 30rpx;
     padding-bottom: 30rpx;
     border-bottom: 1rpx solid #eee;
     background-color: #fff;
+    position: static; /* 确保它不是定位基准 */
 }
 
 .product-list > .product-card:last-child {
@@ -158,16 +159,52 @@
     padding-bottom: 0;
 }
 
+/* ⭐ 列表图片容器：定位基准容器 ⭐ */
+.product-image-wrapper {
+    position: relative; /* 绝对定位基准 */
+    width: 160rpx;
+    height: 160rpx;
+    margin-right: 20rpx;
+    flex-shrink: 0;
+    margin-top: 0; 
+    margin-left: 0;
+}
+
 .product-image {
     width: 160rpx;
     height: 160rpx;
     border-radius: 8rpx;
-    margin-right: 20rpx;
-    background-color: #eee;
-    flex-shrink: 0;
 }
 
+/* ⭐ 通用标签样式 (悬浮不挤压的核心) ⭐ */
+.product-sample-name-badge {
+    position: absolute; /* 绝对定位，脱离文档流 */
+    top: 0;
+    left: 0;
+    
+    /* 渐变背景色 */
+    background-color: rgba(15, 12, 12, 0.8); /* 半透明黑色背景 */
+    color: #fff;
+    font-size: 20rpx;
+    font-weight: 700;
+    
+    /* 样式和内边距 */
+    padding: 6rpx 15rpx; 
+    border-top-left-radius: 8rpx; 
+    border-bottom-right-radius: 8rpx;
+    line-height: 1;
+    z-index: 100; /* 确保悬浮在图片之上 */
+    
+    /* 溢出处理 */
+    max-width: 90%; 
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+
 .product-info {
+    margin-top: 0; 
     flex: 1;
     display: flex;
     flex-direction: column;
@@ -253,6 +290,7 @@
 .btn-add-icon {
     width: 44rpx;
     height: 44rpx;
+    margin-right: 20rpx;
 }
 
 .empty-state-placeholder {
@@ -266,8 +304,9 @@
 }
 
 /* ====================================================================== */
-/* --- 商品添加弹窗 (z-index: 3000 / 3001) --- */
+/* --- 商品添加弹窗 (Modal) 样式复用 --- */
 /* ====================================================================== */
+
 .modal-mask {
     position: fixed;
     top: 0;
@@ -304,12 +343,23 @@
     position: relative;
 }
 
+/* ⭐ 弹窗图片容器：定位基准容器 ⭐ */
+.modal-product-image-wrapper {
+    position: relative; /* 绝对定位基准 */
+    width: 120rpx;
+    height: 120rpx;
+    margin-right: 20rpx;
+    flex-shrink: 0;
+}
+
 .modal-product-image {
     width: 120rpx;
     height: 120rpx;
     border-radius: 8rpx;
-    margin-right: 20rpx;
-    flex-shrink: 0;
+}
+
+.product-sample-name-badge.modal-badge {
+     font-size: 18rpx; 
 }
 
 .modal-product-info {
@@ -468,17 +518,17 @@
 }
 /* 统一输入框/数量显示样式 */
 .quantity-input_1 { 
-  width: 70rpx;
-  height: 60rpx;
-  line-height: 60rpx;
-  text-align: center;
-  font-size: 28rpx;
-  color: rgb(92, 79, 79);
-  background-color: rgb(255, 255, 255);
-  /* 确保 view 元素也能居中对齐 */
-  display: flex; 
-  justify-content: center;
-  align-items: center;
+    width: 70rpx;
+    height: 60rpx;
+    line-height: 60rpx;
+    text-align: center;
+    font-size: 28rpx;
+    color: rgb(92, 79, 79);
+    background-color: rgb(255, 255, 255);
+    /* 确保 view 元素也能居中对齐 */
+    display: flex; 
+    justify-content: center;
+    align-items: center;
 }
 /* 统一输入框/数量显示样式 */
 .quantity-input { 
@@ -494,9 +544,9 @@
     justify-content: center;
     align-items: center;
 }
-/* 🌟 MODIFICATION 5: 弹窗内输入框（Modal Footer）恢复 input 默认样式 */
+/* 弹窗内输入框（Modal Footer）恢复 input 默认样式 */
 .quantity-controls-footer .quantity-input {
-    padding: 0; /* 确保 input 在边界内 */
+    padding: 0; 
     box-sizing: border-box;
 }
 
@@ -515,7 +565,7 @@
 
 
 /* ====================================================================== */
-/* --- 购物车浮动栏 (z-index: 1000) --- */
+/* --- 购物车浮动栏 --- */
 /* ====================================================================== */
 .cart-bar-placeholder {
     height: 110rpx;
@@ -598,7 +648,7 @@
 }
 
 /* ====================================================================== */
-/* --- 购物车详情弹窗 (z-index: 900 / 901) --- */
+/* --- 购物车详情弹窗 (Cart Modal) 样式复用 --- */
 /* ====================================================================== */
 .cart-modal-mask {
     position: fixed;
@@ -706,19 +756,29 @@
     max-width: calc(100% - 180rpx);
 }
 
+/* ⭐ 购物车图片容器：定位基准容器 ⭐ */
+.cart-item-image-wrapper {
+    position: relative; /* 绝对定位基准 */
+    width: 120rpx;
+    height: 120rpx;
+    margin-right: 10rpx;
+    flex-shrink: 0;
+}
+
 .cart-item-image {
     width: 120rpx;
     height: 120rpx;
     border-radius: 8rpx;
-    margin-right: 10rpx;
-    flex-shrink: 0;
+}
+
+.product-sample-name-badge.cart-badge {
+     font-size: 18rpx;
 }
 
 .cart-item-detail {
     display: flex;
     flex-direction: column;
     flex-grow: 1;
-    /* 修正：允许收缩，避免内容超长时撑破 Flex 容器 */
     min-width: 0; 
     padding: 0;
 }
@@ -733,27 +793,22 @@
     text-overflow: ellipsis;
 }
 
-/* ⭐ 修正：允许规格容器的内容溢出 */
 .cart-item-options {
     font-size: 24rpx;
     color: #999;
     margin-top: -25rpx;
-    /* 允许内容超出其自身边界，但保持其在父容器内 */
     overflow: visible; 
     display: block;
 }
 
-/* ⭐ 新增样式：强制规格文本在单行显示并允许横向溢出 */
 .inner-specs {
     display: flex;
-    white-space: nowrap; /* 强制所有内容不换行 */
-    overflow: visible; /* 允许内容溢出 inner-specs 容器 */
+    white-space: nowrap; 
+    overflow: visible; 
     flex-shrink: 0;
-    /* 确保它不会被压缩 */
 }
 
 .inner-specs text {
-    /* 确保内层文本继承 nowrap 属性 */
     white-space: nowrap;
 }
 
@@ -802,7 +857,6 @@
     height: 100%;
 }
 
-/* 购物车中的数量输入框/显示框样式，继承 .quantity-input */
 .quantity-controls-cart .quantity-input {
     width: 60rpx;
     height: 60rpx;
@@ -812,12 +866,11 @@
     color: #333;
     background-color: #fff;
     flex-shrink: 0;
-    /* 🌟 MODIFICATION 6: 确保 view 元素的边框可见 */
     border: 1rpx solid #ddd; 
 }
 
 /* ====================================================================== */
-/* --- 清空确认弹框/数量输入弹框 (z-index: 2000 / 2001) --- */
+/* --- 清空确认弹框/数量输入弹框 --- */
 /* ====================================================================== */
 .confirm-mask {
     position: fixed;
@@ -885,25 +938,24 @@
     font-weight: 700;
 }
 
-/* 🌟 MODIFICATION 7: 简化的数量输入对话框的容器样式 */
+/* 简化的数量输入对话框的容器样式 */
 .quantity-input-modal .quantity-input-wrapper-simple {
     display: flex;
     justify-content: center;
     align-items: center;
-    /* 减少 padding 让输入框看起来更紧凑 */
     padding: 20rpx 0 40rpx 0; 
 }
 
-/* 🌟 MODIFICATION 8: 弹框内输入框的样式，使其更小巧 */
+/* 弹框内输入框的样式，使其更小巧 */
 .quantity-input-modal .input-modal-only {
-    width: 250rpx; /* 减小宽度 */
-    height: 70rpx; /* 减小高度 */
+    width: 250rpx; 
+    height: 70rpx; 
     line-height: 70rpx;
-    font-size: 36rpx; /* 字体可以略大 */
+    font-size: 36rpx; 
     text-align: center;
-    border: 3rpx solid #ffffff; /* 使用品牌色边框突出 */
+    border: 3rpx solid #ffffff; 
     border-radius: 8rpx;
     margin: 0;
-    background-color: #ffffff; /* 浅背景色 */
+    background-color: #ffffff; 
     color: rgb(228, 39, 39);
 }

@@ -3,7 +3,11 @@
         <scroll-view class="product-list-scroll" scroll-y>
             <view class="product-list">
                 <view class="product-item" wx:for="{{orderItems}}" wx:key="id">
-                    <image class="product-image" src="{{item.image}}" mode="aspectFill"></image>
+                    <view class="product-image-wrapper"> 
+                        <image class="product-image" src="{{item.image}}" mode="aspectFill"></image>
+                        <view wx:if="{{item.sampleName}}" class="product-sample-name-badge order-confirm-badge">{{item.sampleName}}</view>
+                    </view>
+
                     <view class="product-info">
                         <view class="product-name">{{item.name}}</view>
                         <view class="product-spec-row">
@@ -53,8 +57,8 @@
                       bindtap="onChooseImage"
                 >
                     <image class="uploaded-image" 
-                           src="{{uploadedImages[0]}}" 
-                           mode="aspectFill">
+                               src="{{uploadedImages[0]}}" 
+                               mode="aspectFill">
                     </image>
                 </view>
 
@@ -72,9 +76,9 @@
 </view>
 
 <view class="footer-bar-placeholder"></view>
-<view class="footer-bar">
+<view class="footer-bar safe-area-bottom">
     <view class="total-display">
-        <text class="total-label">待支付</text>
+        <text class="total-label">总价格</text>
         <text class="total-amount">¥{{totalAmount}}</text>
     </view>
     <button class="submit-btn" bindtap="onSubmitOrder" disabled="{{isSubmitting}}">

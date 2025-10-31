@@ -6,6 +6,7 @@ function formatOptions(item) {
       var optionsText = item.selectedSpecs.map(function(spec) {
           return spec.value;
       });
+      // 【重要】item 此时已经携带着 sampleName 字段
       return optionsText.filter(Boolean).join('，');
   }
   return '';
@@ -13,13 +14,12 @@ function formatOptions(item) {
 
 Page({
   data: {
-      orderItems: [],     
+      orderItems: [],     // 订单商品列表 (已包含 sampleName)
       totalAmount: '0.00',
       totalCount: 0,      
-      // seatCode: null,   // 【已移除】
       recipeName: '',     
       remark: '',         
-      isSubmitting: false, 
+      isSubmitting: false,
       uploadedImages: [], 
       MAX_IMAGE_COUNT: 1, 
   },
@@ -29,7 +29,7 @@ Page({
    */
   onLoad: function(options) {
       var encodedData = options.data; 
-      // const seatCode = options.seatCode; // 【已移除】
+      // options.seatCode 虽然从上一页传递过来，但根据您的代码被移除了。
       
       if (encodedData) {
           try {
@@ -38,13 +38,13 @@ Page({
               
               if (checkoutData && checkoutData.orderItems) {
                   var processedItems = checkoutData.orderItems.map(function(item) {
+                      // item 此时已包含 sampleName 字段，无需额外处理，只需添加 formattedSpec
                       item.formattedSpec = formatOptions(item); 
                       return item;
                   });
                   
                   this.setData({
-                      // seatCode: seatCode, // 【已移除】
-                      orderItems: processedItems,
+                      orderItems: processedItems, // 存储的 orderItems 包含 sampleName
                       totalAmount: checkoutData.totalAmount || '0.00',
                       totalCount: checkoutData.totalCount || 0,
                   });
@@ -57,8 +57,8 @@ Page({
               setTimeout(function() { wx.navigateBack(); }, 1500);
           }
       } else {
-           wx.showToast({ title: '未收到订单数据', icon: 'error' });
-           setTimeout(function() { wx.navigateBack(); }, 1500);
+          wx.showToast({ title: '未收到订单数据', icon: 'error' });
+          setTimeout(function() { wx.navigateBack(); }, 1500);
       }
   },
 
@@ -160,13 +160,11 @@ Page({
 
       // 5. 构造传递给云函数的订单数据
       var finalOrder = {
-          products: that.data.orderItems,
+          products: that.data.orderItems, // 【关键】 orderItems 数组中的每个商品对象都包含 sampleName，因此会被传递到云函数并存储
           totalPrice: parseFloat(that.data.totalAmount),
           totalCount: that.data.totalCount,
           recipeName: that.data.recipeName.trim(), 
           remark: that.data.remark.trim(),
-          // seatCode: that.data.seatCode, // 【已移除】
-          // storeName: "XXXXXX店",       // 【已移除】
           imageFileIds: that.data.uploadedImages, 
       };
 

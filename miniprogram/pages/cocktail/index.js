@@ -4,7 +4,7 @@ Page({
   data: {
       activeTab: 'diy',
       activeSort: { key: '综合排序', order: 'asc' }, 
-      activeList: [],         
+      activeList: [],     
       page: 0,
       pageSize: 10,
       totalPages: 1,
@@ -25,6 +25,7 @@ Page({
               selected: 3
           });
       }
+      // 每次显示时刷新数据
       this.loadStockData(true);
   },
   
@@ -74,9 +75,9 @@ Page({
       
       if (isUserList) {
           if (!that.data.currentUserId) {
-               wx.showToast({ title: '请先登录', icon: 'none' });
-               that.setData({ isLoading: false, isLoadComplete: true });
-               return;
+              wx.showToast({ title: '请先登录', icon: 'none' });
+              that.setData({ isLoading: false, isLoadComplete: true });
+              return;
           }
           dataParams.userId = that.data.currentUserId;
       }
@@ -93,15 +94,34 @@ Page({
               const result = res.result;
               if (result.success && Array.isArray(result.data)) {
                   
-                  const formattedData = result.data.map(item => ({
-                      id: item._id, 
-                      name: item.recipeName, 
-                      price: (item.totalAmount || 0).toFixed(2), 
-                      likes: item.likeCount || 0, 
-                      isFollowed: item.isFollowed || false, 
-                      image: item.imageFileIds && item.imageFileIds.length > 0 ? item.imageFileIds[0] : '/images/default.png', 
-                      tags: item.products.slice(0, 5).map(p => p.name) || [], 
-                  }));
+                  const formattedData = result.data.map(item => {
+                      
+                      // ⭐ 1. 主名称修正：只使用 recipeName，没有则用默认值 '未命名配方' ⭐
+                      const displayName = item.recipeName || '未命名配方';
+                      
+                      // ⭐ 2. 标签修正：标签取前 5 个商品的 sampleName ⭐
+                      const tags = item.products.slice(0, 5).map(p => p.sampleName || p.name).filter(Boolean) || [];
+
+                      // ⭐ 3. 新增逻辑：格式化收录时间，只保留日期部分 ⭐
+                      let createdDate = '';
+                      if (item.createdAt) {
+                          const date = new Date(item.createdAt);
+                          // 格式化为 YYYY-MM-DD
+                          createdDate = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`;
+                      }
+                      // -------------------------------------------------------------
+
+                      return {
+                          id: item._id, 
+                          name: displayName, // 仅使用 recipeName 作为主名称
+                          price: (item.totalAmount || 0).toFixed(2), 
+                          likes: item.likeCount || 0, 
+                          isFollowed: item.isFollowed || false, 
+                          image: item.imageFileIds && item.imageFileIds.length > 0 ? item.imageFileIds[0] : '/images/default.png', 
+                          tags: tags, // 使用 sampleName 列表作为标签
+                          createdDate: createdDate, // 存储格式化后的日期
+                      };
+                  });
 
                   const newStockList = isRefresh 
                       ? formattedData

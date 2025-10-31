@@ -22,35 +22,39 @@
     <view wx:for="{{categoryList}}" wx:key="id" class="menu-item {{currentCategoryIndex === index ? 'active' : ''}}" bindtap="onCategoryTap" data-index="{{index}}">
       <view class="menu-item-name-cn">{{item.name}}</view>
       <view class="menu-item-name-en">{{item.enName}}</view>
- 
     </view>
   </scroll-view>
   
   <scroll-view class="product-content" scroll-y="true">
     <view wx:if="{{filteredProducts.length > 0}}" class="product-list">
       <view wx:for="{{filteredProducts}}" wx:key="id" class="product-card">
-        <image class="product-image" src="{{item.image}}" />
+        
+        <view class="product-image-wrapper">
+            <image class="product-image" src="{{item.image}}" />
+            <view wx:if="{{item.sampleName}}" class="product-sample-name-badge">{{item.sampleName}}</view>
+        </view>
+        
         <view class="product-info">
           <view class="product-info-top">
             <view class="product-name">{{item.name}}</view>
             <view wx:if="{{item.tags && item.tags.length > 0}}" class="product-tags">
           
-          <view wx:if="{{item.tags[0]}}" class="tag-item tag-red">{{item.tags[0]}}</view>
+              <view wx:if="{{item.tags[0]}}" class="tag-item tag-red">{{item.tags[0]}}</view>
               <view wx:if="{{item.tags[1]}}" class="tag-item tag-black">{{item.tags[1]}}</view>
               <view wx:if="{{item.tags[2]}}" class="tag-item tag-green">{{item.tags[2]}}</view>
             </view>
             <view class="product-desc one-line-truncate-list">{{item.desc}}</view> 
           </view>
           <view class="product-info-bottom">
-           
-          <view class="product-price">¥{{item.price}}/ml</view>
+          
+            <view class="product-price">¥{{item.price}}/ml</view>
             <view class="product-actions">
               <image 
                 class="btn-add-icon" 
                 src="cloud://cloud1-7gy6iiv5f0cbcb43.636c-cloud1-7gy6iiv5f0cbcb43-1379173903/素材/菜单_添加.png" 
                 mode="aspectFit" 
                 bindtap="onShowModal"
-   
+          
               data-product="{{item}}"
               />
             </view>
@@ -66,26 +70,31 @@
 </view>
 
 <view wx:if="{{cartCount > 0}}" class="cart-bar" >
-    <view 
-    class="cart-icon-wrapper" bindtap="onToggleCartModal">
-      <image class="cart-icon" src="cloud://cloud1-7gy6iiv5f0cbcb43.636c-cloud1-7gy6iiv5f0cbcb43-1379173903/素材/菜单_购物车.png" mode="widthFix" />
-      <view class="cart-count">{{cartCount}}ml</view>
-    </view>
-    <view class="cart-total-info">
-      <text class="cart-total-label">¥</text>
-      <text class="cart-total-value">{{cartTotal}}/ml</text>
-    </view>
-    <view class="btn-checkout" bindtap="onCheckout">制作</view>
+  <view 
+  class="cart-icon-wrapper" bindtap="onToggleCartModal">
+    <image class="cart-icon" src="cloud://cloud1-7gy6iiv5f0cbcb43.636c-cloud1-7gy6iiv5f0cbcb43-1379173903/素材/菜单_购物车.png" mode="widthFix" />
+    <view class="cart-count">{{cartCount}}ml</view>
+  </view>
+  <view class="cart-total-info">
+    <text class="cart-total-label">¥</text>
+    <text class="cart-total-value">{{cartTotal}}/ml</text>
+  </view>
+  <view class="btn-checkout" bindtap="onCheckout">制作</view>
 </view>
 
 <view wx:if="{{showModal}}" class="modal-mask" bindtap="onHideModal"></view>
 <view wx:if="{{showModal}}" class="modal-content-wrapper modal-slide-in">
   <view class="modal-product-card">
-    <image class="modal-product-image" src="{{selectedProduct.image}}" mode="aspectFill" />
+    
+    <view class="modal-product-image-wrapper">
+        <image class="modal-product-image" src="{{selectedProduct.image}}" mode="aspectFill" />
+        <view wx:if="{{selectedProduct.sampleName}}" class="product-sample-name-badge modal-badge">{{selectedProduct.sampleName}}</view>
+    </view>
+
     <view class="modal-product-info">
       <view class="modal-product-name">{{selectedProduct.name}}</view>
       <view wx:if="{{selectedProduct.tags && selectedProduct.tags.length > 0}}" class="product-tags modal-tags">
-       
+      
           <view wx:if="{{selectedProduct.tags[0]}}" class="tag-item tag-red">{{selectedProduct.tags[0]}}</view>
           <view wx:if="{{selectedProduct.tags[1]}}" class="tag-item tag-black">{{selectedProduct.tags[1]}}</view>
           <view wx:if="{{selectedProduct.tags[2]}}" class="tag-item tag-green">{{selectedProduct.tags[2]}}</view>
@@ -100,7 +109,7 @@
       <view class="option-title">{{optionGroup.name}}</view>
       <view class="option-items">
         <view 
-   
+  
           wx:for="{{optionGroup.items}}" wx:for-item="optionItem" wx:key="*this"
           class="option-item {{selectedOptions[optionGroup.key] === optionItem ?'active' : ''}}" 
           bindtap="onSelectOption" data-key="{{optionGroup.key}}" data-value="{{optionItem}}"
@@ -143,17 +152,21 @@
   <scroll-view class="cart-list-scroll" scroll-y="true">
     <view class="cart-item" wx:for="{{cartList}}" wx:key="id">
       <view class="cart-item-info">
-        <image class="cart-item-image" src="{{item.image}}" mode="aspectFill" />
- 
+        
+         <view class="cart-item-image-wrapper">
+            <image class="cart-item-image" src="{{item.image}}" mode="aspectFill" />
+            <view wx:if="{{item.sampleName}}" class="product-sample-name-badge cart-badge">{{item.sampleName}}</view>
+        </view>
+        
         <view class="cart-item-detail">
           <view class="cart-item-name">{{item.name}}</view>
           
           <view class="cart-item-options">
-              <view class="inner-specs"> 
-                  <text wx:for="{{item.selectedSpecs}}" wx:for-item="specItem" wx:key="key">
-                      {{specItem.value}}{{index 
-                      === item.selectedSpecs.length - 1 ? '' : '，'}}
-                  </text>
+            <view class="inner-specs"> 
+              <text wx:for="{{item.selectedSpecs}}" wx:for-item="specItem" wx:key="key">
+                  {{specItem.value}}{{index 
+                  === item.selectedSpecs.length - 1 ? '' : '，'}}
+              </text>
                   <text wx:if="{{!item.selectedSpecs || item.selectedSpecs.length === 0}}"> </text>
               </view>
           </view>
