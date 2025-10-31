@@ -19,6 +19,26 @@ page {
   box-sizing: border-box;
 }
 
+/* --------------- 配方名称卡片样式 【新增样式】--------------- */
+.recipe-name-card {
+  background-color: #fff;
+  border-radius: 15rpx;
+  padding: 25rpx 30rpx; 
+  box-shadow: 0 5rpx 20rpx rgba(0, 0, 0, 0.05);
+  margin-top: 20rpx; /* 与上方的 order-card 保持距离 */
+  width: 100%; 
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+}
+
+.recipe-name-input {
+  flex-grow: 1;
+  font-size: 32rpx;
+  height: 60rpx;
+  line-height: 1.5;
+}
+
 /* --------------- 备注区域 (左备注 + 右图片) --------------- */
 .remark-card {
   background-color: #fff;
@@ -68,12 +88,12 @@ page {
     display: flex;
     flex-direction: column; 
     justify-content: flex-start; 
-    align-items: flex-end; /* 【关键调整】靠右侧对齐 */
+    align-items: flex-end; /* 靠右侧对齐 */
     
     min-width: 150rpx; 
 }
 
-/* 【新增】统一的上传/预览区域尺寸容器，控制大小 */
+/* 【关键新增】统一的上传/预览区域尺寸容器，控制大小 */
 .upload-area-wrapper {
     width: 220rpx; /* 统一的宽度 */
     height: 220rpx; /* 统一的高度 */
@@ -93,7 +113,6 @@ page {
     color: rgb(160, 148, 148);
     background-color: transparent;
     opacity: 0.9;
-    /* 移除 margin-left/margin-right */
 }
 
 .plus-icon {
@@ -105,16 +124,11 @@ page {
     font-size: 24rpx;
 }
 
-/* 图片列表容器 (已移除，逻辑整合到 upload-area-wrapper) */
-.image-list {
-    /* 不再需要此样式，或确保其内容为空 */
-}
-
 /* 单个已上传图片预览容器 */
 .uploaded-image-wrapper {
     width: 100%; /* 占满父容器 220rpx */
     height: 100%; /* 占满父容器 220rpx */
-    position: absolute; /* 【关键调整】绝对定位，覆盖 upload-btn 所在的区域 */
+    position: absolute; /* 绝对定位，覆盖 upload-btn 所在的区域 */
     top: 0;
     left: 0;
     border-radius: 8rpx;
@@ -134,6 +148,9 @@ page {
 }
 .remark-input {
   display: none; 
+}
+.image-list {
+    /* 移除 */
 }
 
 

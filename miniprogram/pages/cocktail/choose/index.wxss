@@ -901,7 +901,7 @@
     line-height: 70rpx;
     font-size: 36rpx; /* 字体可以略大 */
     text-align: center;
-    border: 3rpx solid #c9c4c4; /* 使用品牌色边框突出 */
+    border: 3rpx solid #ffffff; /* 使用品牌色边框突出 */
     border-radius: 8rpx;
     margin: 0;
     background-color: #ffffff; /* 浅背景色 */

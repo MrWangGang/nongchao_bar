@@ -16,11 +16,12 @@ Page({
       orderItems: [],     
       totalAmount: '0.00',
       totalCount: 0,      
-      seatCode: null,
+      // seatCode: null,   // 【已移除】
+      recipeName: '',     
       remark: '',         
       isSubmitting: false, 
-      uploadedImages: [], // 存储云存储 fileID 列表 (最多只有1个元素)
-      MAX_IMAGE_COUNT: 1, // 【关键修改】最大图片数量限制为 1
+      uploadedImages: [], 
+      MAX_IMAGE_COUNT: 1, 
   },
 
   /**
@@ -28,7 +29,7 @@ Page({
    */
   onLoad: function(options) {
       var encodedData = options.data; 
-      const seatCode = options.seatCode;
+      // const seatCode = options.seatCode; // 【已移除】
       
       if (encodedData) {
           try {
@@ -42,7 +43,7 @@ Page({
                   });
                   
                   this.setData({
-                      seatCode: seatCode,
+                      // seatCode: seatCode, // 【已移除】
                       orderItems: processedItems,
                       totalAmount: checkoutData.totalAmount || '0.00',
                       totalCount: checkoutData.totalCount || 0,
@@ -62,6 +63,15 @@ Page({
   },
 
   /**
+   * 配方名称输入框变化事件
+   */
+  onRecipeNameInput: function(e) {
+      this.setData({
+          recipeName: e.detail.value
+      });
+  },
+
+  /**
    * 备注输入框变化事件
    */
   onRemarkInput: function(e) {
@@ -71,75 +81,72 @@ Page({
   },
   
   /**
-   * 【关键修改】图片选择和上传功能 (覆盖模式)
+   * 图片选择和上传功能 (避免使用 async/await)
    */
-  onChooseImage: async function() {
+  onChooseImage: function() {
       const that = this;
       
-      try {
-          // 1. 选择图片 (count 强制为 1)
-          const res = await wx.chooseImage({
-              count: 1, // 只允许选择一张图片
-              sizeType: ['compressed'], 
-              sourceType: ['album', 'camera'], 
-          });
-
+      wx.chooseImage({
+          count: 1, // 只允许选择一张图片
+          sizeType: ['compressed'], 
+          sourceType: ['album', 'camera'], 
+      })
+      .then(res => {
           const tempFilePath = res.tempFilePaths[0];
           wx.showLoading({ title: '上传中...', mask: true });
           
-          // 可选：删除旧图片（如果存在），以释放云存储空间
-          /*
-          if (that.data.uploadedImages.length > 0) {
-              wx.cloud.deleteFile({ fileList: that.data.uploadedImages })
-              .catch(err => console.error("旧图片删除失败", err));
-          }
-          */
-
-          // 2. 上传新图片
           const cloudPath = `cocktail-recipes/${Date.now()}-${tempFilePath.match(/\.[^.]+?$/)[0]}`;
           
-          const uploadResult = await wx.cloud.uploadFile({
+          // 返回上传 Promise
+          return wx.cloud.uploadFile({
               cloudPath: cloudPath,
               filePath: tempFilePath,
           });
-
+      })
+      .then(uploadResult => {
           const newFileId = uploadResult.fileID;
 
-          // 3. 【关键逻辑】：用新 fileID 覆盖旧的数组
+          // 用新 fileID 覆盖旧的数组
           that.setData({
-              uploadedImages: [newFileId] // 始终只存储一个元素
+              uploadedImages: [newFileId]
           });
 
           wx.hideLoading();
           wx.showToast({ title: '图片已上传/更新', icon: 'success' });
-
-      } catch (e) {
+      })
+      .catch(e => {
           wx.hideLoading();
           console.error('图片上传失败', e);
           wx.showToast({ title: '上传失败，请重试', icon: 'none' });
-      }
+      });
   },
 
   /**
-   * 提交订单 (现改为提交配方/备货单)
+   * 提交配方
    */
   onSubmitOrder: function() {
       var that = this; 
       if (that.data.isSubmitting) return;
 
-      // 1. 备注和图片校验 (已更新)
+      // 1. 校验配方名称
+      if (!that.data.recipeName.trim()) {
+          wx.showToast({ title: '请输入配方名称', icon: 'none' });
+          return;
+      }
+      
+      // 2. 校验制作流程/备注
       if (!that.data.remark.trim()) {
           wx.showToast({ title: '请输入制作流程/备注', icon: 'none' });
           return;
       }
 
-      // 检查图片数量 (数量必须等于 1)
+      // 3. 校验图片数量
       if (that.data.uploadedImages.length !== 1) {
           wx.showToast({ title: '请上传一张配方图片', icon: 'none' });
           return;
       }
 
-      // 2. 用户ID校验
+      // 4. 用户ID校验
       var userInfo = wx.getStorageSync('userInfo') || {};
       var userId = userInfo.userId || userInfo.openid; 
 
@@ -151,14 +158,15 @@ Page({
 
       that.setData({ isSubmitting: true });
 
-      // 3. 构造传递给云函数的订单数据
+      // 5. 构造传递给云函数的订单数据
       var finalOrder = {
           products: that.data.orderItems,
           totalPrice: parseFloat(that.data.totalAmount),
           totalCount: that.data.totalCount,
+          recipeName: that.data.recipeName.trim(), 
           remark: that.data.remark.trim(),
-          seatCode: that.data.seatCode, 
-          storeName: "XXXXXX店", 
+          // seatCode: that.data.seatCode, // 【已移除】
+          // storeName: "XXXXXX店",       // 【已移除】
           imageFileIds: that.data.uploadedImages, 
       };
 
@@ -167,7 +175,7 @@ Page({
           mask: true
       });
 
-      // 4. 调用云函数 createStockOrder
+      // 6. 调用云函数 createStockOrder
       wx.cloud.callFunction({
           name: 'createStockOrder', 
           data: {

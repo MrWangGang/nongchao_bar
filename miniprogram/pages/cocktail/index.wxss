@@ -1,3 +1,6 @@
+/* /pages/stockList/stockList.wxss */
+/* 严格移除 @import "/path/to/common.wxss"; */
+
 /* ------------------------------------
  * 0. 基础设置与卡片结构
  * ------------------------------------ */
@@ -17,6 +20,9 @@
   background-color: #fff;
   border-radius: 20rpx;
   overflow: hidden;
+  width: 680rpx;
+  height:180rpx;
+
 }
 
 /* ------------------------------------
@@ -80,6 +86,7 @@
   font-weight: bold;
 }
 
+/* 箭头图标基础样式 */
 .icon-arrow-down {
   width: 0; height: 0; margin-left: 6rpx;
   border: 6rpx solid transparent;
@@ -288,19 +295,19 @@
 
 /* 伪元素创建居中分割线 */
 .button-text-group::before {
-    content: '';
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
+  content: '';
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
 
-    /* 定位：需要根据实际效果调整 left 值 */
-    left: 227rpx; 
+  /* 定位：需要根据实际效果调整 left 值 */
+  left: 227rpx; 
 
-    /* 线条样式 */
-    width: 5rpx; 
-    height: 60%; 
-    background-color: rgba(255, 255, 255, 0.5); 
-    border-radius: 1rpx;
+  /* 线条样式 */
+  width: 5rpx; 
+  height: 60%; 
+  background-color: rgba(255, 255, 255, 0.5); 
+  border-radius: 1rpx;
 }
 
 .button-main-text {
@@ -318,8 +325,8 @@
 }
 
 /* ------------------------------------
- * 5. 暂无数据提示 (新增)
- * ------------------------------------ */
+* 5. 暂无数据提示 (新增)
+* ------------------------------------ */
 .no-data-tip {
   display: flex;
   justify-content: center;
