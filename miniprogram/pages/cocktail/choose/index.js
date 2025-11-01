@@ -87,7 +87,7 @@ Page({
                 tags: product.tags,
                 options: product.options || [], // 确保 options 存在
                 // 【新增】：添加简称字段，如果云函数返回，则使用
-                sampleName: product.sampleName || product.name 
+                sampleName: product.sampleName || product.name  
             };
 
             categoryMap[categoryId].products.push(processedProduct);
@@ -423,7 +423,7 @@ Page({
                 icon: 'none'
             });
         }
-        // 确保数量始终大于等于 1
+        // 确保数量始终大于等于 1 (点击按钮的操作通常要求数量合法)
         if (newQuantity < 1) newQuantity = 1;
 
 
@@ -436,9 +436,11 @@ Page({
     
     /**
      * 数量输入（商品选项弹窗内 - 直接输入）
+     * 【已修正】：允许输入框显示 0，将 || 1 改为 || 0
      */
     onQuantityInput: function(e) {
-        let value = parseInt(e.detail.value) || 1;
+        // 【关键修改】：将 || 1 改为 || 0，允许用户输入框显示 0
+        let value = parseInt(e.detail.value) || 0; 
         
         // 限制最大数量
         if (value > MAX_QUANTITY) {
@@ -448,7 +450,7 @@ Page({
                 icon: 'none'
             });
         }
-        if (value < 1) value = 1; // 确保数量大于等于 1
+        // 此时不进行 value < 1 的强制修正
         
         const product = this.data.selectedProduct;
 
@@ -458,11 +460,13 @@ Page({
         }
 
         this.setData({
-            quantity: value
+            quantity: value // quantity 可能是 0
         });
 
         this.cartQuantityTimer = setTimeout(() => {
-            this.calculateTotalPrice(product, this.data.quantity);
+            // 【关键修改】：在计算总价时，使用 Math.max(1, this.data.quantity)
+            const quantityForCalc = Math.max(1, this.data.quantity);
+            this.calculateTotalPrice(product, quantityForCalc);
         }, 300); // 300ms 延迟
     },
 
@@ -511,7 +515,7 @@ Page({
      * 【新增函数】数量输入弹窗确定按钮 (仅用于购物车)
      */
     onQuantityInputModalConfirm: function() {
-        let newQuantity = parseInt(this.data.inputQuantityValue) || 1;
+        let newQuantity = parseInt(this.data.inputQuantityValue) || 0;
         
         // 最终修正：确保数量 >= 1
         newQuantity = Math.max(1, newQuantity);
@@ -670,7 +674,7 @@ Page({
                 sampleName: item.sampleName || (fullProduct ? fullProduct.sampleName : ''),
 
                 // 【核心修改】：直接传递规格数组，它是自由化的关键
-                selectedSpecs: item.selectedSpecs || [] 
+                selectedSpecs: item.selectedSpecs || []  
             };
             
             return finalOrderItem;
@@ -705,7 +709,7 @@ Page({
     },
 
     /**
-     * 【已修正】加入购物车逻辑：添加 sampleName 字段
+     * 【已修正】加入购物车逻辑：添加 sampleName 字段，并统一数量校验
      */
     onAddToCart: function() {
         const {
@@ -715,14 +719,22 @@ Page({
             dynamicOptions // 使用 dynamicOptions 来获取规格的 'name' (例如: '规格', '温度')
         } = this.data;
 
-        // 在这里再次校验数量，确保有效
-        let finalQuantity = Math.max(1, parseInt(quantity) || 1); 
+        // 【关键修改】：在这里统一进行数量的最终校验和修正
+        let finalQuantity = parseInt(quantity) || 0; 
         
-        // 限制最大数量
+        // 1. 确保数量至少为 1 (加入购物车的最终要求)
+        finalQuantity = Math.max(1, finalQuantity); 
+        
+        // 2. 限制最大数量
         if (finalQuantity > MAX_QUANTITY) {
             finalQuantity = MAX_QUANTITY;
+            wx.showToast({
+                title: `数量不能超过${MAX_QUANTITY}`,
+                icon: 'none'
+            });
         }
 
+        // 3. 检查数量是否大于 0
         if (finalQuantity <= 0) {
             wx.showToast({
                 title: '请选择购买数量',
@@ -731,7 +743,7 @@ Page({
             return;
         }
         
-        // 1. 构造唯一ID (商品ID + 所有选项的值)
+        // 4. 构造唯一ID (商品ID + 所有选项的值)
         const optionsArray = Object.keys(selectedOptions)
             .sort()
             .map(key => selectedOptions[key]);
@@ -756,14 +768,14 @@ Page({
             }
         });
 
-        // 2. 构造购物车商品对象 (cartItem)
+        // 5. 构造购物车商品对象 (cartItem)
         const cartItem = {
             id: uniqueId,
             productId: selectedProduct.id,
             image: selectedProduct.image,
             name: selectedProduct.name,
             price: parseFloat(selectedProduct.price),
-            quantity: finalQuantity,
+            quantity: finalQuantity, // 使用修正后的 finalQuantity
             totalPrice: (parseFloat(selectedProduct.price) * finalQuantity).toFixed(2),
             
             // ⭐ 【关键修正】：将 sampleName 添加到 cartItem 中 (用于购物车详情显示和结算传递) ⭐
@@ -773,7 +785,7 @@ Page({
             selectedSpecs: selectedSpecs  
         };
 
-        // 3. 从缓存中读取购物车
+        // 6. 从缓存中读取购物车
         let cartList = wx.getStorageSync('cocktailList') || [];
         const existingIndex = cartList.findIndex(item => item.id === cartItem.id);
         
@@ -812,22 +824,22 @@ Page({
             cartList.push(cartItem);
         }
 
-        // 4. 存入缓存
+        // 7. 存入缓存
         try {
             wx.setStorageSync('cocktailList', cartList);
             
             // ⭐ DEBUG B: 检查缓存是否成功写入 ⭐
             console.log('[DEBUG B] 成功写入缓存，当前总商品种类数:', cartList.length);
 
-            // 5. 显示成功提示
+            // 8. 显示成功提示
             wx.showToast({
                 title: '添加购物车成功',
                 icon: 'success',
                 duration: 1000
             });
-            // 6. 关闭弹窗
+            // 9. 关闭弹窗
             this.onHideModal();
-            // 7. 更新购物车数据
+            // 10. 更新购物车数据
             this.updateCartData();
 
         } catch (e) {
