@@ -3,5 +3,5 @@
   <text class="status-title">该功能正在加紧开发中</text>
   <text class="status-subtitle">敬请期待，稍后将开放</text>
   
-  <button class="back-home-btn" bindtap="goToHome">返回首页</button>
+  <button class="back-home-btn" bindtap="goToHome">清空缓存</button>
 </view>

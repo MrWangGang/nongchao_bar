@@ -69,11 +69,6 @@
         <view class="drink-list">
             
             <view class="no-data-tip" wx:if="{{activeList.length === 0 && !isLoading}}">
-                <image  
-                    class="no-data-icon"  
-                    src="cloud://cloud1-7gy6iiv5f0cbcb43.636c-cloud1-7gy6iiv5f0cbcb43-1379173903/素材/暂无数据_默认图标.png"  
-                    mode="aspectFit">
-                </image>
                 <text>暂无数据</text>
             </view>
 

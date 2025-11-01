@@ -14,7 +14,8 @@
     "pages/meal/food/detail/index",
     "pages/meal/food/bill/index",
     "pages/cocktail/choose/index",
-    "pages/cocktail/choose/detail/index"
+    "pages/cocktail/choose/detail/index",
+    "pages/cocktail/choose/bill/index"
   ],
   "window": {
     "backgroundColor": "#F6F6F6",

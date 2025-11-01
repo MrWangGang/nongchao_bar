@@ -48,7 +48,7 @@ page {
   border-radius: 15rpx;
   padding: 25rpx 30rpx; 
   box-shadow: 0 15rpx 20rpx rgba(0, 0, 0, 0.05);
-  background-color: #dad7d7;
+  background-color: #ffffff;
   margin-top: 30rpx !important;
   width: 100%; 
   box-sizing: border-box;
@@ -150,9 +150,6 @@ page {
 }
 .remark-input {
   display: none; 
-}
-.image-list {
-  /* 移除 */
 }
 
 

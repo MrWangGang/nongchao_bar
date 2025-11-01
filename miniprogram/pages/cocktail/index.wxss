@@ -186,7 +186,7 @@
 /* 【新增】独立的收录时间悬浮样式 */
 .time-stamp-float {
   position: absolute; /* 绝对定位，实现“悬浮”且不影响流式布局 */
-  bottom: 40rpx; /* 定位在底部点赞数上方 */
+  bottom: 33rpx; /* 定位在底部点赞数上方 */
   left: 0;
   color: #c0c0c0;
   font-size: 22rpx;

@@ -3,20 +3,20 @@
 Page({
   data: {
       activeTab: 'diy',
-      activeSort: { key: '综合排序', order: 'asc' }, 
-      activeList: [],     
+      activeSort: { key: '综合排序', order: 'asc' },
+      activeList: [],
       page: 0,
       pageSize: 10,
       totalPages: 1,
       isLoading: false,
-      isLoadComplete: false, 
-      currentUserId: null, 
+      isLoadComplete: false,
+      currentUserId: null,
       sortKeyMap: {
-          '综合排序': 'totalAmount', 
-          '点赞数量': 'likeCount', 
-          '收录时间': 'createdAt', 
+          '综合排序': 'totalAmount',
+          '点赞数量': 'likeCount',
+          '收录时间': 'createdAt',
       },
-      recipeName: '', 
+      recipeName: '',
   },
   
   onShow: function () {
@@ -35,7 +35,7 @@ Page({
       
       this.setData({
           currentUserId: userId,
-          recipeName: '', 
+          recipeName: '',
       });
 
       this.loadStockData(true);
@@ -99,8 +99,11 @@ Page({
                       // ⭐ 1. 主名称修正：只使用 recipeName，没有则用默认值 '未命名配方' ⭐
                       const displayName = item.recipeName || '未命名配方';
                       
+                      // 【修复 TypeError】确保 item.products 是一个有效的数组，否则使用空数组 []
+                      const productsArray = item.products && Array.isArray(item.products) ? item.products : []; 
+                      
                       // ⭐ 2. 标签修正：标签取前 5 个商品的 sampleName ⭐
-                      const tags = item.products.slice(0, 5).map(p => p.sampleName || p.name).filter(Boolean) || [];
+                      const tags = productsArray.slice(0, 5).map(p => p.sampleName || p.name).filter(Boolean);
 
                       // ⭐ 3. 新增逻辑：格式化收录时间，只保留日期部分 ⭐
                       let createdDate = '';
@@ -117,7 +120,7 @@ Page({
                           price: (item.totalAmount || 0).toFixed(2), 
                           likes: item.likeCount || 0, 
                           isFollowed: item.isFollowed || false, 
-                          image: item.imageFileIds && item.imageFileIds.length > 0 ? item.imageFileIds[0] : '/images/default.png', 
+                          image: item.imageFileIds, 
                           tags: tags, // 使用 sampleName 列表作为标签
                           createdDate: createdDate, // 存储格式化后的日期
                       };
@@ -250,7 +253,18 @@ Page({
    * 下单按钮点击事件
    */
   handleOrder(e) {
-      wx.showToast({ title: '功能待实现：加载配方并下单', icon: 'none' });
+      // 从事件对象中获取配方的 ID
+      const cocktailId = e.currentTarget.dataset.id; 
+      
+      if (!cocktailId) {
+          wx.showToast({ title: '配方ID缺失，无法下单', icon: 'none' });
+          return;
+      }
+  
+      // 跳转到 pages/cocktail/choose/bill/index 页面，并传递 cocktailId
+      wx.navigateTo({
+          url: `/pages/cocktail/choose/bill/index?cocktailId=${cocktailId}`
+      });
   },
   
   /**
@@ -273,8 +287,10 @@ Page({
    * 生命周期钩子：下拉刷新
    */
   onPullDownRefresh: function() {
-      this.loadStockData(true).finally(() => {
-           wx.stopPullDownRefresh();
-      });
+      // 将 loadStockData 包装在 Promise 中以便使用 finally，但如果 loadStockData 是同步的或自身不返回 Promise，需要调整
+      // 鉴于它是异步调用 wx.cloud.callFunction，通常需要手动停止刷新。
+      // 这里简化为直接调用并依赖 complete 中的 wx.stopPullDownRefresh() (见 loadStockData 内部的 complete)
+      this.loadStockData(true);
+      // 为了安全起见，这里可以再加一次停止刷新，但 loadStockData 的 complete 已经处理了
   },
 });

@@ -1,0 +1,74 @@
+<view class="container">
+    <view class="order-card">
+        <scroll-view class="product-list-scroll" scroll-y>
+            <view class="product-list">
+                <view class="product-item" wx:for="{{orderItems}}" wx:key="id">
+                    <view class="product-image-wrapper"> 
+                        <image class="product-image" src="{{item.image}}" mode="aspectFill"></image>
+                        <view wx:if="{{item.sampleName}}" class="product-sample-name-badge order-confirm-badge">{{item.sampleName}}</view>
+                    </view>
+
+                    <view class="product-info">
+                        <view class="product-name">{{item.name}}</view>
+                        <view class="product-spec-row">
+                            <text wx:if="{{item.formattedSpec}}" class="product-spec">{{item.formattedSpec}}</text>
+                        </view>
+                    </view>
+                    <view class="product-price-quantity">
+                        <view class="product-price">¥{{item.price}}/ml</view>
+                        <view class="product-quantity">x{{item.quantity}}</view>
+                    </view>
+                </view>
+            </view>
+        </scroll-view>
+
+        <view class="summary">
+            <text>共{{totalCount}}ml，合计</text>
+            <text class="summary-total">¥{{totalAmount}}</text>
+        </view>
+    </view>
+
+    <view class="recipe-name-card">
+        <view class="recipe-name-display">{{recipeName}}</view>
+    </view>
+    
+    <view class="remark-card">
+        <view class="remark-left">
+            <view class="remark-display">{{remark}}</view>
+        </view>
+        
+        <view class="remark-right">
+            <view class="upload-area-wrapper">
+                
+                <view class="uploaded-image-wrapper" 
+                      wx:if="{{uploadedImages.length > 0}}"
+                      bindtap="onChooseImage"
+                >
+                    <image class="uploaded-image" 
+                               src="{{uploadedImages[0]}}" 
+                               mode="aspectFill">
+                    </image>
+                </view>
+
+                <view class="upload-btn" 
+                      wx:else
+                >
+                    <text class="plus-icon">+</text>
+                    <text class="upload-text">暂无图片</text>
+                </view>
+                
+            </view>
+        </view>
+    </view>
+</view>
+
+<view class="footer-bar-placeholder"></view>
+<view class="footer-bar safe-area-bottom">
+    <view class="total-display">
+        <text class="total-label">总价格</text>
+        <text class="total-amount">¥{{totalAmount}}</text>
+    </view>
+    <button class="submit-btn" bindtap="mockPayNow" disabled="{{isSubmitting}}">
+        去支付
+    </button>
+</view>
