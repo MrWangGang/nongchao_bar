@@ -1,0 +1,125 @@
+<view class="container">
+    
+    <view class="status-card-positioner" wx:if="{{!loading && orderDetail}}">
+        <view class="status-card-wrapper">
+            <view class="status-card">
+                <view class="status-content">
+                    <view class="status-main">
+                        <text class="status-title">
+                            {{orderStatusMap[orderDetail.orderStatus].title}}
+                        </text>
+                        <text class="status-timer" 
+                            wx:if="{{orderDetail.orderStatus === '待支付'}}">
+                            {{countdownDisplay || '00:00'}} 
+                        </text>
+                    </view>
+                    
+                    <view class="status-tip">
+                        {{orderStatusMap[orderDetail.orderStatus].tip}}
+                    </view>
+                    
+                    <view class="status-actions" wx:if="{{orderDetail.orderStatus === '待支付'}}">
+                        <button class="action-btn action-btn-cancel" bindtap="cancelOrder">取消订单</button>
+                        <button class="action-btn action-btn-pay" bindtap="payNow">立即支付</button>
+                    </view>
+                </view>
+            </view>
+        </view>
+    </view>
+    <view class="order-card">
+        <scroll-view class="product-list-scroll" scroll-y>
+            <view class="product-list">
+                <view class="product-item" wx:for="{{orderItems}}" wx:key="id">
+                    <view class="product-image-wrapper"> 
+                        <image class="product-image" src="{{item.image}}" mode="aspectFill"></image>
+                        <view wx:if="{{item.sampleName}}" class="product-sample-name-badge order-confirm-badge">{{item.sampleName}}</view>
+                    </view>
+
+                    <view class="product-info">
+                        <view class="product-name">{{item.name}}</view>
+                        <view class="product-spec-row">
+                            <text wx:if="{{item.formattedSpec}}" class="product-spec">{{item.formattedSpec}}</text>
+                        </view>
+                    </view>
+                    
+                    <view class="product-price-quantity">
+                        <view class="product-price">¥{{item.price}}/ml</view>
+                        <view class="product-quantity">x{{item.quantity}}</view>
+                    </view>
+                </view>
+            </view>
+        </scroll-view>
+
+        <view class="summary">
+            <text>共{{totalCount}}ml，合计</text>
+            <text class="summary-total">¥{{totalAmount}}</text>
+        </view>
+    </view>
+
+    <view class="recipe-name-card">
+        <view class="recipe-name-display">{{recipeName}}</view>
+    </view>
+    
+    <view class="remark-card">
+        <view class="remark-left">
+            <view class="remark-display">{{remark}}</view>
+        </view>
+        
+        <view class="remark-right">
+            <view class="upload-area-wrapper">
+                <view class="uploaded-image-wrapper" 
+                      wx:if="{{uploadedImages.length > 0}}"
+                      bindtap="onChooseImage"
+                >
+                    <image class="uploaded-image" 
+                           src="{{uploadedImages[0]}}" 
+                           mode="aspectFill">
+                    </image>
+                </view>
+
+                <view class="upload-btn" 
+                      wx:else
+                >
+                    <text class="plus-icon">+</text>
+                    <text class="upload-text">暂无图片</text>
+                </view>
+            </view>
+        </view>
+    </view>
+
+    <view class="info-card" wx:if="{{orderDetail}}">
+        <view class="card-title">订单信息</view>
+        
+        <view class="info-row">
+            <text class="info-label">订单编号</text>
+            <text class="info-value">{{orderDetail.no}}</text>
+            <text class="copy-btn" bindtap="copyOrderNo">复制</text>
+        </view>
+        
+        <view class="info-row" wx:if="{{orderDetail.orderStatus === '已支付' && orderDetail.payment && orderDetail.payment.paymentMethod}}">
+            <text class="info-label">支付方式</text>
+            <text class="info-value">{{orderDetail.payment.paymentMethod}}</text>
+        </view>
+        
+        <view class="info-row">
+            <text class="info-label">下单时间</text>
+            <text class="info-value">{{orderDetail.formattedCreateTime}}</text>
+        </view>
+
+        <view class="info-row" >
+            <text class="info-label">支付方式</text>
+            <text class="info-value">线上支付</text>
+
+        </view>
+        
+        <view class="info-row" wx:if="{{orderDetail.orderId}}">
+            <text class="info-label">订单 ID</text>
+            <text class="info-value">{{orderDetail.orderId}}</text>
+
+        </view>
+
+    </view>
+    
+    <view class="safe-area-bottom-placeholder"></view>
+
+</view>

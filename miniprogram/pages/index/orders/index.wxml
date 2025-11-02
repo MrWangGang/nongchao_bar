@@ -2,6 +2,14 @@
   
   <view class="tab-header">
     <view 
+      class="tab-item {{currentTab === 'cocktail' ? 'active' : ''}}" 
+      data-tab="cocktail" 
+      bindtap="switchTab"
+    >
+      <text>特调订单</text>
+      <view class="tab-underline"></view>
+    </view>
+    <view 
       class="tab-item {{currentTab === 'store' ? 'active' : ''}}" 
       data-tab="store" 
       bindtap="switchTab"
@@ -14,12 +22,74 @@
       data-tab="reserve" 
       bindtap="switchTab"
     >
-      <text>预定订单</text>
+     
+     <text>预定订单</text>
       <view class="tab-underline"></view>
     </view>
   </view>
 
   <view class="order-content">
+    
+    <block wx:if="{{currentTab === 'cocktail'}}">
+      <view class="drink-list" wx:if="{{cocktailOrders.length > 0}}">
+        <block wx:for="{{cocktailOrders}}" wx:for-item="item" wx:key="_id">
+            
+            <view 
+                class="order-card" 
+                data-id="{{item._id}}" 
+                data-type="cocktail" 
+                bindtap="goToDetail"
+            >
+                
+                <view class="card-header">
+                    <view class="time-info">
+                      <text class="label">下单时间:</text>
+                      <text class="value">{{item.createTime}}</text>
+                    </view>
+                    <view class="status-info">
+                      <text class="status-text">{{item.orderStatus}}</text>
+                      <text class="arrow-right">></text>
+                    </view>
+                </view>
+
+                <view class="cocktail-item-body-v2" bin>
+                    <image 
+                        class="cover-image" 
+                        src="{{item.image}}" 
+                        mode="aspectFill">
+                    </image>
+                    
+                    <view class="info-wide">
+                        <text class="name">{{item.recipeName || '特调订单'}}</text>
+                        
+                        <view class="tags">
+                            <text class="tag" wx:for="{{item.tagList}}" wx:for-item="tag" wx:key="*this">{{tag}}</text>
+                        </view>
+                        
+                    </view>
+                    
+                    <view class="actions-price-only">
+                        
+                        <view class="item-count-in-actions">
+                            <text class="likes">共 {{item.payment.totalCount}} ml</text>
+                        </view>
+                        
+                        <view class="footer-price-v2">
+                          <text class="price-label">实付</text>
+                          <text class="price-value">{{item.payment.paidAmount}}</text>
+                        </view>
+                        
+                        </view>
+                </view>
+            </view>
+        </block>
+      </view>
+      
+      <view class="empty-data" wx:else>
+        <text wx:if="{{!isLoading}}">暂无特调订单数据</text>
+        <text wx:else>加载中...</text>
+      </view>
+    </block>
     
     <block wx:if="{{currentTab === 'store'}}">
       <view class="store-list" wx:if="{{storeOrders.length > 0}}">
@@ -45,7 +115,6 @@
           <view class="card-body">
             
             <view class="product-images-wrapper">
-              
               <block 
                 wx:for="{{item.displayProducts}}" 
                 wx:for-item="product" 
@@ -56,7 +125,8 @@
                   wx:if="{{item.products.length <= 4 && index < 4}}" 
                   class="image-wrapper-mini"
                 >
-                  <image class="combo-image-mini" src="{{product.image}}" mode="aspectFill" />
+                  <image class="combo-image-mini" 
+                     src="{{product.image}}" mode="aspectFill" />
                 </view>
                 
                 <view 
@@ -91,12 +161,13 @@
           
         </view>
       </view>
+      
       <view class="empty-data" wx:else>
         <text wx:if="{{!isLoading}}">暂无门店订单数据</text>
         <text wx:else>加载中...</text>
       </view>
     </block>
-    
+
     <block wx:if="{{currentTab === 'reserve'}}">
       <view class="reserve-list" wx:if="{{reserveOrders.length > 0}}">
         <view 
@@ -113,7 +184,8 @@
               <text class="value">{{item.createTime}}</text>
             </view>
             <view class="status-info">
-              <text class="status-text">{{item.orderStatus}}</text>
+         
+           <text class="status-text">{{item.orderStatus}}</text>
               <text class="arrow-right">></text>
             </view>
           </view>
@@ -121,7 +193,8 @@
           <view class="card-body">
             <view class="image-wrapper">
               <image class="combo-image" src="{{item.packageInfo.imageUrl}}" mode="aspectFill" />
-              <view class="seat-overlay">{{item.seatInfo.name}}</view>  
+              <view 
+                 class="seat-overlay">{{item.seatInfo.name}}</view>  
             </view>
             <view class="combo-details">
               <view class="combo-name">{{item.comboInfo.name}}</view>
@@ -130,7 +203,8 @@
             </view>
           </view>
 
-          <view class="card-footer">
+    
+           <view class="card-footer">
             <view class="footer-price">
               <text class="price-label">实付</text>
               <text class="price-value">{{item.payment.paidAmount}}</text>
@@ -139,9 +213,13 @@
         </view>
       </view>
       <view class="empty-data" wx:else>
-        <text>暂无预定订单</text>
+        <text wx:if="{{!isLoading}}">暂无预定订单数据</text>
+        <text wx:else>加载中...</text>
       </view>
     </block>
+    
   </view>
+
   <view class="safe-area-spacer"></view>
+
 </view>

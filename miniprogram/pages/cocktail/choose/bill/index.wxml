@@ -68,7 +68,7 @@
         <text class="total-label">总价格</text>
         <text class="total-amount">¥{{totalAmount}}</text>
     </view>
-    <button class="submit-btn" bindtap="mockPayNow" disabled="{{isSubmitting}}">
-        去支付
+    <button class="submit-btn" bindtap="payNow" disabled="{{isSubmitting}}">
+        去下单
     </button>
 </view>

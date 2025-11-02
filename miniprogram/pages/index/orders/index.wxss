@@ -11,7 +11,6 @@
 /* Tab 切换区域 - 调整顶部间距 */
 .tab-header {
   display: flex;
-  /* 移除自定义导航栏的间距，紧贴系统导航栏 */
   margin-top: 20rpx;  
   margin-left: 30rpx;
   margin-right: 30rpx;
@@ -46,16 +45,14 @@
 /* 订单内容区域 */
 .order-content {
   flex: 1;
-  margin-top: 40rpx; /* 间距不变 */
+  margin-top: 40rpx;
 }
 .safe-area-spacer {
-  /* 留出一定的通用安全高度 */
   height: 20rpx;  
-  /* 兼容 iOS 底部 Home Indicator (小横条) */
   height: calc(20rpx + constant(safe-area-inset-bottom));
   height: calc(20rpx + env(safe-area-inset-bottom));
 }
-.reserve-list, .store-list { /* 兼容门店列表 */
+.reserve-list, .store-list, .drink-list {
   margin-left: 30rpx;
   margin-right: 30rpx;
 }
@@ -64,11 +61,8 @@
 .order-card {
   background-color: #fff;
   border-radius: 16rpx;
-  overflow: hidden;
   margin-bottom: 20rpx;  
-  /* 【新增阴影】使用轻微的阴影效果模拟卡片的浮动感 */
   box-shadow: 0 4rpx 10rpx rgba(0, 0, 0, 0.08);  
-  /* 移除 card-footer 独立控制的 padding-bottom */
   padding-bottom: 0; 
 }
 
@@ -78,25 +72,11 @@
   justify-content: space-between;
   align-items: center;
   margin: 30rpx 30rpx 20rpx 30rpx;  
-  border-bottom: 1rpx solid #eee; /* 添加分隔线 */
+  border-bottom: 1rpx solid #eee;
   padding-bottom: 20rpx;  
 }
-/* ⭐ 门店名称信息 (原门店信息样式，保留备用) */
-.store-name-info {
-  display: flex;
-  align-items: center;
-}
-.store-icon {
-  width: 32rpx;
-  height: 32rpx;
-  margin-right: 10rpx;
-}
-.store-name {
-  font-size: 30rpx;
-  font-weight: bold;
-  color: #333;
-}
-/* ⭐ 预定订单/新门店订单时间信息 */
+
+/* 预定订单/新门店订单时间信息 */
 .time-info {
   font-size: 26rpx;
   color: #333;
@@ -122,36 +102,29 @@
   display: flex;
   margin-left: 30rpx;
   margin-right: 30rpx;
-  margin-bottom: 20rpx; /* 调整底部边距，给 footer 留出空间 */
+  margin-bottom: 20rpx;
 }
 
 /* --- 门店订单样式 (多图/数量) --- */
-
-/* 门店订单 - 多商品图片容器 */
 .product-images-wrapper {
   display: flex;
   align-items: center;
   flex-wrap: nowrap;
   max-width: 70%; 
   position: relative;
-  height: 120rpx; /* 图片高度一致 */
+  height: 120rpx;
 }
-
-/* 门店订单 - 单个商品图片的包装器 (小尺寸) */
 .image-wrapper-mini {
   width: 120rpx; 
   height: 120rpx; 
   border-radius: 20rpx;
   overflow: hidden;
-  margin-right: -10rpx; /* 图片堆叠效果：负边距 */
+  margin-right: -10rpx;
   border: 4rpx solid #fff; 
   box-sizing: content-box;
-  /* 基础 z-index 调低 */
   z-index: 1; 
   flex-shrink: 0; 
 }
-
-/* ⭐⭐⭐ 确保最左侧的图片在最上面 (递减 Z-index) ⭐⭐⭐ */
 .image-wrapper-mini:nth-child(1) {
   z-index: 10;
 }
@@ -162,17 +135,12 @@
   z-index: 8;
 }
 .image-wrapper-mini:nth-child(4) { 
-  z-index: 7; /* 如果有第四张图，也应该高于 +N */
+  z-index: 7; 
 }
-
-
-/* 门店订单 - 图片本身 */
 .image-wrapper-mini .combo-image-mini {
   width: 100%;
   height: 100%;
 }
-
-/* 门店订单 - +N 计数层 (与图片大小保持一致) */
 .product-image-count {
   width: 120rpx; 
   height: 120rpx;
@@ -186,36 +154,27 @@
   border-radius: 20rpx;
   border: 4rpx solid #fff; 
   box-sizing: content-box;
-  
-  /* 确保 position: relative 和 z-index: 0 激活堆叠上下文并位于最底层 */
   position: relative; 
   z-index: 0; 
-  
   margin-left: -10rpx; 
   flex-shrink: 0;
 }
-
-
-/* 门店订单 - 商品总数详情（右侧区域，仅数量） */
 .store-item-count-details {
   flex: 1;
   display: flex;
   flex-direction: column;
-  justify-content: flex-end; /* 数量信息靠下对齐 */
+  justify-content: flex-end;
   align-items: flex-end;
   margin-left: 20rpx;
-  min-height: 120rpx; /* 保证高度与图片区域一致 */
+  min-height: 120rpx;
 }
-
 .combo-item-count {
   font-size: 28rpx;
   color: #999;
 }
 
 
-/* --- 预定订单原有样式 (保留) --- */
-
-/* 图片和叠加层容器 (预定订单) */
+/* --- 预定订单原有样式 --- */
 .image-wrapper {
   position: relative;
   width: 160rpx;
@@ -228,7 +187,6 @@
   width: 100%; 
   height: 100%; 
 }
-/* 座位名称叠加层样式：全覆盖并居中 */
 .seat-overlay {
   position: absolute;
   top: 0;
@@ -237,19 +195,14 @@
   left: 0;
   width: 100%;
   height: 100%;
-  
-  /* 使用 Flexbox 实现水平和垂直居中 */
   display: flex;
   justify-content: center;
   align-items: center;
-  
   font-size: 28rpx; 
   font-weight: bold;
   color: #fff;
-  /* 保持半透明的黑色背景，实现遮罩感 */
   background-color: rgba(0, 0, 0, 0.5);  
 }
-/* 预定订单详情 */
 .combo-details {
   display: flex;
   flex-direction: column;
@@ -261,11 +214,11 @@
 .combo-name {
   font-size: 32rpx;
   font-weight: bold;
-  color: #333;
+  color: rgb(128, 113, 113);
 }
 .combo-seat {
   margin-top: -15rpx;  
-  color: #000;
+  color: rgb(158, 148, 148);
   font-weight: 500;
 }
 .combo-arrival {
@@ -274,14 +227,14 @@
 }
 
 
-/* Card Footer (价格 - 预定订单 和 新门店订单 共用) */
+/* Card Footer (价格 - 预定订单 和 门店订单 共用) */
 .card-footer {
   display: flex;
   justify-content: flex-end;
   align-items: center;
   padding-right: 30rpx;
-  margin-top: 10rpx; /* 调整顶部间距 */
-  padding-bottom: 30rpx; /* 确保底部有足够的填充 */
+  margin-top: 10rpx;
+  padding-bottom: 30rpx;
 }
 .footer-price {
   display: flex;
@@ -296,7 +249,6 @@
   font-size: 30rpx;
   font-weight: bold;
   color: rgb(245, 12, 12);
-  /* 【修改】使用相对定位向下微调，解决视觉居中问题 */
   position: relative;
   top: 4rpx;  
 }
@@ -314,4 +266,126 @@
   text-align: center;
   color: #999;
   margin-top: 100rpx;
+}
+
+
+/* --- ⭐ 特调订单列表 (定制卡片主体样式 - 最终优化，负宽度价格回归) ⭐ --- */
+
+.cocktail-item-body-v2 {
+  display: flex;
+  align-items: flex-start;
+  padding: 0 30rpx 30rpx; 
+  height: 190rpx; 
+}
+
+.cover-image {
+  width: 170rpx;
+  height: 170rpx;
+  object-fit: cover;
+  border-radius: 10rpx;
+  margin-right: 20rpx;
+  flex-shrink: 0;
+}
+
+/* 【名称区域】特调名称和标签区域 - 设为 flex: 1，占据所有剩余空间 */
+.info-wide {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  
+  /* 【关键修改 1】使用 flex: 1 占据剩余空间，而不是固定宽度 */
+  flex: 1; 
+  width: auto; 
+  flex-shrink: 1; 
+  
+  height: 190rpx;
+  box-sizing: border-box;
+  justify-content: flex-start; 
+}
+
+.name {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #333;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 5rpx;
+}
+
+/* 标签容器样式 */
+.cocktail-item-body-v2 .tags {
+  display: flex;
+  flex-wrap: wrap; 
+  margin-bottom: 10rpx;
+  max-width: 100%; 
+  overflow: hidden;
+}
+
+/* 单个标签样式 */
+.cocktail-item-body-v2 .tag {
+  font-size: 20rpx;
+  color: #999;
+  background-color: #f0f0f0;
+  border-radius: 6rpx;
+  padding: 4rpx 10rpx;
+  margin-right: 10rpx;
+  margin-bottom: 5rpx;
+  flex-shrink: 0;
+  white-space: nowrap; 
+}
+
+/* 共xxml的文本样式 */
+.likes {
+  color: #999;
+  font-size: 24rpx;
+  position: static; 
+  width: auto;
+}
+
+
+/* 【价格区域】价格和件数区域 - 固定宽度减少，只占必要空间 */
+.actions-price-only {
+  position: relative;
+  display: flex;
+  flex-direction: column; 
+  align-items: flex-end; 
+  justify-content: flex-end; 
+  
+  /* 【关键修改 2】减少宽度，让 .info-wide 变宽 */
+  width: 150rpx; /* 调整为一个较小的固定宽度 */
+  flex-shrink: 0;
+  
+  height: 190rpx;
+}
+
+/* 件数信息在 actions 内的样式 */
+.item-count-in-actions {
+  margin-bottom: 5rpx;
+  font-size: 28rpx;
+  color: #999;
+  margin-right: 2rpx;
+}
+
+
+/* 【价格显示】特调订单价格显示 (核心：负宽度) */
+.footer-price-v2 {
+  position: static; 
+  
+  padding: 0;
+  margin: 0;
+  
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
+  width: 300rpx;
+  padding-right: 0;
+  
+  /* 【关键修改 3】添加负右外边距，允许其超出容器边界，防止数字被挤压 */
+  margin-right: 0rpx;
+}
+
+/* 隐藏原有的按钮容器 (WXML中已删除，此样式仅作最终保障) */
+.action-buttons {
+  display: none !important;
 }

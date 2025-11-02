@@ -1,12 +1,11 @@
 // /pages/myOrder/index.js
 Page({
   data: {
-    currentTab: 'store', // ⭐ 默认切换到门店订单
+    currentTab: 'store', // 默认切换到门店订单
     reserveOrders: [],
-    storeOrders: [], // ⭐ 门店订单列表
+    storeOrders: [], 
+    cocktailOrders: [], // 特调订单列表
     isLoading: false,
-    
-    // 移除门店订单分页状态 (storePageNum, storePageSize, storeTotal, storeHasMore)
     
     // 图片路径映射 (用于预定订单)
     imageMap: {
@@ -15,7 +14,7 @@ Page({
       '散台': 'cloud://cloud1-7gy6iiv5f0cbcb43.636c-cloud1-7gy6iiv5f0cbcb43-1379173903/素材/预约_散台.png',
       'default': 'cloud://cloud1-7gy6iiv5f0cbcb43.636c-cloud1-7gy6iiv5f0cbcb43-1379173903/素材/预约_散台.png' // 默认值
     },
-    // 门店订单：最大展示商品图片数量
+    // 门店/特调订单：最大展示商品图片数量
     MAX_PRODUCT_IMAGES: 3
   },
 
@@ -23,31 +22,34 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad() {
-    this.fetchStoreOrders(); // ⭐ 默认加载门店订单
+    // ⭐ 修正点：根据 currentTab 的默认值 'store' 来加载数据
+    this.fetchStoreOrders(); 
   },
   
-  /**
-   * 移除 onReachBottom 页面事件处理函数
-   */
-
   /**
    * 【新增】生命周期函数--监听页面显示
    * 每次页面被显示或从其他页面返回时触发，用于刷新列表数据。
    */
   onShow() {
-    // 如果列表为空，则重新加载数据
-    if (this.data.currentTab === 'store' && this.data.storeOrders.length === 0) {
+    // 检查刷新标记
+    var shouldRefresh = wx.getStorageSync('orderListShouldRefresh');
+    if (shouldRefresh) {
+      this.fetchCocktailOrders(); 
+      this.fetchStoreOrders();
+      this.fetchReserveOrders();
+      // 清除标记
+      wx.removeStorageSync('orderListShouldRefresh');
+    } 
+    
+    // 检查当前 Tab 的数据是否为空，如果为空则加载（应对 onLoad 只加载默认 Tab 的情况）
+    if (this.data.currentTab === 'cocktail' && this.data.cocktailOrders.length === 0) {
+      this.fetchCocktailOrders();
+    } else if (this.data.currentTab === 'store' && this.data.storeOrders.length === 0) {
+      // 这里的逻辑在 onLoad 失败时会执行，保持不变
       this.fetchStoreOrders();
     } else if (this.data.currentTab === 'reserve' && this.data.reserveOrders.length === 0) {
       this.fetchReserveOrders();
     }
-    var shouldRefresh = wx.getStorageSync('orderListShouldRefresh');
-    if (shouldRefresh) {
-      this.fetchStoreOrders();
-      this.fetchReserveOrders();
-      // ⭐ 清除标记，防止下次不必要的刷新
-      wx.removeStorageSync('orderListShouldRefresh');
-  }
   },
 
   switchTab(e) {
@@ -56,13 +58,15 @@ Page({
       this.setData({
         currentTab: newTab
       });
-      if (newTab === 'store') {
-        // 切换到门店订单，如果数据为空则加载
+      if (newTab === 'cocktail') { 
+        if (this.data.cocktailOrders.length === 0) {
+          this.fetchCocktailOrders();
+        }
+      } else if (newTab === 'store') {
         if (this.data.storeOrders.length === 0) {
           this.fetchStoreOrders();
         }
       } else if (newTab === 'reserve') {
-        // 切换到预定订单，如果数据为空则加载
         if (this.data.reserveOrders.length === 0) {
           this.fetchReserveOrders(); 
         }
@@ -71,7 +75,53 @@ Page({
   },
 
   
-  // ⭐ 核心函数：获取门店订单列表 (移除分页逻辑)
+  // 核心函数：获取特调订单列表
+  fetchCocktailOrders() {
+    if (this.data.isLoading) return;
+
+    this.setData({ isLoading: true });
+    wx.showLoading({ title: '加载特调订单...' });
+    
+    const userInfo = wx.getStorageSync('userInfo');
+    const userId = userInfo ? userInfo.userId : null;
+    if (!userId) {
+      wx.hideLoading();
+      this.setData({ isLoading: false, cocktailOrders: [] });
+      wx.showToast({ title: '请先登录', icon: 'none' });
+      return;
+    }
+
+    // 调用 getUserCocktailOrders 云函数
+    wx.cloud.callFunction({
+      name: 'getUserCocktailOrders', // 使用您指定的云函数名称
+      data: { 
+        userId: userId,
+      }
+    }).then(res => {
+      wx.hideLoading();
+      this.setData({ isLoading: false });
+
+      if (res.result && res.result.success) {
+        const rawOrders = res.result.data || [];
+        const processedOrders = rawOrders.map(order => this.processCocktailOrderData(order)); 
+        
+        this.setData({
+          cocktailOrders: processedOrders,
+        });
+
+      } else {
+        wx.showToast({ title: res.result.errMsg || '获取特调订单失败', icon: 'none' });
+        this.setData({ cocktailOrders: [] });
+      }
+    }).catch(err => {
+      wx.hideLoading();
+      this.setData({ isLoading: false });
+      console.error('获取特调订单网络错误:', err);
+      wx.showToast({ title: '网络请求失败', icon: 'none' });
+    });
+  },
+
+  // 核心函数：获取门店订单列表
   fetchStoreOrders() {
     if (this.data.isLoading) return;
 
@@ -87,12 +137,11 @@ Page({
       return;
     }
 
-    // 【修改点】调用 getUserMealOrders，不再传递分页参数
+    // 调用 getStoreOrders
     wx.cloud.callFunction({
-      name: 'getStoreOrders', // 修正云函数名称
+      name: 'getStoreOrders', // 假设云函数名称
       data: { 
         userId: userId,
-        // 移除 pageSize 和 pageNum
       }
     }).then(res => {
       wx.hideLoading();
@@ -102,7 +151,6 @@ Page({
         const rawOrders = res.result.data || [];
         const processedOrders = rawOrders.map(order => this.processStoreOrderData(order));
         
-        // 【修改点】直接覆盖数据，不进行 concate 拼接
         this.setData({
           storeOrders: processedOrders,
         });
@@ -119,7 +167,7 @@ Page({
     });
   },
 
-  // 核心函数：获取预定订单列表 (更名为 fetchReserveOrders) - 保持不变
+  // 核心函数：获取预定订单列表
   fetchReserveOrders() {
     if (this.data.isLoading) return;
 
@@ -144,7 +192,7 @@ Page({
 
       if (res.result && res.result.success) {
         const rawOrders = res.result.data || [];
-        const processedOrders = rawOrders.map(order => this.processReserveOrderData(order)); // 修正函数名
+        const processedOrders = rawOrders.map(order => this.processReserveOrderData(order));
         
         this.setData({
           reserveOrders: processedOrders
@@ -160,8 +208,51 @@ Page({
       wx.showToast({ title: '网络请求失败', icon: 'none' });
     });
   },
+  
+  // 格式化和处理特调订单数据 (已移除状态映射)
+  processCocktailOrderData(order) {
+    const createDate = new Date(order.createTime);
+    const totalAmount = parseFloat(order.totalAmount || order.payment?.totalAmount || 0);
 
-  // ⭐ 格式化和处理门店订单数据 (多商品展示) - 保持不变
+    // 特调订单的 products 字段可能包含一个或多个特调配方
+    const products = order.products || []; 
+    const displayProducts = (products).slice(0, this.data.MAX_PRODUCT_IMAGES).map(p => ({
+        // 特调订单中，商品图片可能存储在 p.image 字段
+        image: p.image || '默认图片URL' // 请替换为实际的默认图片URL
+    }));
+    
+    // 【修改点 1】不再将 '已支付' 映射为 '已完成'
+    const statusText = order.orderStatus || '未知状态'; 
+
+    // ⭐⭐⭐ 新增逻辑：从 products 中提取 tagList (取前5个 sampleName 或 name) ⭐⭐⭐
+    const productsArray = products && Array.isArray(products) ? products : []; 
+    
+    const tagList = productsArray
+        .slice(0, 5)
+        .map(p => p.sampleName || p.name) // 优先取 sampleName，其次取 name
+        .filter(Boolean); // 过滤掉空值
+    // ⭐⭐⭐ 新增逻辑结束 ⭐⭐⭐
+
+    return {
+      ...order,
+      orderStatus: statusText, // 使用原始状态
+      createTime: this.formatDate(createDate, 'yyyy-MM-dd hh:mm:ss'), 
+      displayProducts: displayProducts,
+      
+      // 新增 tagList 字段
+      tagList: tagList,
+      
+      // 特调订单可能有 recipeName 字段
+      recipeName: order.recipeName || '用户自定义特调', 
+      
+      payment: {
+        paidAmount: totalAmount.toFixed(2),
+        totalCount: order.totalCount || (products).reduce((sum, p) => sum + (p.quantity || 0), 0)
+      }
+    };
+  },
+
+  // 格式化和处理门店订单数据 (多商品展示) - (已移除状态映射)
   processStoreOrderData(order) {
     const createDate = new Date(order.createTime);
     const totalAmount = parseFloat(order.totalAmount || order.payment?.totalAmount || 0);
@@ -174,11 +265,12 @@ Page({
     
     const productNames = (products).map(p => p.name).join('、');
     
-    const statusText = order.orderStatus === '已支付' ? '已完成' : (order.orderStatus || '未知状态'); 
+    // 【修改点 2】不再将 '已支付' 映射为 '已完成'
+    const statusText = order.orderStatus || '未知状态'; 
 
     return {
       ...order,
-      orderStatus: statusText, 
+      orderStatus: statusText, // 使用原始状态
       createTime: this.formatDate(createDate, 'yyyy-MM-dd hh:mm:ss'), 
       displayProducts: displayProducts,
       productNames: productNames, 
@@ -229,7 +321,7 @@ Page({
     };
   },
 
-  // 日期格式化工具函数 (保持不变)
+  // 日期格式化工具函数 - 保持不变
   formatDate(date, fmt) {
       const o = {
           'M+': date.getMonth() + 1, 'd+': date.getDate(), 'h+': date.getHours(),
@@ -247,16 +339,19 @@ Page({
   },
 
   /**
-   * 跳转到订单详情页 (需要区分门店和预定)
+   * 跳转到订单详情页 (需要区分特调/门店/预定) - 保持不变
    */
   goToDetail(e) {
     const orderId = e.currentTarget.dataset.id;
-    const type = e.currentTarget.dataset.type; // 'store' 或 'reserve'
+    const type = e.currentTarget.dataset.type; // 'cocktail', 'store' 或 'reserve'
     
     if (orderId) {
         let url;
-        if (type === 'store') {
-            // 假设门店订单详情页路径是 /pages/meal/food/bill/index
+        if (type === 'cocktail') {
+            // 假设特调订单详情页路径是 /pages/cocktail/detail/index
+            url = `/pages/cocktail/choose/pay/index?orderId=${orderId}`; 
+        } else if (type === 'store') {
+            // 门店订单详情页路径
             url = `/pages/meal/food/bill/index?orderId=${orderId}`;
         } else {
             // 预定订单详情页路径

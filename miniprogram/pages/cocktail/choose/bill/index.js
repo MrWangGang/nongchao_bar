@@ -33,7 +33,7 @@ Page({
         loading: true,
         showAllProducts: false,
         personCount: 2,
-        tableNumber: 23,
+        tableNumber: 23, // 保持在 data 中，但不再用于下单
 
         orderItems: [],
         totalCount: 0,
@@ -43,6 +43,11 @@ Page({
         remark: '',
         uploadedImages: [],
         isSubmitting: false, // 控制按钮状态
+        orderStatusMap: {
+            '待支付': { title: '待支付', tip: '请在指定时间内完成支付' },
+            '已支付': { title: '订单已支付', tip: '商家正在准备您的商品' },
+            // 添加其他可能的订单状态...
+        }
     },
 
     copyOrderNo() {
@@ -139,9 +144,88 @@ Page({
             });
         }
     },
-
+    
     // ------------------------------------------------
-    // 🚀 模拟支付逻辑
+    // 🚀 下单函数 (已移除 seatInfo 传递)
+    // ------------------------------------------------
+    payNow: function () {
+      // 1. 获取 userId
+      const userInfo = wx.getStorageSync('userInfo') || {};
+      const userId = userInfo.userId || userInfo.openid;
+      
+      const { orderItems, totalAmount, totalCount, recipeName, remark, uploadedImages } = this.data; // 移除了 tableNumber
+      
+      // 关键校验：确保用户ID和订单数据存在
+      if (!userId) {
+          wx.showToast({ title: '用户身份信息缺失，请登录或重试', icon: 'none' });
+          return;
+      }
+      if (orderItems.length === 0 || !totalAmount) {
+          wx.showToast({ title: '订单商品或金额信息缺失', icon: 'none' });
+          return;
+      }
+
+      this.setData({ isSubmitting: true });
+      wx.showLoading({ title: `正在创建订单...` });
+      
+      // 准备发给云函数的数据
+      const productsToSend = orderItems;
+
+      wx.cloud.callFunction({
+          name: 'createCocktailOrder', // 调用下单云函数
+          data: {
+              userId: userId, 
+              products: productsToSend, // 直接传递完整的商品对象数组
+              totalAmount: totalAmount,
+              totalCount: totalCount,
+              recipeName: recipeName,
+              remark: remark,
+              uploadedImages: uploadedImages,
+              // *** 移除了 seatInfo 传递 ***
+              orderStatus: '待支付' // 保持状态为待支付
+          },
+          success: (res) => {
+              wx.hideLoading();
+              this.setData({ isSubmitting: false });
+              
+              const result = res.result;
+              if (result.success) {
+                  const newOrderId = result.data._id;
+                  const orderNo = result.data.orderNo;
+                  
+                  
+                  console.log(`订单创建成功，ID: ${newOrderId}，订单号: ${orderNo}，状态：待支付`);
+                  
+                  // 订单创建成功后：
+                  setTimeout(() => { 
+                      // 设置刷新标记
+                      this.setRefreshFlag(); 
+                      // 跳转到支付页或订单详情页
+                      wx.redirectTo({
+                        url: '/pages/cocktail/choose/pay/index?orderId='+newOrderId,
+                      }); 
+                  }, 1000); 
+
+              } else {
+                  // 云函数会返回用户有待支付订单的错误提示
+                  wx.showModal({ 
+                      title: '下单失败', 
+                      content: result.errMsg || '请稍后再试', 
+                      showCancel: false 
+                  });
+              }
+          },
+          fail: (err) => {
+              wx.hideLoading();
+              this.setData({ isSubmitting: false });
+              console.error('调用下单云函数失败', err);
+              wx.showToast({ title: '网络错误，下单失败', icon: 'none' });
+          }
+      });
+  },
+    
+    // ------------------------------------------------
+    // 🚀 模拟支付逻辑 (旧的，通常应该移除或重命名)
     // ------------------------------------------------
     mockPayNow: function () {
         const { orderDetail, totalAmount } = this.data;
@@ -197,4 +281,9 @@ Page({
     setRefreshFlag: function() {
       wx.setStorageSync('orderListShouldRefresh', true);
     },
+    // 匹配 WXML 中的取消按钮
+    cancelOrder: function() {
+        wx.showToast({ title: '取消订单功能待实现', icon: 'none' });
+        // TODO: 调用云函数更新订单状态为 '已取消'
+    }
 });

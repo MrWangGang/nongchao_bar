@@ -1,0 +1,426 @@
+/* /pages/orderConfirm/orderConfirm.wxss */
+page {
+  background-color: #f7f7f7;
+}
+
+/* --------------- 容器调整 --------------- */
+.container {
+  padding: 0 20rpx;
+  /* 移除底部 padding，因为底部栏被移除 */
+  padding-bottom: 30rpx; 
+  /* 顶部留出空间给浮动卡片 */
+  padding-top: 180rpx; 
+  position: relative;
+}
+
+/* --------------- 顶部状态卡片样式 (新增) --------------- */
+
+.status-card-positioner {
+  position: absolute;
+  top: 0;
+  left: 20rpx; 
+  right: 20rpx;
+  /* 向上偏移使其在顶部浮动 */
+  transform: translateY(30rpx);
+  z-index: 10;
+}
+
+.status-card-wrapper {
+  width: 100%;
+  height: auto;
+  position: relative;
+  z-index: 10;
+}
+
+.status-card {
+  background-color: white;
+  border-radius: 16rpx;
+  box-shadow: 0 4rpx 15rpx rgba(0, 0, 0, 0.1); 
+  text-align: center;
+  /* 确保高度足够容纳内容 */
+  min-height: 200rpx; 
+  background-color: #f7f2f2;
+}
+
+.status-content {
+  padding: 30rpx; 
+  box-sizing: border-box;
+}
+
+.status-main {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 10rpx; 
+}
+
+.status-title {
+  font-size: 34rpx; 
+  font-weight: bold; 
+  color: #e64340; 
+  line-height: 1.2;
+}
+
+.status-timer {
+  font-size: 34rpx;
+  font-weight: bold;
+  color: #e64340;
+  margin-left: 20rpx;
+}
+
+.status-tip {
+  font-size: 24rpx;
+  color: #999;
+  margin-bottom: 20rpx; 
+  line-height: 1.4;
+}
+
+.status-actions {
+  display: flex;
+  justify-content: center;
+  gap: 30rpx;
+}
+
+.action-btn {
+  box-sizing: border-box;
+  font-size: 28rpx;
+  height: 64rpx; 
+  line-height: 35rpx; /* 修复了原来的 line-height: 35rpx */
+  border-radius: 12rpx; 
+  margin: 0;
+  font-weight: normal;
+  width: 220rpx !important; 
+}
+
+.action-btn-cancel {
+  background-color: white;
+  color: rgb(255, 9, 9);
+  border: 1rpx solid #f10707; 
+}
+
+.action-btn-pay {
+  background-color: #e28935; 
+  color: white;
+  border: none;
+}
+
+/* --------------- 订单卡片样式 (调整 margin-top) --------------- */
+.order-card {
+  background-color: #fff;
+  border-radius: 20rpx;
+  padding: 25rpx; 
+  box-shadow: 0 5rpx 20rpx rgba(0, 0, 0, 0.05);
+  /* 调整 margin-top，因为容器顶部已留出空间 */
+  margin-top: 150rpx; /* 靠近顶部卡片 */
+  width: 100%; 
+  box-sizing: border-box;
+}
+
+/* --------------- 配方名称卡片样式 【新增样式】--------------- */
+.recipe-name-card {
+  background-color: #fff;
+  border-radius: 15rpx;
+  padding: 25rpx 30rpx;
+  box-shadow: 0 5rpx 20rpx rgba(0, 0, 0, 0.05);
+  margin-top: 30rpx; 
+  width: 100%; 
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+}
+
+.recipe-name-display {
+  flex-grow: 1;
+  font-size: 32rpx;
+  color: #333;
+}
+
+.recipe-name-input {
+  flex-grow: 1;
+  font-size: 32rpx;
+  height: 60rpx;
+  line-height: 1.5;
+}
+
+/* --------------- 备注区域 (左备注 + 右图片) --------------- */
+.remark-card {
+  background-color: #fff;
+  margin: 20rpx 0; 
+  border-radius: 15rpx;
+  padding: 25rpx 30rpx;
+  box-shadow: 0 15rpx 20rpx rgba(0, 0, 0, 0.05);
+  background-color: #ffffff;
+  margin-top: 30rpx !important;
+  width: 100%; 
+  box-sizing: border-box;
+
+  display: flex;
+  justify-content: space-between; 
+  align-items: flex-start; 
+  min-height: 150rpx;
+}
+
+/* 左侧：备注文本容器 */
+.remark-left {
+  flex: 6; 
+  margin-right: 30rpx; 
+  overflow: hidden;
+}
+
+.remark-display {
+  font-size: 30rpx;
+  line-height: 1.5;
+  min-height: 60rpx;
+  color: #333;
+}
+
+/* 右侧：图片上传/预览区域 */
+.remark-right {
+  flex: 4; 
+  flex-shrink: 0; 
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start; 
+  align-items: flex-end; 
+  
+  min-width: 150rpx; 
+}
+
+/* 【关键新增】统一的上传/预览区域尺寸容器，控制大小 */
+.upload-area-wrapper {
+  width: 220rpx;
+  height: 220rpx; 
+  position: relative;
+}
+
+/* 上传按钮样式 */
+.upload-btn {
+  width: 100%;
+  height: 100%; 
+  border: 5rpx dashed rgb(165, 155, 155); 
+  border-radius: 8rpx;
+  display: flex;
+  flex-direction: column; 
+  justify-content: center; 
+  align-items: center; 
+  color: rgb(160, 148, 148);
+  background-color: transparent;
+  opacity: 0.9;
+}
+
+.plus-icon {
+  font-size: 80rpx;
+  line-height: 1;
+}
+
+.upload-text {
+  font-size: 24rpx;
+}
+
+/* 单个已上传图片预览容器 */
+.uploaded-image-wrapper {
+  width: 100%; 
+  height: 100%;
+  position: absolute; 
+  top: 0;
+  left: 0;
+  border-radius: 8rpx;
+  overflow: hidden;
+  box-shadow: 0 0 5rpx rgba(0, 0, 0, 0.2); 
+}
+
+.uploaded-image {
+  width: 100%;
+  height: 100%;
+}
+
+/* 移除不再需要的旧样式 */
+.remark-label {
+  display: none; 
+}
+.remark-input {
+  display: none;
+}
+
+
+/* --------------- 商品列表滚动容器 (固定高度) --------------- */
+.product-list-scroll {
+  max-height: 800rpx;
+  overflow: hidden;
+}
+
+/* 商品列表容器 (内部内容需要左右 padding) */
+.product-list {
+  padding: 0 30rpx;
+}
+
+/* --------------- 商品列表项 --------------- */
+.product-item {
+  display: flex;
+  padding: 20rpx 0;
+  border-bottom: 1rpx solid #eee;
+}
+.product-list .product-item:last-child {
+  border-bottom: none; 
+}
+
+/* 图片容器，用于定位标签 */
+.product-image-wrapper {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 8rpx;
+  margin-right: 20rpx;
+  position: relative; 
+  overflow: hidden;
+}
+
+.product-image {
+  width: 100%;
+  height: 100%;
+}
+
+/* sampleName 标签样式 */
+.product-sample-name-badge.order-confirm-badge {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: rgba(15, 12, 12, 0.8);
+  color: #fff;
+  font-size: 20rpx;
+  padding: 4rpx 8rpx;
+  border-bottom-right-radius: 8rpx; 
+  white-space: nowrap;
+  max-width: 100%; 
+  overflow: hidden; 
+  text-overflow: ellipsis;
+  z-index: 10; 
+}
+
+
+.product-info {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.product-name {
+  font-size: 30rpx;
+  color: #333;
+  font-weight: 500;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  max-width: 350rpx;
+}
+
+.product-spec-row {
+  margin-top: 8rpx;
+}
+
+.product-spec {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.product-price-quantity {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: center;
+  min-width: 150rpx;
+}
+
+.product-price {
+  font-size: 28rpx;
+  color: rgb(241, 108, 108);
+}
+
+.product-quantity {
+  font-size: 24rpx;
+  color: #666;
+  margin-top: 8rpx;
+}
+
+/* --------------- 总结行 --------------- */
+.summary {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 0rpx 30rpx;
+  font-size: 28rpx;
+  color: #666;
+  margin-top: 60rpx;
+}
+
+.summary-total {
+  font-size: 30rpx;
+  font-weight: bold;
+  color: #cf2c24; 
+  margin-left: 10rpx;
+}
+
+/* --------------- 底部栏样式 (全部移除) --------------- */
+.footer-bar-placeholder, .footer-bar {
+  display: none !important;
+}
+
+/* ============================================== */
+/* 💥 新增：通用信息卡片和行样式 💥 */
+/* ============================================== */
+.info-card {
+  background-color: white;
+  border-radius: 16rpx;
+  padding: 30rpx;
+  box-shadow: 0 4rpx 15rpx rgba(0, 0, 0, 0.08); 
+  margin-top: 20rpx; /* 与上一个卡片留白 */
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.card-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  margin-bottom: 20rpx;
+  color: #333;
+}
+
+.info-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15rpx;
+  font-size: 28rpx;
+}
+
+.info-row:last-child {
+  margin-bottom: 0;
+}
+
+.info-label {
+  width: 150rpx;
+  flex-shrink: 0;
+  color: #999;
+}
+
+.info-value {
+  flex-grow: 1;
+  text-align: left;
+  color: #333; 
+  font-weight: 500;
+  word-break: break-all;
+}
+
+.copy-btn {
+  color: #e64340;
+  margin-left: 20rpx;
+  font-weight: normal;
+  flex-shrink: 0;
+  padding: 0 5rpx;
+}
+
+.safe-area-bottom-placeholder {
+  /* 固定的底部留白，用于在没有安全区支持时的通用留白 */
+  height: 30rpx; 
+  /* 针对刘海屏或全面屏底部导航区的高度适配 */
+  padding-bottom: env(safe-area-inset-bottom);
+}
