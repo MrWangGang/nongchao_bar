@@ -4,3 +4,5 @@
     <button class="scan-button" bind:tap="scanCode">去扫码</button>
   </view>
 </view>
+
+<authorize></authorize>

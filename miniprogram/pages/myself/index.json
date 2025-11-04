@@ -1,6 +1,5 @@
 {
-  "navigationBarTitleText": "弄潮酒吧",
-  "usingComponents": {
-  },
-  "navigationStyle": "custom"
+  "navigationBarTitleText": "我的",
+  "navigationBarBackgroundColor": "#ffffff",
+  "usingComponents": {}
 }

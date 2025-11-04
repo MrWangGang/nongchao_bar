@@ -1,42 +1,265 @@
-/* pages/开发中页面/index.wxss */
+/* pages/home/home.wxss */
 
+/* 全局背景 */
 .container {
+  background-color: #f5f5f5;
+  min-height: 100vh;
+}
+
+/* 顶部渐变背景，实现拉伸效果 */
+.gradient-bg-top {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  /* 高度在 WXML 中动态计算 */
+  background: linear-gradient(to bottom, #ff5e4d, #ff9580); 
+  z-index: 0;
+}
+
+/* 内容包裹层，确保所有内容都在导航栏下方 */
+.content-wrapper {
+  position: relative;
+  z-index: 1; /* 确保内容在背景之上 */
+  padding-bottom: 50rpx;
+}
+
+/* --- 1. 顶部自定义导航栏 --- */
+.custom-nav-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  /* 保持透明，让背景的 gradient-bg-top 透过 */
+  background-color: transparent; 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  z-index: 10; 
+}
+.page-title {
+  font-size: 34rpx;
+  font-weight: bold;
+}
+.header-icons {
+  position: absolute;
+  right: 30rpx;
+  display: flex;
+  /* top 定位在 WXML 中计算 */
+}
+.header-icon-img {
+  width: 50rpx;
+  height: 50rpx;
+  margin-left: 20rpx;
+}
+
+/* --- 2. 个人信息区 (向上移动，位于渐变背景上) --- */
+.user-info-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 40rpx 40rpx;
+  color: #fff;
+  /* 配合 content-wrapper 的 padding-top 实现定位 */
+  margin-top: -100rpx; 
+}
+.user-profile {
+  display: flex;
+  align-items: center;
+}
+.avatar {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 50%;
+  margin-right: 20rpx;
+  border: 4rpx solid rgba(255, 255, 255, 0.5);
+}
+.user-detail {
+  display: flex;
+  flex-direction: column;
+}
+.username {
+  font-size: 36rpx;
+  font-weight: bold;
+}
+.tip-text {
+  font-size: 24rpx;
+  opacity: 0.9;
+}
+.login-btn {
+  font-size: 26rpx;
+  line-height: 60rpx;
+  padding: 0 25rpx;
+  background-color: #fff;
+  color: #ff5e4d;
+  border-radius: 30rpx;
+  white-space: nowrap;
+  height: 60rpx;
+  border: none;
+  margin: 0;
+}
+
+/* --- 3. 会员等级/经验值区 --- */
+.member-level-section {
+  padding: 0 30rpx; 
+  margin-top: 30rpx;
+  z-index: 1;
+}
+.level-bar-box {
+  /* 黑色透明背景 */
+  background-color: rgba(0, 0, 0, 0.6); 
+  border-radius: 16rpx;
+  padding: 20rpx;
+  color: #fff;
+  box-shadow: 0 4rpx 10rpx rgba(0, 0, 0, 0.2);
+}
+.level-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10rpx;
+}
+.level-title {
+  font-size: 30rpx;
+  font-weight: bold;
+}
+.member-rights-link {
+  font-size: 26rpx;
+  opacity: 0.9;
+}
+/* 进度条样式 */
+.progress-bar-container {
+  height: 10rpx;
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 5rpx;
+  overflow: hidden;
+  margin: 10rpx 0;
+}
+.progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(to right, #ffc107, #ff9800); 
+  border-radius: 5rpx;
+}
+.level-stats {
+  display: flex;
+  align-items: center;
+  font-size: 24rpx;
+  margin-top: 5rpx;
+}
+.current-value {
+  font-weight: bold;
+  margin-right: 10rpx;
+}
+.required-value {
+  flex-grow: 1;
+  opacity: 0.8;
+}
+.qrcode-icon {
+  width: 40rpx;
+  height: 40rpx;
+  margin-left: 20rpx;
+}
+
+
+/* --- 4. 功能图标区 --- */
+.function-icons-section {
+  display: flex;
+  justify-content: space-around;
+  background-color: #fff;
+  padding: 30rpx 0;
+  margin: 30rpx 30rpx;
+  border-radius: 16rpx;
+  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.05);
+}
+.icon-item {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  height: 100vh; /* 占满整个屏幕高度 */
-  background-color: #f8f8f8; /* 轻微的背景色 */
-  padding: 0 40rpx;
-  box-sizing: border-box;
+  width: 25%;
 }
-
-.icon-loading {
-  width: 160rpx; /* 图标或图片的宽度 */
-  height: 160rpx; /* 图标或图片的高度 */
-  margin-bottom: 20rpx;
+.icon-image {
+  width: 60rpx;
+  height: 60rpx;
+  margin-bottom: 10rpx;
 }
-
-.status-title {
-  font-size: 36rpx;
+.icon-text {
+  font-size: 24rpx;
   color: #333;
-  font-weight: bold;
-  margin-bottom: 20rpx;
 }
 
-.status-subtitle {
-  font-size: 28rpx;
-  color: #999;
-  margin-bottom: 80rpx;
+/* --- 5. 排行榜 TOP3 区 --- */
+.rank-top3-section {
+  position: relative;
+  padding: 0 30rpx;
+  margin-top: 30rpx;
+}
+.rank-title {
+  display: block;
   text-align: center;
+  font-size: 30rpx;
+  font-weight: bold;
+  color: #ff5e4d;
+  margin-bottom: 20rpx;
+  padding: 10rpx 0;
+  background-color: #fff0f0; 
+  border-radius: 10rpx;
+  border-bottom: 1rpx solid #ffdcdc;
+}
+.rank-bg-image {
+  width: 100%;
+  height: auto;
+  display: block;
 }
 
-.back-home-btn {
-  width: 80%;
-  background-color: #ec650a; /* 使用您的主题色 */
-  color: white;
-  border-radius: 15rpx;
-  font-size: 32rpx;
-  line-height: 56rpx;
-  height: 90rpx;
+.rank-list-overlay {
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-end;
+  position: absolute;
+  top: 50%;
+  width: 90%;
+  left: 50%;
+  transform: translate(-50%, -20%); 
+  z-index: 2;
+}
+.rank-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #333;
+  width: 30%;
+}
+.rank-1 {
+  margin-top: -60rpx; 
+}
+.rank-img {
+  width: 120rpx;
+  height: 120rpx;
+  margin-bottom: 10rpx;
+}
+.rank-2 .rank-img, .rank-3 .rank-img {
+  width: 100rpx;
+  height: 100rpx;
+}
+.rank-1 .rank-img {
+  width: 140rpx;
+  height: 140rpx;
+  border: 6rpx solid #ffc107;
+  border-radius: 50%;
+  box-shadow: 0 0 10rpx #ffc107;
+}
+.rank-username {
+  font-size: 24rpx;
+  margin-top: 5rpx;
+}
+.rank-score {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #333;
+}
+.score-highlight {
+  font-size: 36rpx;
+  font-weight: 900;
+  color: #ff5e4d;
 }
