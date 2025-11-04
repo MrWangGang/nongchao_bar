@@ -1,265 +1,223 @@
-/* pages/home/home.wxss */
-
-/* 全局背景 */
+/* =================================================== */
+/* GLOBAL/CONTAINER STYLES */
+/* =================================================== */
 .container {
-  background-color: #f5f5f5;
+  background-color: #f7f8fa;
   min-height: 100vh;
+  box-sizing: border-box;
+  position: relative;
 }
 
-/* 顶部渐变背景，实现拉伸效果 */
-.gradient-bg-top {
+/* Background Image Container (z-index 0) */
+.background-image-container {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
-  /* 高度在 WXML 中动态计算 */
-  background: linear-gradient(to bottom, #ff5e4d, #ff9580); 
   z-index: 0;
+  height: 600rpx; /* Height for top area */
+  overflow: hidden;
 }
 
-/* 内容包裹层，确保所有内容都在导航栏下方 */
-.content-wrapper {
-  position: relative;
-  z-index: 1; /* 确保内容在背景之上 */
-  padding-bottom: 50rpx;
-}
-
-/* --- 1. 顶部自定义导航栏 --- */
-.custom-nav-bar {
-  position: fixed;
-  top: 0;
-  left: 0;
+.background-image {
   width: 100%;
-  /* 保持透明，让背景的 gradient-bg-top 透过 */
-  background-color: transparent; 
+  height: auto;
+}
+
+/* =================================================== */
+/* USER CARD AREA (z-index 10) */
+/* =================================================== */
+.user-card {
+  /* padding-top 在 wxml 中动态设置 */
+  padding-right: 40rpx;
+  padding-bottom: 40rpx;
+  padding-left: 40rpx;
+  background: transparent;  
+  position: relative;
+  z-index: 10;
+  margin-bottom: 24rpx;
+}
+
+.user-main-info {
+  display: flex;
+  align-items: center;
+  margin-bottom: 40rpx;
+  margin-top: 80rpx; 
+}
+
+.user-avatar {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 50%;
+  margin-right: 24rpx;
+  border: 4rpx solid #fff;
+  flex-shrink: 0;
+}
+
+.name-phone {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  min-width: 0;
+}
+
+.user-name {
+  font-size: 40rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 8rpx;
+}
+
+.user-phone {
+  font-size: 28rpx;
+  color: #999;
+}
+.empty-text {
+  color: #9c8b8b; /* 提示用户完善信息 */
+}
+
+
+.nav-buttons {
+  display: flex;
+  margin-left: auto; /* 推到最右边 */
+  flex-shrink: 0;
+}
+
+.nav-button {
+  width: 60rpx;
+  height: 60rpx;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #fff;
-  z-index: 10; 
-}
-.page-title {
-  font-size: 34rpx;
-  font-weight: bold;
-}
-.header-icons {
-  position: absolute;
-  right: 30rpx;
-  display: flex;
-  /* top 定位在 WXML 中计算 */
-}
-.header-icon-img {
-  width: 50rpx;
-  height: 50rpx;
   margin-left: 20rpx;
 }
 
-/* --- 2. 个人信息区 (向上移动，位于渐变背景上) --- */
-.user-info-section {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 40rpx 40rpx;
-  color: #fff;
-  /* 配合 content-wrapper 的 padding-top 实现定位 */
-  margin-top: -100rpx; 
-}
-.user-profile {
-  display: flex;
-  align-items: center;
-}
-.avatar {
-  width: 120rpx;
-  height: 120rpx;
-  border-radius: 50%;
-  margin-right: 20rpx;
-  border: 4rpx solid rgba(255, 255, 255, 0.5);
-}
-.user-detail {
-  display: flex;
-  flex-direction: column;
-}
-.username {
-  font-size: 36rpx;
-  font-weight: bold;
-}
-.tip-text {
-  font-size: 24rpx;
-  opacity: 0.9;
-}
-.login-btn {
-  font-size: 26rpx;
-  line-height: 60rpx;
-  padding: 0 25rpx;
-  background-color: #fff;
-  color: #ff5e4d;
-  border-radius: 30rpx;
-  white-space: nowrap;
-  height: 60rpx;
-  border: none;
-  margin: 0;
-}
-
-/* --- 3. 会员等级/经验值区 --- */
-.member-level-section {
-  padding: 0 30rpx; 
-  margin-top: 30rpx;
-  z-index: 1;
-}
-.level-bar-box {
-  /* 黑色透明背景 */
-  background-color: rgba(0, 0, 0, 0.6); 
-  border-radius: 16rpx;
-  padding: 20rpx;
-  color: #fff;
-  box-shadow: 0 4rpx 10rpx rgba(0, 0, 0, 0.2);
-}
-.level-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 10rpx;
-}
-.level-title {
-  font-size: 30rpx;
-  font-weight: bold;
-}
-.member-rights-link {
-  font-size: 26rpx;
-  opacity: 0.9;
-}
-/* 进度条样式 */
-.progress-bar-container {
-  height: 10rpx;
-  background-color: rgba(255, 255, 255, 0.2);
-  border-radius: 5rpx;
-  overflow: hidden;
-  margin: 10rpx 0;
-}
-.progress-bar-fill {
-  height: 100%;
-  background: linear-gradient(to right, #ffc107, #ff9800); 
-  border-radius: 5rpx;
-}
-.level-stats {
-  display: flex;
-  align-items: center;
-  font-size: 24rpx;
-  margin-top: 5rpx;
-}
-.current-value {
-  font-weight: bold;
-  margin-right: 10rpx;
-}
-.required-value {
-  flex-grow: 1;
-  opacity: 0.8;
-}
-.qrcode-icon {
+.nav-icon {
   width: 40rpx;
   height: 40rpx;
-  margin-left: 20rpx;
+}
+
+/* =================================================== */
+/* VIP CARD AREA */
+/* =================================================== */
+/* VIP CARD AREA */
+.vip-banner {
+  /* 核心修改点：使用 RGBA 格式来设置背景色和透明度 */
+  /* 原始色 #333333 的 RGB 为 (51, 51, 51) */
+  background-color: rgba(51, 51, 51, 0.7); /* 0.8 表示 80% 不透明度 */
+  
+  /* 渐变色也需要相应调整透明度，或直接移除渐变 */
+  /* 如果要保留渐变，也需使用 RGBA: */
+  background-image: linear-gradient(to right, rgba(51, 51, 51, 0.8), rgba(85, 85, 85, 0.8)); /* 85, 85, 85 是 #555555 的 RGB */
+  
+  border-radius: 20rpx;
+  padding: 30rpx 40rpx;
+  color: #fff;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.1);
+}
+
+.vip-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20rpx;
+}
+
+.vip-info {
+    display: flex;
+    align-items: baseline;
+}
+
+.vip-level {
+    font-size: 28rpx;
+    color: #f0e68c; /* 浅金色 */
+    margin-right: 15rpx;
+}
+
+.vip-text {
+    font-size: 36rpx;
+    font-weight: bold;
+    color: #ffd700; /* 金色 */
+}
+
+.vip-rights {
+    display: flex;
+    align-items: center;
+    font-size: 28rpx;
+    color: rgb(255, 255, 255);
+    padding: 10rpx 20rpx;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 20rpx;
+}
+
+.vip-rights .arrow {
+    margin-left: 8rpx;
+    font-size: 24rpx;
+}
+
+.vip-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+}
+
+.progress-area {
+    flex-grow: 1;
+    margin-right: 30rpx;
+}
+
+/* 经验值文本组 */
+.exp-text-group {
+    display: flex;
+    align-items: baseline; /* 保持数字和文字底部对齐 */
+    margin-bottom: 8rpx;
+}
+
+/* 放大当前累计经验值 */
+.exp-current-value {
+    font-size: 48rpx; /* 显著放大 */
+    font-weight: bold;
+    color: #ffffff; 
+    line-height: 1; /* 确保垂直对齐正常 */
+    margin-right: 10rpx;
+}
+
+/* 下一级提示 */
+.exp-next-level {
+    font-size: 24rpx; 
+    color: #ccc;
+    line-height: 1;
 }
 
 
-/* --- 4. 功能图标区 --- */
-.function-icons-section {
-  display: flex;
-  justify-content: space-around;
-  background-color: #fff;
-  padding: 30rpx 0;
-  margin: 30rpx 30rpx;
-  border-radius: 16rpx;
-  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.05);
-}
-.icon-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 25%;
-}
-.icon-image {
-  width: 60rpx;
-  height: 60rpx;
-  margin-bottom: 10rpx;
-}
-.icon-text {
-  font-size: 24rpx;
-  color: #333;
+/* 进度条 */
+.progress-bar-container {
+    height: 10rpx;
+    background-color: rgba(255, 255, 255, 0.3);
+    border-radius: 5rpx;
+    overflow: hidden;
 }
 
-/* --- 5. 排行榜 TOP3 区 --- */
-.rank-top3-section {
-  position: relative;
-  padding: 0 30rpx;
-  margin-top: 30rpx;
-}
-.rank-title {
-  display: block;
-  text-align: center;
-  font-size: 30rpx;
-  font-weight: bold;
-  color: #ff5e4d;
-  margin-bottom: 20rpx;
-  padding: 10rpx 0;
-  background-color: #fff0f0; 
-  border-radius: 10rpx;
-  border-bottom: 1rpx solid #ffdcdc;
-}
-.rank-bg-image {
-  width: 100%;
-  height: auto;
-  display: block;
+.progress-bar {
+    height: 100%;
+    background-color: #ffd700; /* 进度条颜色 */
+    transition: width 0.3s ease-in-out;
+    border-radius: 5rpx;
 }
 
-.rank-list-overlay {
-  display: flex;
-  justify-content: space-around;
-  align-items: flex-end;
-  position: absolute;
-  top: 50%;
-  width: 90%;
-  left: 50%;
-  transform: translate(-50%, -20%); 
-  z-index: 2;
+/* 二维码占位符 */
+.qr-code-placeholder {
+    width: 60rpx;
+    height: 60rpx;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 10rpx;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
-.rank-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  color: #333;
-  width: 30%;
-}
-.rank-1 {
-  margin-top: -60rpx; 
-}
-.rank-img {
-  width: 120rpx;
-  height: 120rpx;
-  margin-bottom: 10rpx;
-}
-.rank-2 .rank-img, .rank-3 .rank-img {
-  width: 100rpx;
-  height: 100rpx;
-}
-.rank-1 .rank-img {
-  width: 140rpx;
-  height: 140rpx;
-  border: 6rpx solid #ffc107;
-  border-radius: 50%;
-  box-shadow: 0 0 10rpx #ffc107;
-}
-.rank-username {
-  font-size: 24rpx;
-  margin-top: 5rpx;
-}
-.rank-score {
-  font-size: 28rpx;
-  font-weight: bold;
-  color: #333;
-}
-.score-highlight {
-  font-size: 36rpx;
-  font-weight: 900;
-  color: #ff5e4d;
+
+.qr-icon {
+    width: 60rpx;
+    height: 60rpx;
+    filter: invert(0%); /* 假设图标是黑色的，反色以适应深色背景 */
 }

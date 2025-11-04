@@ -1,88 +1,51 @@
-<view class="container">
-
-<view class="custom-nav-bar" style="padding-top: {{statusBarHeight}}px; height: 44px;">
-    <text class="page-title">我的</text>
-    <view class="header-icons" style="height: {{menuButtonHeight}}px; top: {{statusBarHeight + (44-menuButtonHeight)/2}}px;">
-        <image src="/images/icon_more_dots.png" class="header-icon-img" mode="aspectFit"></image>
-        <image src="/images/icon_qrcode_header.png" class="header-icon-img" mode="aspectFit"></image>
-    </view>
-</view>
-
-<view class="gradient-bg-top" style="height: calc({{statusBarHeight}}px + 44px + 100rpx);"></view>
-<view class="content-wrapper" style="padding-top: calc({{statusBarHeight}}px + 44px);">
-
-    <view class="user-info-section" bindtap="onMemberCardClick">
-        <view class="user-profile">
-            <image class="avatar" src="{{userInfo ? userInfo.avatar : '/images/default_avatar.png'}}" mode="aspectFill"></image>
-            <view class="user-detail">
-                <text class="username">{{userInfo ? userInfo.name : '神秘用户'}}</text>
-                <text class="tip-text">为提供更好的服务请授权登录</text>
+<scroll-view class="container" scroll-y>
+    <view class="user-card">
+        <view class="user-main-info">
+            <image class="user-avatar" src="{{userInfo.avatar}}" mode="aspectFill"></image>
+            <view class="name-phone">
+                <text class="user-name">{{userInfo.name}}</text>
+                <block wx:if="{{userInfo.phone}}">
+                    <text class="user-phone">{{userInfo.phone}}</text>
+                </block>
+                <block wx:else>
+                    <text class="user-phone empty-text">请完善个人信息</text>
+                </block>
+            </view>
+            <view class="nav-buttons">
+                <view class="nav-button" bindtap="goToEditProfile"><image class="nav-icon" src="cloud://cloud1-7gy6iiv5f0cbcb43.636c-cloud1-7gy6iiv5f0cbcb43-1379173903/素材/myself_button_edit.png"></image></view>
+                <view class="nav-button" bindtap="goToSettings"><image class="nav-icon" src="cloud://cloud1-7gy6iiv5f0cbcb43.636c-cloud1-7gy6iiv5f0cbcb43-1379173903/素材/myself_button_setting.png"></image></view>
             </view>
         </view>
         
-        <button wx:if="{{!userInfo}}" class="login-btn" bindtap="onLoginTap">登录/注册</button>
-    </view>
-
-    <view class="member-level-section">
-        <view class="level-bar-box">
-            <view class="level-header">
-                <text class="level-title">【普通会员】V2</text>
-                <text class="member-rights-link">会员权益 ></text>
+        <view class="vip-banner">
+            <view class="vip-header">
+                <view class="vip-info">
+                    <text class="vip-level">【{{currentLevelName}}】</text>
+                    <text class="vip-text">VIP {{vipLevel}}</text>
+                </view>
+                <view class="vip-rights" bindtap="goToVipRights">
+                    <text>会员权益</text>
+                    <text class="arrow">></text>
+                </view>
             </view>
-            <view class="progress-bar-container">
-                <view class="progress-bar-fill" style="width: {{progressPercent}}%;"></view>
-            </view>
-            <view class="level-stats">
-                <text class="current-value">595</text>
-                <text class="required-value">距离下一级还需 1405</text>
-                <image class="qrcode-icon" src="/images/icon_qrcode_small.png"></image>
-            </view>
-        </view>
-    </view>
-
-    <view class="function-icons-section">
-        <view class="icon-item" bindtap="reserveQuery">
-            <image class="icon-image" src="/images/icon_order.png" mode="aspectFit"></image>
-            <text class="icon-text">我的订单</text>
-        </view>
-        <view class="icon-item" data-item="存酒管理" bindtap="reserve">
-            <image class="icon-image" src="/images/icon_storage.png" mode="aspectFit"></image>
-            <text class="icon-text">我的存酒</text>
-        </view>
-        <view class="icon-item" data-item="灯牌查看" bindtap="reserve">
-            <image class="icon-image" src="/images/icon_badge.png" mode="aspectFit"></image>
-            <text class="icon-text">灯牌</text>
-        </view>
-        <view class="icon-item" data-item="排行榜详情" bindtap="reserve">
-            <image class="icon-image" src="/images/icon_rank.png" mode="aspectFit"></image>
-            <text class="icon-text">排行榜</text>
-        </view>
-    </view>
-
-    <view class="rank-top3-section">
-        <text class="rank-title">排行榜TOP3</text>
-        
-        <image class="rank-bg-image" src="/images/rank_card_bg.png" mode="widthFix"></image>
-
-        <view class="rank-list-overlay">
-            <view class="rank-item rank-2">
-                <image class="rank-img" src="/images/rank_2.png"></image>
-                <text class="rank-username">XXXXXX</text>
-                <text class="rank-score">899</text>
-            </view>
-            <view class="rank-item rank-1">
-                <image class="rank-img" src="/images/rank_1.png"></image>
-                <text class="rank-username">XXXXXX</text>
-                <text class="rank-score score-highlight">1440</text>
-            </view>
-            <view class="rank-item rank-3">
-                <image class="rank-img" src="/images/rank_3.png"></image>
-                <text class="rank-username">XXXXXX</text>
-                <text class="rank-score">644</text>
+            
+            <view class="vip-footer">
+                <view class="progress-area">
+                    <view class="exp-text-group">
+                        <text class="exp-current-value">{{vipExp}}</text>
+                        <text class="exp-next-level">{{nextLevelText}}</text>
+                    </view>
+                    <view class="progress-bar-container">
+                        <view class="progress-bar" style="width: {{progressPercent}}%;"></view>
+                    </view>
+                </view>
+                
+                <view class="qr-code-placeholder">
+                    <image class="qr-icon" src="cloud://cloud1-7gy6iiv5f0cbcb43.636c-cloud1-7gy6iiv5f0cbcb43-1379173903/素材/qr.png"></image> 
+                </view>
             </view>
         </view>
     </view>
-</view>
-</view>
+</scroll-view>
 
 <authorize></authorize>
