@@ -18,7 +18,15 @@
         <view class="membership-info">
             <block wx:if="{{userInfo}}">
                 <text class="title">{{userInfo.name}}</text>
-                <text class="subtitle">尊贵的会员，<text class="vip-level-highlight-red">VIP.{{userInfo.vipLevel || 0}}</text> 欢迎您</text>
+                <view class="subtitle-line">尊贵的会员，
+                    <image 
+                        class="vip-icon" 
+                        src="cloud://cloud1-7gy6iiv5f0cbcb43.636c-cloud1-7gy6iiv5f0cbcb43-1379173903/素材/VIP (1).png"
+                        mode="heightFix">
+                    </image>
+                    <text class="vip-level-highlight-red">{{userInfo.vipLevel || 0}}</text> 
+                    欢迎您
+                </view>
             </block>
             <block wx:else>
                 <text class="title">您还不是本店会员</text>

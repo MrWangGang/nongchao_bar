@@ -31,12 +31,26 @@ page {
   z-index: 2;
 }
 
+/* 突出显示的会员等级数字样式 */
 .vip-level-highlight-red {
-  /* 设置为红色 */
-  color: #E60026;
+  color: #ec430b;
   font-weight: bold;
-  margin: 0 5rpx;
+  margin-right: 5rpx; 
+  display: inline;
+  font-size: 35rpx;
 }
+
+/* 关键修改：VIP 图片图标样式，确保行内显示和对齐 */
+.vip-icon {
+  height: 45rpx; /* 控制图片高度，使其与文字对齐 */
+  width: auto; /* 自动宽度 */
+  vertical-align: middle; /* 垂直对齐到中间 */
+  margin-right: 5rpx; /* 与后面的数字保持间距 */
+  display: inline-block; /* 确保图片与文字在同一行显示 */
+  margin-bottom: 10rpx;
+}
+/* --------------------------------------------------- */
+
 
 /* 主体内容区域 */
 .main-content {
@@ -70,11 +84,25 @@ page {
   margin-bottom: 15rpx;
 }
 
+/* 用于非会员状态的副标题 */
 .membership-info .subtitle {
   font-size: 24rpx;
   color: #999999;
   margin-top: 8rpx;
 }
+
+/* 关键修改：会员状态下的副标题容器样式，强制单行显示 */
+.subtitle-line {
+  font-size: 24rpx;
+  color: #999999;
+  margin-top: 8rpx;
+  display: block; 
+  white-space: nowrap; /* 强制所有内容不换行 */
+  overflow: hidden; 
+  text-overflow: ellipsis; 
+}
+/* --------------------------------------------------- */
+
 
 .login-btn {
   width: 120rpx;
@@ -148,7 +176,7 @@ page {
   align-items: baseline;
   gap: 10rpx;
   /* 此负值用于将整个文字组合（“小酌 室外”）向左微移，使其在视觉上完美对齐到图标中心 */
-  margin-left: -12rpx; 
+  margin-left: -12rpx;  
 }
 
 /* 【关键对齐修改 2】主标题：强制设置宽度并居中，确保所有主标题对齐 */

@@ -1,16 +1,13 @@
 <scroll-view class="container" scroll-y>
+    <image 
+        class="background-image" 
+        src="cloud://cloud1-7gy6iiv5f0cbcb43.636c-cloud1-7gy6iiv5f0cbcb43-1379173903/素材/生成特定水印 (1).png" 
+        mode="aspectFill">
+    </image>
+    
     <view class="user-card">
         <view class="user-main-info">
             <image class="user-avatar" src="{{userInfo.avatar}}" mode="aspectFill"></image>
-            <view class="name-phone">
-                <text class="user-name">{{userInfo.name}}</text>
-                <block wx:if="{{userInfo.phone}}">
-                    <text class="user-phone">{{userInfo.phone}}</text>
-                </block>
-                <block wx:else>
-                    <text class="user-phone empty-text">请完善个人信息</text>
-                </block>
-            </view>
             <view class="nav-buttons">
                 <view class="nav-button" bindtap="goToEditProfile"><image class="nav-icon" src="cloud://cloud1-7gy6iiv5f0cbcb43.636c-cloud1-7gy6iiv5f0cbcb43-1379173903/素材/myself_button_edit.png"></image></view>
                 <view class="nav-button" bindtap="goToSettings"><image class="nav-icon" src="cloud://cloud1-7gy6iiv5f0cbcb43.636c-cloud1-7gy6iiv5f0cbcb43-1379173903/素材/myself_button_setting.png"></image></view>
@@ -20,8 +17,9 @@
         <view class="vip-banner">
             <view class="vip-header">
                 <view class="vip-info">
-                    <text class="vip-level">【{{currentLevelName}}】</text>
-                    <text class="vip-text">VIP {{vipLevel}}</text>
+                    <text class="nick-name">{{userInfo.name}}</text>
+                    <image class="nav-icon-vip" src="cloud://cloud1-7gy6iiv5f0cbcb43.636c-cloud1-7gy6iiv5f0cbcb43-1379173903/素材/VIP (1).png" mode="heightFix"></image>
+                    <text class="vip-text">{{vipLevel}}</text>
                 </view>
                 <view class="vip-rights" bindtap="goToVipRights">
                     <text>会员权益</text>
@@ -36,7 +34,7 @@
                         <text class="exp-next-level">{{nextLevelText}}</text>
                     </view>
                     <view class="progress-bar-container">
-                        <view class="progress-bar" style="width: {{progressPercent}}%;"></view>
+                        <view class="progress-bar" style="width: {{progressPercent}}"></view>
                     </view>
                 </view>
                 

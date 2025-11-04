@@ -29,9 +29,16 @@ Page({
         this.loadData();
     },
     
-    onShow() {
-        this.loadData();
-    },
+    onShow: function () {
+      if (typeof this.getTabBar === 'function' && this.getTabBar()) {
+          // 这里的索引要与你在 custom-tab-bar/index.js 中 list 数组的索引对应
+          // 菜单是索引 1
+          this.getTabBar().setData({
+              selected: 4
+          })
+      }
+      this.onLoad()
+  },
     
     // ===================================================
     // ⬇️ 核心数据刷新函数 ⬇️
