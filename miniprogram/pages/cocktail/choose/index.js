@@ -1,8 +1,8 @@
 // app.js 或其他地方的云函数初始化代码 (请确保已初始化)
 // wx.cloud.init(); 
 
-// 定义最大数量限制
-const MAX_QUANTITY = 999; 
+// 定义最大数量限制 (此处修正为目标总量 550)
+const MAX_QUANTITY = 550; 
 
 Page({
     /**
@@ -415,17 +415,35 @@ Page({
             newQuantity -= 1;
         }
         
-        // 限制最大数量
-        if (newQuantity > MAX_QUANTITY) {
-            newQuantity = MAX_QUANTITY;
-            wx.showToast({
-                title: `数量不能超过${MAX_QUANTITY}`,
-                icon: 'none'
-            });
-        }
         // 确保数量始终大于等于 1 (点击按钮的操作通常要求数量合法)
         if (newQuantity < 1) newQuantity = 1;
 
+        // 【新增逻辑】：检查是否超出购物车总容量 MAX_QUANTITY
+        const currentCartCount = this.data.cartCount;
+        let cartList = wx.getStorageSync('cocktailList') || [];
+        const existingItem = this.getExistingCartItem(product.id, this.data.selectedOptions, cartList);
+        
+        // 计算如果不加/减新数量，当前购物车总数是多少（如果该商品已在购物车中，则需先减去其原有数量）
+        const baseCount = existingItem ? currentCartCount - existingItem.quantity : currentCartCount;
+        const totalAfterAdd = baseCount + newQuantity; // 这里的 newQuantity 是单个商品的选择数量
+
+        if (totalAfterAdd > MAX_QUANTITY) {
+            newQuantity = MAX_QUANTITY - baseCount;
+            newQuantity = Math.max(1, newQuantity); // 确保至少为 1
+            wx.showToast({
+                title: `总数量不能超过${MAX_QUANTITY}`,
+                icon: 'none'
+            });
+        }
+        
+        // 【关键逻辑】：检查单次添加的数量是否超过了 MAX_QUANTITY（即 550），即使购物车是空的
+        if (newQuantity > MAX_QUANTITY && currentCartCount === 0) {
+            newQuantity = MAX_QUANTITY;
+            wx.showToast({
+                title: `单次添加数量不能超过${MAX_QUANTITY}`,
+                icon: 'none'
+            });
+        }
 
         this.setData({
             quantity: newQuantity
@@ -442,17 +460,32 @@ Page({
         // 【关键修改】：将 || 1 改为 || 0，允许用户输入框显示 0
         let value = parseInt(e.detail.value) || 0; 
         
-        // 限制最大数量
-        if (value > MAX_QUANTITY) {
-            value = MAX_QUANTITY;
-            wx.showToast({
-                title: `数量不能超过${MAX_QUANTITY}`,
+        // 【新增逻辑】：检查是否超出购物车总容量 MAX_QUANTITY
+        const product = this.data.selectedProduct;
+        const currentCartCount = this.data.cartCount;
+        let cartList = wx.getStorageSync('cocktailList') || [];
+        const existingItem = this.getExistingCartItem(product.id, this.data.selectedOptions, cartList);
+        
+        const baseCount = existingItem ? currentCartCount - existingItem.quantity : currentCartCount;
+        const totalAfterInput = baseCount + value;
+
+        if (totalAfterInput > MAX_QUANTITY) {
+             value = MAX_QUANTITY - baseCount;
+             value = Math.max(0, value); // 数量不能为负
+             wx.showToast({
+                title: `总数量不能超过${MAX_QUANTITY}`,
                 icon: 'none'
             });
         }
-        // 此时不进行 value < 1 的强制修正
         
-        const product = this.data.selectedProduct;
+        // 限制最大数量
+        if (value > MAX_QUANTITY && currentCartCount === 0) {
+            value = MAX_QUANTITY;
+             wx.showToast({
+                title: `单次添加数量不能超过${MAX_QUANTITY}`,
+                icon: 'none'
+            });
+        }
 
         // 延迟更新，避免频繁计算和渲染
         if (this.cartQuantityTimer) {
@@ -464,7 +497,7 @@ Page({
         });
 
         this.cartQuantityTimer = setTimeout(() => {
-            // 【关键修改】：在计算总价时，使用 Math.max(1, this.data.quantity)
+            // 在计算总价时，使用 Math.max(1, this.data.quantity)
             const quantityForCalc = Math.max(1, this.data.quantity);
             this.calculateTotalPrice(product, quantityForCalc);
         }, 300); // 300ms 延迟
@@ -500,8 +533,27 @@ Page({
     onInputModalQuantity: function(e) {
         let value = parseInt(e.detail.value) || 0;
         
-        // 实时限制最大数量
-        if (value > MAX_QUANTITY) {
+        // 【新增逻辑】：检查是否超出购物车总容量 MAX_QUANTITY
+        const itemId = this.data.targetItemId;
+        let cartList = wx.getStorageSync('cocktailList') || [];
+        const itemIndex = cartList.findIndex(item => item.id === itemId);
+        const currentItemQuantity = itemIndex !== -1 ? cartList[itemIndex].quantity : 0;
+        const currentCartCount = this.data.cartCount;
+        
+        const baseCount = currentCartCount - currentItemQuantity;
+        const totalAfterInput = baseCount + value;
+
+        if (totalAfterInput > MAX_QUANTITY) {
+             value = MAX_QUANTITY - baseCount;
+             value = Math.max(0, value); // 数量不能为负
+             wx.showToast({
+                title: `总数量不能超过${MAX_QUANTITY}`,
+                icon: 'none'
+            });
+        }
+        
+        // 限制最大数量
+        if (value > MAX_QUANTITY && cartList.length === 1) {
             value = MAX_QUANTITY;
             wx.showToast({ title: `数量不能超过${MAX_QUANTITY}`, icon: 'none' });
         }
@@ -517,14 +569,29 @@ Page({
     onQuantityInputModalConfirm: function() {
         let newQuantity = parseInt(this.data.inputQuantityValue) || 0;
         
-        // 最终修正：确保数量 >= 1
-        newQuantity = Math.max(1, newQuantity);
-        
         const itemId = this.data.targetItemId;
         let cartList = wx.getStorageSync('cocktailList') || [];
         const itemIndex = cartList.findIndex(item => item.id === itemId);
 
         if (itemIndex !== -1) {
+            const currentItemQuantity = cartList[itemIndex].quantity;
+            const currentCartCount = this.data.cartCount;
+            const baseCount = currentCartCount - currentItemQuantity;
+            const totalAfterChange = baseCount + newQuantity;
+
+            // 【关键新增校验】：检查总数是否大于 550
+            if (totalAfterChange > MAX_QUANTITY) {
+                newQuantity = MAX_QUANTITY - baseCount;
+                newQuantity = Math.max(1, newQuantity); // 确保至少为 1
+                 wx.showToast({
+                    title: `总数量不能超过${MAX_QUANTITY}`,
+                    icon: 'none'
+                });
+            }
+            
+            // 最终修正：确保数量 >= 1
+            newQuantity = Math.max(1, newQuantity);
+            
             cartList[itemIndex].quantity = newQuantity;
             
             // 如果数量被设置为 0，移除它
@@ -548,24 +615,33 @@ Page({
         const itemIndex = cartList.findIndex(item => item.id === itemId);
 
         if (itemIndex === -1) return;
-
+        
+        const currentItemQuantity = cartList[itemIndex].quantity;
+        const currentCartCount = this.data.cartCount;
+        const baseCount = currentCartCount - currentItemQuantity;
+        let newQuantity = currentItemQuantity;
+        
         if (type === 'plus') {
-            cartList[itemIndex].quantity += 1;
-            // 限制最大数量
-            if (cartList[itemIndex].quantity > MAX_QUANTITY) {
-                cartList[itemIndex].quantity = MAX_QUANTITY;
+            newQuantity += 1;
+            
+            // 【关键新增校验】：检查总数是否大于 550
+            if (baseCount + newQuantity > MAX_QUANTITY) {
+                newQuantity = MAX_QUANTITY - baseCount;
                 wx.showToast({
-                    title: `数量不能超过${MAX_QUANTITY}`,
+                    title: `总数量不能超过${MAX_QUANTITY}`,
                     icon: 'none'
                 });
             }
+            
         } else if (type === 'minus') {
-            cartList[itemIndex].quantity -= 1;
+            newQuantity -= 1;
+        }
 
-            if (cartList[itemIndex].quantity <= 0) {
-                // 数量小于等于0时移除商品
-                cartList.splice(itemIndex, 1);
-            }
+        if (newQuantity <= 0) {
+            // 数量小于等于0时移除商品
+            cartList.splice(itemIndex, 1);
+        } else {
+            cartList[itemIndex].quantity = newQuantity;
         }
         
         this.updateCartItem(cartList, itemIndex);
@@ -578,7 +654,7 @@ Page({
         // 检查列表是否为空
         if (cartList.length === 0) {
             wx.removeStorageSync('cocktailList');
-            this.updateCartData(); 
+            this.updateCartData();  
             this.onHideCartModal(); // 购物车清空时关闭详情弹窗
             return;
         }
@@ -592,6 +668,19 @@ Page({
         wx.setStorageSync('cocktailList', cartList);
         // 更新页面数据
         this.updateCartData();
+    },
+
+    /**
+     * 【新增辅助函数】通过商品ID和规格获取购物车中已存在的商品项
+     */
+    getExistingCartItem: function(productId, selectedOptions, cartList) {
+        const optionsArray = Object.keys(selectedOptions)
+            .sort()
+            .map(key => selectedOptions[key]);
+        const optionsString = optionsArray.join('_');
+        const uniqueId = `${productId}_${optionsString}`;
+        
+        return cartList.find(item => item.id === uniqueId);
     },
 
     /**
@@ -610,9 +699,16 @@ Page({
         }
 
         // 2. 检查总数量限制 (必须等于 550)
-        if (cartCount !== 550) {
+        if (cartCount !== MAX_QUANTITY) {
+            let title = '';
+            if (cartCount < MAX_QUANTITY) {
+                title = `当前总量为 ${cartCount}，请补足 ${MAX_QUANTITY}ml ~_~`;
+            } else {
+                title = `当前总量为 ${cartCount}，已超过 ${MAX_QUANTITY}ml ~_~`;
+            }
+            
             wx.showToast({
-                title: `请补足 550ml ~_~`,
+                title: title,
                 icon: 'none',
                 duration: 2000
             });
@@ -725,17 +821,42 @@ Page({
         // 1. 确保数量至少为 1 (加入购物车的最终要求)
         finalQuantity = Math.max(1, finalQuantity); 
         
-        // 2. 限制最大数量
-        if (finalQuantity > MAX_QUANTITY) {
-            finalQuantity = MAX_QUANTITY;
-            wx.showToast({
-                title: `数量不能超过${MAX_QUANTITY}`,
-                icon: 'none'
-            });
-        }
+        // 2. 检查添加后是否超过总数量限制 MAX_QUANTITY
+        let cartList = wx.getStorageSync('cocktailList') || [];
+        const existingItem = this.getExistingCartItem(selectedProduct.id, selectedOptions, cartList);
+        const currentCartCount = this.data.cartCount;
 
+        // 计算新总数
+        let newTotalCount = existingItem ? 
+            currentCartCount - existingItem.quantity + finalQuantity : 
+            currentCartCount + finalQuantity;
+
+        if (newTotalCount > MAX_QUANTITY) {
+            // 计算最大可添加数量
+            const maxAddQuantity = MAX_QUANTITY - (currentCartCount - (existingItem ? existingItem.quantity : 0));
+            
+            if (maxAddQuantity > 0) {
+                 finalQuantity = maxAddQuantity;
+                 // 提示用户只能添加 maxAddQuantity
+                 wx.showToast({
+                    title: `最多只能再添加 ${maxAddQuantity}ml！`,
+                    icon: 'none',
+                    duration: 2000
+                });
+            } else {
+                // 如果 maxAddQuantity <= 0，说明购物车已经满了或者超了
+                wx.showToast({
+                    title: `总数量已达 ${MAX_QUANTITY}ml 限制！`,
+                    icon: 'none',
+                    duration: 2000
+                });
+                return;
+            }
+        }
+        
         // 3. 检查数量是否大于 0
         if (finalQuantity <= 0) {
+            // 这个分支理论上在前面 maxAddQuantity 处理后不会再命中，但作为安全检查保留
             wx.showToast({
                 title: '请选择购买数量',
                 icon: 'none'
@@ -786,9 +907,10 @@ Page({
         };
 
         // 6. 从缓存中读取购物车
-        let cartList = wx.getStorageSync('cocktailList') || [];
-        const existingIndex = cartList.findIndex(item => item.id === cartItem.id);
         
+        // const existingIndex = cartList.findIndex(item => item.id === cartItem.id);
+        const existingIndex = cartList.findIndex(item => item.id === uniqueId); // 使用 uniqueId 查找
+
         // ⭐ DEBUG A: 检查商品是否已存在于购物车中 ⭐
         console.log(`[DEBUG A] 尝试添加商品ID: ${cartItem.id}`);
         console.log(`[DEBUG A] 商品是否已存在 (Index): ${existingIndex}`);
@@ -796,16 +918,12 @@ Page({
 
         if (existingIndex !== -1) {
             // 存在则更新数量
-            let newQuantity = cartList[existingIndex].quantity + finalQuantity;
-            // 限制总和最大数量
-            if (newQuantity > MAX_QUANTITY) {
-                newQuantity = MAX_QUANTITY;
-                wx.showToast({
-                    title: `总数量不能超过${MAX_QUANTITY}`,
-                    icon: 'none'
-                });
-            }
+            // 注意：因为前面已经计算过新 total，所以这里直接用 finalQuantity 覆盖或者累加
             
+            // 如果是已存在的商品，则更新数量
+            let newQuantity = cartList[existingIndex].quantity + finalQuantity;
+            
+            // 由于前面已经做了总数量的限制计算，这里的 newQuantity 已经是安全的值
             cartList[existingIndex].quantity = newQuantity;
             cartList[existingIndex].totalPrice = (parseFloat(cartList[existingIndex].price) * cartList[existingIndex].quantity).toFixed(2);
             

@@ -80,6 +80,7 @@
 .time-info {
   font-size: 26rpx;
   color: #333;
+  margin-top: 20rpx;
 }
 .time-info .label {
   color: #999;
@@ -90,6 +91,7 @@
   align-items: center;
   font-size: 28rpx;
   color: #f00;  
+  margin-top: 20rpx;
 }
 .arrow-right {
   font-size: 24rpx;
