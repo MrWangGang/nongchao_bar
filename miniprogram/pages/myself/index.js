@@ -3,7 +3,7 @@ const app = getApp();
 
 // 定义 VIP 等级所需的总经验值（累计经验值）
 const VIP_LEVELS = [
-    { level: 1, requiredExp: 0, levelName: "青铜会员" },         
+    { level: 1, requiredExp: 0, levelName: "青铜会员" },          
     { level: 2, requiredExp: 300, levelName: "白银会员" },      
     { level: 3, requiredExp: 300 + 1000, levelName: "黄金会员" },
     { level: 4, requiredExp: 1300 + 1500, levelName: "铂金会员" },
@@ -14,12 +14,12 @@ Page({
     data: {
         userInfo: null, 
         
-        vipLevel: 1,      
-        vipExp: 0,        
+        vipLevel: 1,          
+        vipExp: 0,            
         
         currentExp: 0, 
         totalExp: 100, 
-        progressPercent: 0,
+        progressPercent: '0%', // 初始化为带单位的字符串
         currentLevelName: '加载中...', 
         nextLevelText: '加载中...',      
     },
@@ -30,15 +30,16 @@ Page({
     },
     
     onShow: function () {
-      if (typeof this.getTabBar === 'function' && this.getTabBar()) {
-          // 这里的索引要与你在 custom-tab-bar/index.js 中 list 数组的索引对应
-          // 菜单是索引 1
-          this.getTabBar().setData({
-              selected: 4
-          })
-      }
-      this.onLoad()
-  },
+        if (typeof this.getTabBar === 'function' && this.getTabBar()) {
+            // 这里的索引要与你在 custom-tab-bar/index.js 中 list 数组的索引对应
+            // 菜单是索引 1
+            this.getTabBar().setData({
+                selected: 4
+            })
+        }
+        // 使用 this.loadData() 替代 this.onLoad()，避免重复注册回调
+        this.loadData() 
+    },
     
     // ===================================================
     // ⬇️ 核心数据刷新函数 ⬇️
@@ -51,8 +52,8 @@ Page({
             if (storedUserInfo && (storedUserInfo.avatarUrl || storedUserInfo.avatar) && (storedUserInfo.nickName || storedUserInfo.name)) { 
                 
                 const currentVipLevel = (storedUserInfo.vipLevel !== undefined && storedUserInfo.vipLevel !== null) 
-                                        ? storedUserInfo.vipLevel 
-                                        : 1; 
+                                                ? storedUserInfo.vipLevel 
+                                                : 1; 
                 const currentVipExp = storedUserInfo.vipExp || 0; 
                 
                 this.setData({
@@ -61,8 +62,8 @@ Page({
                         name: storedUserInfo.nickName || storedUserInfo.name,
                         phone: storedUserInfo.phone || '', 
                     },
-                    vipLevel: currentVipLevel,     
-                    vipExp: currentVipExp,         
+                    vipLevel: currentVipLevel,      
+                    vipExp: currentVipExp,          
                 });
             } else {
                 this.setData({ 
@@ -94,8 +95,8 @@ Page({
         const currentLevelInfo = currentLevelIndex !== -1 ? VIP_LEVELS[currentLevelIndex] : VIP_LEVELS[0]; 
         
         const nextLevelInfo = (currentLevelIndex !== -1 && currentLevelIndex + 1 < VIP_LEVELS.length) 
-                              ? VIP_LEVELS[currentLevelIndex + 1] 
-                              : null;
+                                      ? VIP_LEVELS[currentLevelIndex + 1] 
+                                      : null;
 
         let currentLevelStartExp = currentLevelInfo.requiredExp;
         let currentLevelName = currentLevelInfo.levelName;
@@ -122,8 +123,13 @@ Page({
             currentExpToSet = vipExp - currentLevelStartExp; 
             totalExpToSet = nextLevelRequiredExp - currentLevelStartExp; 
             
-            progressToSet = (currentExpToSet / totalExpToSet) * 100;
-            
+            // 确保除数不为零，虽然在您的逻辑中 totalExpToSet 应该大于零
+            if (totalExpToSet > 0) {
+                 progressToSet = (currentExpToSet / totalExpToSet) * 100;
+            } else {
+                progressToSet = 100; // 避免除以零，如果逻辑上到达这里说明已升级
+            }
+           
             const remainingExp = totalExpToSet - currentExpToSet;
             // 下一级提示，只显示剩余经验值
             nextLevelText = `距离下一级还需 ${remainingExp} 经验`;
@@ -132,8 +138,10 @@ Page({
         this.setData({
             currentExp: currentExpToSet,
             totalExp: totalExpToSet,
-            progressPercent: Math.min(progressToSet, 100),
-            currentLevelName: currentLevelName, 
+            // 关键修改：将数字进度转换为带 '%' 的字符串
+            progressPercent: Math.min(progressToSet, 100).toFixed(2) + '%', 
+            
+            currentLevelName: currentLevelName,
             nextLevelText: nextLevelText      
         });
     },

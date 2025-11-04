@@ -191,7 +191,7 @@
 
 /* 放大当前累计经验值 */
 .exp-current-value {
-  font-size: 48rpx;  
+  font-size: 40rpx;  
   font-weight: bold;
   color: #ffffff;
   line-height: 1;  
