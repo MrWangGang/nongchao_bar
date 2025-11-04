@@ -9,6 +9,7 @@
         <view class="user-main-info">
             <image class="user-avatar" src="{{userInfo.avatar}}" mode="aspectFill"></image>
             <view class="nav-buttons">
+                
                 <view class="nav-button" bindtap="goToEditProfile"><image class="nav-icon" src="cloud://cloud1-7gy6iiv5f0cbcb43.636c-cloud1-7gy6iiv5f0cbcb43-1379173903/素材/myself_button_edit.png"></image></view>
                 <view class="nav-button" bindtap="goToSettings"><image class="nav-icon" src="cloud://cloud1-7gy6iiv5f0cbcb43.636c-cloud1-7gy6iiv5f0cbcb43-1379173903/素材/myself_button_setting.png"></image></view>
             </view>
@@ -17,32 +18,71 @@
         <view class="vip-banner">
             <view class="vip-header">
                 <view class="vip-info">
+         
                     <text class="nick-name">{{userInfo.name}}</text>
                     <image class="nav-icon-vip" src="cloud://cloud1-7gy6iiv5f0cbcb43.636c-cloud1-7gy6iiv5f0cbcb43-1379173903/素材/VIP (1).png" mode="heightFix"></image>
                     <text class="vip-text">{{vipLevel}}</text>
                 </view>
-                <view class="vip-rights" bindtap="goToVipRights">
-                    <text>会员权益</text>
-                    <text class="arrow">></text>
+                
+                <view class="right-buttons">
+                  <view class="account-details" bindtap="goToAccountDetails">
+                        <text>账户详情</text>
+                    </view>
+                    
+                  <view class="vip-rights" bindtap="goToVipRights">
+                        <text>会员权益</text>
+                    </view>
+
+                  
+
                 </view>
             </view>
             
             <view class="vip-footer">
+               
                 <view class="progress-area">
                     <view class="exp-text-group">
                         <text class="exp-current-value">{{vipExp}}</text>
                         <text class="exp-next-level">{{nextLevelText}}</text>
                     </view>
+        
                     <view class="progress-bar-container">
                         <view class="progress-bar" style="width: {{progressPercent}}"></view>
                     </view>
                 </view>
                 
+        
                 <view class="qr-code-placeholder">
                     <image class="qr-icon" src="cloud://cloud1-7gy6iiv5f0cbcb43.636c-cloud1-7gy6iiv5f0cbcb43-1379173903/素材/qr.png"></image> 
                 </view>
             </view>
         </view>
+        
+        <view class="nav-grid-container">
+            <view class="nav-item-standalone" bindtap="goToOrders">
+ 
+                <image class="icon-orders" src="cloud://cloud1-7gy6iiv5f0cbcb43.636c-cloud1-7gy6iiv5f0cbcb43-1379173903/素材/扑克.png"></image>
+                <text class="nav-item-text">我的订单</text>
+            </view>
+            
+            <view class="nav-item-standalone" bindtap="goToCellar">
+                <image class="icon-cellar" src="cloud://cloud1-7gy6iiv5f0cbcb43.636c-cloud1-7gy6iiv5f0cbcb43-1379173903/素材/鸡尾酒.png"></image>
+          
+                <text class="nav-item-text">我的存酒</text>
+            </view>
+            
+            <view class="nav-item-standalone" bindtap="goToLightboard">
+                <image class="icon-lightboard" src="cloud://cloud1-7gy6iiv5f0cbcb43.636c-cloud1-7gy6iiv5f0cbcb43-1379173903/素材/皇冠.png"></image>
+                <text class="nav-item-text">灯牌</text>
+            </view>
+        
+     
+            <view class="nav-item-standalone" bindtap="goToRanking">
+                <image class="icon-ranking" src="cloud://cloud1-7gy6iiv5f0cbcb43.636c-cloud1-7gy6iiv5f0cbcb43-1379173903/素材/果汁.png"></image>
+                <text class="nav-item-text">排行榜</text>
+            </view>
+        </view>
+        
     </view>
 </scroll-view>
 

@@ -36,7 +36,7 @@
   align-items: center;
   margin-bottom: 40rpx;
   /* 核心修改：增加顶部间距到 120rpx，留出状态栏和顶部空间 */
-  margin-top: 190rpx;  
+  margin-top: 190rpx;
 }
 
 .user-avatar {
@@ -66,7 +66,6 @@
   font-size: 28rpx;
   color: rgb(255, 255, 255);
   font-weight: bold;
-
 }
 .empty-text {
   color: rgb(0, 0, 0);
@@ -109,15 +108,16 @@
 /* =================================================== */
 .vip-banner {
   /* 核心修改点：使用 RGBA 格式来设置背景色和透明度 */
-  background-color: rgba(51, 51, 51, 0.7); 
-  
-  /* 渐变色也需使用 RGBA: */
+  background-color: rgba(51, 51, 51, 0.7);
+/* 渐变色也需使用 RGBA: */
   background-image: linear-gradient(to right, rgba(51, 51, 51, 0.8), rgba(85, 85, 85, 0.8));
   
   border-radius: 20rpx;
   padding: 30rpx 40rpx;
   color: #fff;
   box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.1);
+  margin-bottom: 24rpx;
+/* 增加底部间距与新卡片组隔开 */
 }
 
 .vip-header {
@@ -129,22 +129,22 @@
 
 .vip-info {
   display: flex;
-  /* 核心修改：使用 center 确保所有行内元素垂直居中对齐 */
-  align-items: center; 
+/* 核心修改：使用 center 确保所有行内元素垂直居中对齐 */
+  align-items: center;
 }
 
 .nick-name {
   font-size: 38rpx;
   color: #cec8c8;  
   margin-right: 15rpx;
-  /* 统一行高以辅助对齐 */
+/* 统一行高以辅助对齐 */
   line-height: 1; 
 }
 .vip-level {
   font-size: 28rpx;
   color: #d6d5cb;  
   margin-right: 15rpx;
-  line-height: 1; 
+  line-height: 1;
 }
 
 .vip-text {
@@ -153,17 +153,39 @@
   color: #e0f146;  
   margin-left: 5rpx;
   /* 统一行高以辅助对齐 */
-  line-height: 1; 
+  line-height: 1;
 }
+
+/* NEW: 右侧按钮组容器，让两个按钮在 space-between 布局中保持在一起 */
+.right-buttons {
+  display: flex;
+  align-items: center; 
+}
+
+/* NEW: 账号详情按钮样式 (参考 vip-rights) */
+.account-details {
+  display: flex;
+  align-items: center;
+  font-size: 28rpx;
+  color: rgb(187, 241, 116);
+  padding: 10rpx 20rpx;
+  background-color: rgba(200, 245, 117, 0.1);
+  border-radius: 20rpx;
+  /* 增加右侧间距，与 vip-rights 隔开 */
+  margin-right: 20rpx; 
+}
+
 
 .vip-rights {
   display: flex;
   align-items: center;
   font-size: 28rpx;
-  color: rgb(255, 255, 255);
+  color: rgb(229, 255, 0);
   padding: 10rpx 20rpx;
   background-color: rgba(255, 255, 255, 0.1);
   border-radius: 20rpx;
+  margin-right: 0rpx; 
+
 }
 
 .vip-rights .arrow {
@@ -185,7 +207,7 @@
 /* 经验值文本组 */
 .exp-text-group {
   display: flex;
-  align-items: baseline;  
+  align-items: baseline;
   margin-bottom: 8rpx;
 }
 
@@ -235,5 +257,83 @@
 .qr-icon {
   width: 60rpx;
   height: 60rpx;
-  filter: invert(0%);  
+  filter: invert(0%);
+}
+
+
+/* =================================================== */
+/* NEW: 功能导航卡片组 (Nav Grid) - 独立卡片样式 */
+/* =================================================== */
+.nav-grid-container {
+  display: flex;
+/* 启用 Flex 布局实现横向排列 */
+  justify-content: space-between; /* 在卡片间均匀分配空间 */
+  align-items: flex-start;
+  margin-top: 35rpx;
+/* 默认向下移动 30rpx。你可以根据需要增加或减少这个值 */
+  /* 容器的左右内边距，确保卡片与屏幕边缘有距离 (继承自 .user-card 的边距) */
+  margin-bottom: 40rpx;
+}
+
+/* 独立卡片样式 - 确保卡片尺寸一致 */
+.nav-item-standalone {
+  /* 基础卡片样式 */
+  background-color: #ffffff; 
+  border-radius: 20rpx;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.05); 
+  
+  /* 尺寸和布局 */
+  /* 使用 calc() 确保四个卡片均匀分布且有间距。40rpx 是左右的 padding，60rpx 是三个间距 */
+  width: calc((100% - 60rpx) / 4);
+  height: 150rpx; /* 设置一个固定的统一高度 */
+  padding: 20rpx 0; /* 内部上下内边距 */
+  box-sizing: border-box;
+/* 确保 padding 不会增加最终宽度 */
+  flex-shrink: 0; 
+  
+  /* 内部内容居中 */
+  display: flex;
+  flex-direction: column; 
+  align-items: center;
+  justify-content: center;
+/* 确保图标和文本垂直居中 */
+  text-align: center;
+}
+
+.nav-item-text {
+  font-size: 24rpx;
+  color: #333333;
+  font-weight: 500;
+}
+
+.nav-item-text1 {
+  font-size: 26rpx;
+  color: #333333;
+  font-weight: 500;
+  margin-top:-8rpx ;
+}
+
+/* 独立图标样式，大小可根据需求不同 */
+.icon-orders {
+  width: 65rpx; 
+  height: 65rpx;
+  margin-bottom: 5rpx;
+}
+
+.icon-cellar {
+  width: 65rpx; 
+  height: 65rpx;
+  margin-bottom: 5rpx;
+}
+
+.icon-lightboard {
+  width: 65rpx; 
+  height: 65rpx;
+  margin-bottom: 5rpx;
+}
+
+.icon-ranking {
+  width: 65rpx; 
+  height: 65rpx;
+  margin-bottom: 5rpx;
 }
