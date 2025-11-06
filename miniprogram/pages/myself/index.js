@@ -300,7 +300,7 @@ Page({
       });
   },
     goToVipRights() {
-        console.log('导航到会员权益页');
+      wx.navigateTo({ url: `/pages/myself/vip/index`});
     },
     goToAccountDetails() {
       wx.navigateTo({ url: `/pages/myself/account/index`});

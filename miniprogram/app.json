@@ -22,7 +22,8 @@
     "components/lightboard-float/index",
     "pages/myself/storage/index",
     "pages/myself/account/index",
-    "pages/myself/edit/index"
+    "pages/myself/edit/index",
+    "pages/myself/vip/index"
   ],
   "window": {
     "backgroundColor": "#F6F6F6",

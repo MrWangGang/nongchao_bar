@@ -33,7 +33,7 @@
     
  
                 <view class="item-body">
-                    <image class="wine-img" src="{{item.fileId || '/images/default_wine.png'}}" mode="aspectFill"></image>
+                    <image class="wine-img" src="{{item.fileId}}" mode="aspectFill"></image>
               
                     <view class="info-details">
                         <text class="wine-name">{{item.name}}</text>

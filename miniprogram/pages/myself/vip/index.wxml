@@ -1,0 +1,82 @@
+<view class="container">
+    <view class="member-header">
+        <view class="vip-info">
+            <image 
+                class="vip-icon" 
+                src="cloud://cloud1-7gy6iiv5f0cbcb43.636c-cloud1-7gy6iiv5f0cbcb43-1379173903/素材/VIP (1).png" 
+                mode="aspectFit"
+            />
+         
+            <text class="vip-level-text">{{vipLevel}}</text>
+        </view>
+        
+        <view class="exp-progress-container">
+            
+            <view class="exp-progress-bar">
+                <view class="progress-fill" style="width: {{progressPercent}};">
+                    <view class="current-exp-indicator">
+                        <view class="indicator-dot"></view>
+                    </view>
+                </view>
+            </view>
+            
+            <view class="exp-scale-labels">
+        
+                <view 
+                    wx:for="{{expLevels}}" 
+                    wx:for-item="levelInfo"
+                    wx:for-index="index"
+                    wx:key="level"
+                    class="scale-item" 
+                    style="left: {{index === 0 ? '0%' : (index === 1 ? '5.17%' : (index === 2 ? '22.41%' : (index === 3 ? '48.28%' : '100%')))}};"
+                >
+                    <text class="scale-value">{{levelInfo.requiredExp}}</text>
+                    <view class="scale-dot {{vipExp >= levelInfo.requiredExp ? 'reached' : ''}}"></view>
+                    <text class="scale-level">{{levelInfo.level}}</text>
+                </view>
+            </view>
+        </view>
+    </view>
+
+    <swiper 
+        class="privilege-cards-swiper" 
+        indicator-dots="{{false}}" 
+        autoplay="{{true}}"         circular="{{true}}"         
+        current="{{activeIndex}}"    
+        previous-margin="40rpx"      
+        next-margin="40rpx"          
+        bindchange="swiperChange"    
+    >
+        <swiper-item 
+            wx:for="{{swiperImages}}" 
+            wx:for-item="item"
+            wx:key="index"
+            data-index="{{index}}"
+        >
+            <image 
+                src="{{item.url}}"  mode="aspectFill"
+                class="privilege-card {{activeIndex === index ? 'active-style' : ''}}"
+            />
+        </swiper-item>
+    </swiper>
+
+    <view class="privilege-list-section">
+        <view class="section-title">
+            <image 
+                class="section-vip-icon" 
+                src="cloud://cloud1-7gy6iiv5f0cbcb43.636c-cloud1-7gy6iiv5f0cbcb43-1379173903/素材/VIP (1).png" 
+                mode="aspectFit"
+            />
+            <text class="section-title-text">会员特权</text>
+        </view>
+
+        <image 
+            wx:for="{{listImages}}" 
+            wx:for-item="url"
+            wx:key="index"
+            class="privilege-block-image" 
+            src="{{url}}" 
+            mode="widthFix" 
+        />
+    </view>
+</view>

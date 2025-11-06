@@ -1,0 +1,224 @@
+/* 容器和通用设置 */
+/* 容器和通用设置 */
+.container {
+  padding-top: 10rpx; /* [cite: 1] */
+  background-color: #f7f7f7; /* [cite: 1] */
+  min-height: 100vh; /* [cite: 1] */
+  /* --- 增加底部安全距离（新增/修改） --- */
+  padding-bottom: constant(safe-area-inset-bottom);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* --- 头部会员信息 (VIP 等级和进度条区域) --- */
+.member-header {
+  width: 650rpx;
+  margin: 0 auto 20rpx auto;
+  background-color: transparent;
+  padding: 30rpx 0 0 0;
+  min-height: 250rpx;
+  position: relative;
+  box-shadow: none;
+  border-radius: 0;
+}
+
+/* VIP 等级文本区域 */
+.vip-info {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20rpx;
+  padding-left: 40rpx; 
+}
+
+.vip-icon {
+  width: 62rpx;
+  height: 62rpx;
+  margin-right: 10rpx;
+}
+
+.vip-level-text {
+  font-size: 55rpx;
+  font-weight: bold;
+  color: #919191;
+}
+
+/* --- 经验值进度条区域 (保证 5 个等级显示) --- */
+.exp-progress-container {
+  position: absolute;
+  bottom: 20rpx;
+  left: 0;
+  right: 0;
+  height: 120rpx;
+  padding: 0 40rpx;
+}
+
+/* 刻度线和标签布局 */
+.exp-scale-labels {
+  position: relative;
+  width: 100%;
+  /* 核心修正：移除 flex 布局，让 left: X% 生效 */
+  /* display: flex; */
+  /* justify-content: space-between;
+  */
+  top: 25rpx;
+}
+
+.scale-item {
+  position: absolute; /* 核心修正：绝对定位 */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* 修正：基于 left 定位，向左推自身一半的宽度，实现居中对齐刻度 */
+  transform: translateX(-50%);
+}
+
+/* 经验值数值 (上面) */
+.scale-value {
+  position: absolute;
+  top: -20rpx;
+  font-size: 20rpx;
+  color: #999999;
+  white-space: nowrap; 
+}
+
+/* 刻度点 */
+.scale-dot {
+  position: absolute;
+  top: 48rpx; 
+  width: 10rpx;
+  height: 10rpx;
+  border-radius: 50%;
+  background-color: #cccccc;
+  z-index: 2;
+  transform: translateY(-50%); 
+}
+
+.scale-dot.reached {
+  background-color: #333333; 
+}
+
+/* 等级标签 (下面) */
+.scale-level {
+  position: absolute;
+  top: 65rpx;
+  font-size: 24rpx;
+  color: #333333;
+  font-weight: bold;
+}
+
+/* 进度条底线 */
+.exp-progress-bar {
+  position: absolute; 
+  top: 48rpx;
+  width: calc(100% - 80rpx);
+  left: 40rpx;
+  height: 4rpx;
+  background-color: #cccccc; 
+  border-radius: 2rpx;
+  z-index: 1; 
+}
+
+.progress-fill {
+  height: 4rpx;
+  background-color: #333333;
+  border-radius: 2rpx;
+  transition: width 0.5s;
+  position: relative;
+}
+
+.current-exp-indicator {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translate(50%, -50%);
+  overflow: visible;
+}
+
+/* 当前经验值文本样式 */
+.current-exp-value {
+  position: absolute;
+  bottom: 25rpx; 
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 4rpx 8rpx;
+  border-radius: 6rpx;
+  background-color: #333333; 
+  color: #ffffff;
+  font-size: 20rpx;
+  font-weight: bold;
+  white-space: nowrap;
+}
+
+.indicator-dot {
+  width: 16rpx;
+  height: 16rpx;
+  border-radius: 50%;
+  background-color: #ffffff;
+  border: 4rpx solid #333333;
+  box-sizing: border-box;
+}
+
+/* --- 中部特权卡片滚动区 (Swiper 区域) --- */
+.privilege-cards-swiper {
+  height: 400rpx; /* 放大后的高度 */
+  width: 750rpx;
+  margin: 0 auto 30rpx auto;
+}
+
+swiper-item {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.privilege-card {
+  width: 680rpx; /* 放大后的宽度 */
+  height: 380rpx; /* 放大后的高度 */
+  border-radius: 15rpx;
+  background-color: #e0e0e0;
+  overflow: hidden;
+  transform: scale(0.92);
+  transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease; 
+}
+
+.privilege-card.active-style {
+  background-color: #d0d0d0;
+  box-shadow: 0 8rpx 20rpx rgba(0, 0, 0, 0.15);
+  transform: scale(1.0);
+}
+
+/* --- 底部特权列表 (图片) --- */
+.privilege-list-section {
+  width: 650rpx;
+  margin: 0 auto;
+  padding: 0;
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  margin-bottom: 30rpx;
+  padding-left: 20rpx;
+}
+
+.section-vip-icon {
+  width: 52rpx;
+  height: 52rpx;
+  margin-right: 10rpx;
+  opacity: 0.8;
+}
+
+.section-title-text {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333333;
+}
+
+.privilege-block-image {
+  width: 100%; 
+  margin-bottom: 30rpx;
+  border-radius: 15rpx;
+  min-height: 200rpx; 
+  background-color: #ffffff;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+}
