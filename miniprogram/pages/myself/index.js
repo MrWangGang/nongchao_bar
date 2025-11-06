@@ -230,11 +230,75 @@ Page({
       wx.navigateTo({ url: `/pages/myself/storage/index`});
     },
     goToEditProfile() {
-        console.log('导航到编辑资料页');
+      wx.navigateTo({ url: `/pages/myself/edit/index`});
     },
     goToSettings() {
-        console.log('导航到设置页');
-    },
+      console.log('尝试获取本地缓存信息...');
+
+      // 1. 获取本地存储信息
+      wx.getStorageInfo({
+          success(res) {
+              // 将缓存大小单位 B 转换为 KB，并保留两位小数
+              const currentSizeKB = (res.currentSize / 1024);
+              
+              let displaySize;
+              
+              if (currentSizeKB < 1 && currentSizeKB > 0) {
+                  // 如果缓存大于 0 但小于 1 KB，显示为 1 KB (例如 0.5 KB 显示为 1 KB)
+                  displaySize = '1';
+              } else if (currentSizeKB === 0) {
+                  // 如果缓存为 0，显示为 1 KB (因为您要求缓存为 0 时也显示 1 KB)
+                  displaySize = '1';
+              } else {
+                  // 其他情况，正常显示，保留两位小数
+                  displaySize = currentSizeKB.toFixed(2);
+              }
+
+              console.log('当前本地缓存大小:', res.currentSize, 'B');
+
+              // 2. 显示确认对话框
+              wx.showModal({
+                  title: '清理缓存确认',
+                  content: `当前本地缓存占用 ${displaySize} KB。确认要清理所有本地缓存吗？`,
+                  confirmText: '清理',
+                  cancelText: '取消',
+                  success(modalRes) {
+                      if (modalRes.confirm) {
+                          // 3. 执行清理操作
+                          wx.clearStorage({
+                              success: () => {
+                                  console.log('本地缓存清理成功');
+                                  wx.showToast({
+                                      title: '缓存已清理',
+                                      icon: 'success',
+                                      duration: 2000
+                                  });
+                              },
+                              fail: (err) => {
+                                  console.error('本地缓存清理失败', err);
+                                  wx.showToast({
+                                      title: '清理失败',
+                                      icon: 'error',
+                                      duration: 2000
+                                  });
+                              }
+                          });
+                      } else if (modalRes.cancel) {
+                          console.log('用户取消了清理缓存');
+                      }
+                  }
+              });
+          },
+          fail(err) {
+              console.error('获取缓存信息失败', err);
+              wx.showToast({
+                  title: '无法获取缓存信息',
+                  icon: 'none',
+                  duration: 2000
+              });
+          }
+      });
+  },
     goToVipRights() {
         console.log('导航到会员权益页');
     },

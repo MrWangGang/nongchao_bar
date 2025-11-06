@@ -100,11 +100,13 @@ exports.main = async (event, context) => {
                     avatarUrl: avatarUrl, 
                     userNum: userNum, 
                     vipLevel: 1, 
-                    vipType: DEFAULT_VIP_TYPE,     // 【新增】初始会员类型
-                    vipScore: INITIAL_SCORE,     // 初始积分 10
-                    vipExp: INITIAL_EXP,         // 初始经验 100
+                    vipType: DEFAULT_VIP_TYPE,     
+                    vipScore: INITIAL_SCORE,     
+                    vipExp: INITIAL_EXP,         
                     board: null,                 
                     boardUrl: null,              
+                    gender: null,                  // 【新增】性别初始化
+                    birthday: null,                // 【新增】生日初始化
                     createdAt: db.serverDate(),
                     lastLoginAt: db.serverDate(),
                 }
@@ -122,11 +124,13 @@ exports.main = async (event, context) => {
                 userId: userId, 
                 userNum: userNum,
                 vipLevel: 1, 
-                vipType: DEFAULT_VIP_TYPE,      // 【新增】返回会员类型
+                vipType: DEFAULT_VIP_TYPE,      
                 vipScore: INITIAL_SCORE,
                 vipExp: INITIAL_EXP,
                 board: null,                     
-                boardUrl: null                   
+                boardUrl: null,
+                gender: null,                      // 【新增】返回性别
+                birthday: null                     // 【新增】返回生日
             };
         } else {
             // ===================================
@@ -147,7 +151,9 @@ exports.main = async (event, context) => {
             let finalVipExp = data.vipExp;
             let finalBoard = data.board === undefined ? null : data.board; 
             let finalBoardUrl = data.boardUrl === undefined ? null : data.boardUrl; 
-            let finalVipType = data.vipType === undefined ? DEFAULT_VIP_TYPE : data.vipType; // 【新增】处理 vipType
+            let finalVipType = data.vipType === undefined ? DEFAULT_VIP_TYPE : data.vipType; 
+            let finalGender = data.gender === undefined ? null : data.gender;       // 【新增】处理 gender
+            let finalBirthday = data.birthday === undefined ? null : data.birthday; // 【新增】处理 birthday
 
             // 检查 vipScore 是否缺失
             if (data.vipScore === undefined) {
@@ -168,7 +174,7 @@ exports.main = async (event, context) => {
                 updateData.vipLevel = 1;
             }
             
-            // 【新增】检查 vipType 字段是否缺失
+            // 检查 vipType 字段是否缺失
             if (data.vipType === undefined) {
                 updateData.vipType = DEFAULT_VIP_TYPE; 
             }
@@ -181,6 +187,16 @@ exports.main = async (event, context) => {
             // 检查 boardUrl 字段是否缺失
             if (data.boardUrl === undefined) {
                 updateData.boardUrl = null; 
+            }
+            
+            // 【新增】检查 gender 字段是否缺失
+            if (data.gender === undefined) {
+                updateData.gender = null; 
+            }
+            
+            // 【新增】检查 birthday 字段是否缺失
+            if (data.birthday === undefined) {
+                updateData.birthday = null; 
             }
             
             // 执行更新
@@ -196,11 +212,13 @@ exports.main = async (event, context) => {
                 userId: userId, 
                 userNum: userNum,
                 vipLevel: data.vipLevel === undefined ? 1 : data.vipLevel, 
-                vipType: finalVipType,              // 【新增】返回会员类型
+                vipType: finalVipType,              
                 vipScore: finalVipScore, 
                 vipExp: finalVipExp,
                 board: finalBoard,                   
-                boardUrl: finalBoardUrl              
+                boardUrl: finalBoardUrl,
+                gender: finalGender,               // 【新增】返回性别
+                birthday: finalBirthday            // 【新增】返回生日
             };
         }
         
