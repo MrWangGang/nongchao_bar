@@ -135,5 +135,5 @@
             </view>
         </view>
 </scroll-view>
-
+<lightboard-float initialTopRpx="{{245}}" initialRightRpx="{{300}}"/>
 <authorize></authorize>

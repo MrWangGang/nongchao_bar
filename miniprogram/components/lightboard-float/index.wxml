@@ -1,0 +1,18 @@
+<view class="lightboard-container" 
+      style="top: {{topRpx}}rpx; left: {{leftRpx}}rpx;"
+      bindtouchstart="handleTouchStart"
+      bindtouchmove="handleTouchMove"
+      bindtouchend="handleTouchEnd"
+      >
+    <image wx:if="{{boardUrl}}" 
+           class="board-icon {{isDragging ? 'is-dragging' : ''}}" 
+           src="{{boardUrl}}" 
+           mode="heightFix">
+    </image>
+    
+    <view wx:if="{{showBubble && boardUrl}}"
+          class="bubble-dialog"
+          bindtap="handleBubbleTap">
+        <text>{{bubbleText}}</text>
+    </view>
+</view>

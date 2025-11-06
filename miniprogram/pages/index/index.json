@@ -1,6 +1,7 @@
 {
   "navigationBarTitleText": "弄潮酒吧",
   "usingComponents": {
+    "lightboard-float": "/components/lightboard-float/index"
   },
   "navigationStyle": "custom"
 }

@@ -1,0 +1,60 @@
+/* components/lightboard-float/lightboard-float.wxss */
+.lightboard-container {
+  /* 必须使用 fixed 定位; top 和 left 由 JS 动态控制 */
+  position: fixed;
+  z-index: 100; /* 确保悬浮在最上层 */
+  
+  /* 容器尺寸 */
+  width: 120rpx;
+  height: 120rpx;
+  /* 提高渲染性能 */
+  will-change: top, left; 
+}
+
+.board-icon {
+  width: 100%;
+  height: 100%;
+  /* 增加拖动时的平滑过渡效果 */
+  transition: transform 0.1s ease-out; 
+}
+
+/* 拖动时的样式反馈 */
+.is-dragging {
+  opacity: 0.8;
+  /* 稍微放大，提供视觉反馈 */
+  transform: scale(1.05); 
+}
+
+/* 气泡对话框样式 */
+.bubble-dialog {
+  position: absolute;
+  /* 调整位置，使其在图标上方或侧面 */
+  top: -60rpx; 
+  left: 50%;
+  transform: translateX(-50%); /* 水平居中 */
+  
+  background-color: #fff;
+  color: #333;
+  padding: 10rpx 20rpx;
+  border-radius: 20rpx;
+  font-size: 24rpx;
+  white-space: nowrap; /* 确保文本不换行 */
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.15);
+  
+  /* 确保气泡在最上层 */
+  z-index: 101; 
+}
+
+/* 气泡小三角 */
+.bubble-dialog::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 10rpx 10rpx 0 10rpx;
+  border-color: #fff transparent transparent transparent;
+  bottom: -10rpx; /* 定位到底部 */
+  left: 50%;
+  transform: translateX(-50%);
+}

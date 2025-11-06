@@ -98,5 +98,5 @@
         </view>
     </block>
 </view>
-
+<lightboard-float initialTopRpx="{{355}}" initialRightRpx="{{300}}"/>
 <authorize></authorize>
