@@ -1,0 +1,122 @@
+/* pages/ranking/ranking.wxss */
+
+/* =================================================== */
+/* GLOBAL/CONTAINER STYLES */
+/* =================================================== */
+.ranking-page-container {
+  min-height: 100vh;
+  box-sizing: border-box;
+  background-color: #f7f8fa; 
+  padding-bottom: 40rpx; /* 移除底部悬浮栏后，将 padding-bottom 改为较小的值 */
+  position: relative;
+}
+
+/* 页面背景图 */
+.page-background-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 350rpx; 
+  z-index: 1;
+}
+
+/* 背景图底部渐变蒙层 */
+.background-gradient-mask {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 350rpx; 
+    z-index: 1;
+    background: linear-gradient(to bottom, rgba(247, 248, 250, 0) 60%, #f7f8fa 100%);
+}
+
+/* =================================================== */
+/* RANKING LIST CARD (固定高度，有阴影) */
+/* =================================================== */
+.ranking-card-wrapper {
+  position: relative;
+  z-index: 3; 
+  margin: 250rpx 40rpx 40rpx; 
+  background-color: #ffffff;
+  border-radius: 20rpx;
+  box-shadow: 0 8rpx 20rpx rgba(0, 0, 0, 0.1); 
+  overflow: hidden; 
+}
+
+.rank-list-area {
+    padding: 20rpx 40rpx; 
+}
+
+/* 列表固定高度和滚动 */
+.rank-list-scroll {
+    height: 1000rpx; 
+}
+
+/* 暂无数据/加载中 容器，用于在固定高度内居中 */
+.empty-loading-container {
+    height: 100%; /* 占满 scroll-view 的高度 */
+    display: flex;
+    justify-content: center;
+    align-items: center; /* 垂直居中 */
+    color: #999;
+    font-size: 30rpx;
+    text-align: center;
+}
+.empty-tip, .loading-tip {
+    padding: 20rpx;
+}
+
+/* 列表头部 */
+.rank-list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15rpx 0;
+  border-bottom: 1rpx solid #eee;
+  font-size: 28rpx;
+  color: #999;
+}
+
+/* 排行榜列表项样式（分页后数据流式布局，从顶部开始） */
+.rank-list-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20rpx 0;
+  border-bottom: 1rpx solid #f7f7f7;
+}
+.rank-list-item:last-child {
+    border-bottom: none; 
+}
+.rank-list-item.is-self-rank {
+    background-color: #fffbe6; 
+    border-radius: 10rpx;
+}
+
+/* 列表项的列样式（保持不变） */
+.rank-col {
+  text-align: center;
+  font-size: 30rpx;
+  color: #333;
+  box-sizing: border-box;
+  flex-shrink: 0;
+}
+.rank-num { width: 15%; display: flex; align-items: center; justify-content: center; color: rgb(155, 155, 155);}
+.rank-level-icon { width: 70rpx; height: 70rpx; }
+.rank-level-text { font-size: 32rpx; color: #666; }
+.rank-user { flex-grow: 1; text-align: left; display: flex; align-items: center; padding: 0 20rpx; color: rgb(155, 155, 155);}
+.rank-score { width: 25%; color: rgb(155, 155, 155); text-align: right; }
+.score-value { width: 25%; color: rgb(255, 61, 61); text-align: right; }
+
+.rank-avatar-list { width: 60rpx; height: 60rpx; border-radius: 50%; margin-right: 20rpx; flex-shrink: 0; }
+.rank-nickname-list { font-size: 30rpx; color: #333; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+
+/* 底部加载提示样式 */
+.loading-more-footer {
+    padding: 20rpx 0;
+    text-align: center;
+    font-size: 24rpx;
+    color: #999;
+}

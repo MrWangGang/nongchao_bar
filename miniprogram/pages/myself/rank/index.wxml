@@ -1,0 +1,68 @@
+<view class="ranking-page-container">
+  
+  <image 
+      class="page-background-image" 
+      src="{{pageBackground}}" 
+      mode="aspectFill">
+  </image>
+  
+  <view class="background-gradient-mask"></view>
+
+  <view class="ranking-card-wrapper">
+    
+    <view class="rank-list-area">
+        <view class="rank-list-header">
+            <text class="rank-col rank-num">排名</text>
+            <text class="rank-col rank-user">用户昵称</text>
+            <text class="rank-col rank-score">积分</text>
+        </view>
+
+        <scroll-view 
+            class="rank-list-scroll" 
+            scroll-y 
+            bindscrolltolower="loadMore"
+            lower-threshold="50">
+            
+            <view class="empty-loading-container" wx:if="{{rankList.length === 0}}">
+                <view class="loading-tip" wx:if="{{loading}}">加载中...</view>
+                <view class="empty-tip" wx:if="{{!loading}}">暂无排名数据</view>
+            </view>
+
+            <view class="rank-list" wx:if="{{rankList.length > 0}}">
+                <block wx:for="{{rankList}}" wx:key="_id">
+                    <view class="rank-list-item {{item._id === myRank._id ? 'is-self-rank' : ''}}">
+                        <view class="rank-col rank-num">
+                            <block wx:if="{{item.rank === 1}}">
+                                <image class="rank-level-icon" src="{{rankIcon1}}" mode="heightFix"></image>
+                            </block>
+                            <block wx:elif="{{item.rank === 2}}">
+                                <image class="rank-level-icon" src="{{rankIcon2}}" mode="heightFix"></image>
+                            </block>
+                            <block wx:elif="{{item.rank === 3}}">
+                                <image class="rank-level-icon" src="{{rankIcon3}}" mode="heightFix"></image>
+                            </block>
+                            <block wx:else>
+                                <text class="rank-level-text">{{item.rank}}</text>
+                            </block>
+                        </view>
+                        
+                        <view class="rank-col rank-user user-info">
+                            <image class="rank-avatar-list" src="{{item.avatarUrl}}" mode="aspectFill"></image>
+                            <text class="rank-nickname-list">{{item.nickName}}</text>
+                        </view>
+                        
+                        <view class="rank-col rank-score score-value">{{item.vipScore}}</view>
+                    </view>
+                </block>
+
+                <view class="loading-more-footer">
+                    <text wx:if="{{loading}}">加载中...</text>
+                </view>
+            </view>
+        </scroll-view>
+
+    </view>
+    
+  </view>
+  
+</view>

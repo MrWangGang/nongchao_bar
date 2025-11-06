@@ -194,7 +194,7 @@ Page({
     },
 
     goToRanking() {
-      wx.navigateTo({ url: `/pages/index/rank/index`});
+      wx.navigateTo({ url: `/pages/myself/rank/index`});
     },
 
     goToOrders() {
