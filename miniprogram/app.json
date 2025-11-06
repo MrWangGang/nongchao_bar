@@ -17,7 +17,8 @@
     "pages/cocktail/choose/detail/index",
     "pages/cocktail/choose/bill/index",
     "pages/cocktail/choose/pay/index",
-    "pages/myself/rank/index"
+    "pages/myself/rank/index",
+    "pages/myself/board/index"
   ],
   "window": {
     "backgroundColor": "#F6F6F6",

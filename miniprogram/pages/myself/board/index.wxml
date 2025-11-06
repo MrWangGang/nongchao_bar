@@ -1,0 +1,46 @@
+<view class="container">
+
+<block wx:for="{{boardList}}" wx:key="key">
+    <view class="board-card {{!item.canClaim && item.requiredLevel > userLevel ? 'disabled-card' : ''}}">
+        <view class="board-content">
+            <view class="board-icon-wrapper">
+                <image class="board-icon" src="{{item.iconUrl}}" mode="aspectFit" lazy-load="true"></image> 
+            </view>
+
+            <view class="board-info">
+                <text class="board-title">{{item.name}}</text>
+                <text class="board-desc">{{item.desc}}</text>
+            </view>
+        </view>
+        
+ 
+        <view class="board-action">
+            <button 
+                wx:if="{{item.isCurrent}}" 
+                class="btn btn-current" 
+                disabled="{{true}}"
+        
+            >
+                已佩戴
+            </button>
+            <button 
+                wx:elif="{{item.canClaim}}" 
+                class="btn btn-claim" 
+                data-key="{{item.key}}" 
+                bindtap="handleClaimBoard"
+            >
+                佩戴
+            </button>
+   
+            <button 
+                wx:else 
+                class="btn btn-locked" 
+                disabled="{{true}}"
+            >
+       
+                LV{{item.requiredLevel}}可佩戴
+            </button>
+        </view>
+    </view>
+</block>
+</view>

@@ -13,8 +13,7 @@ const VIP_LEVELS = [
 // 定义排行榜默认占位数据，用于未满 3 人时的显示
 const DEFAULT_RANK_USER = { 
     nickName: '虚位以待', 
-    // 关键修复：设置一个完整的、有效的云存储默认头像 URL。
-    // 这里使用您 WXML 中云链接的格式，您需要确保该链接是存在的默认头像图。
+    // 确保这个云存储链接是有效的默认头像 URL
     avatarUrl: "cloud://cloud1-7gy6iiv5f0cbcb43.636c-cloud1-7gy6iiv5f0cbcb43-1379173903/素材/默认头像.png", 
     vipScore: 0 
 };
@@ -37,7 +36,9 @@ Page({
             DEFAULT_RANK_USER, // 占位 Rank 1
             DEFAULT_RANK_USER, // 占位 Rank 2
             DEFAULT_RANK_USER, // 占位 Rank 3
-        ]
+        ],
+        // 用于 WXML 控制排行榜主体显示的加载状态
+        isRankingLoading: false, 
     },
 
     onLoad() {
@@ -49,9 +50,9 @@ Page({
             });
         }
         
+        // 注册回调和初次加载（确保页面首次快速显示）
         app.registerPageUpdateCallback(this.loadData.bind(this));
         this.loadData();
-        
         this.getRankData(); 
     },
     
@@ -61,46 +62,69 @@ Page({
                 selected: 4
             })
         }
+        
+        // 每次显示时强制刷新数据
         this.loadData() 
         this.getRankData();
     },
     
     // ===================================================
-    // ⬇️ 云函数调用获取排行榜数据 ⬇️
+    // ⬇️ 云函数调用获取排行榜数据 (使用 wx.showLoading 优化) ⬇️
     // ===================================================
     getRankData: function() {
+        // 1. 显示加载提示，阻止用户点击
+        wx.showLoading({
+            title: '加载排行榜...',
+            mask: true // 阻止用户点击页面其他元素
+        });
+        
+        // 2. 开启 WXML 层的加载状态，隐藏排行榜主体
+        this.setData({ isRankingLoading: true });
+
         wx.cloud.callFunction({
             name: 'getTopRankUsers', 
             data: {}, 
             success: res => {
+                let finalRankList;
+                
                 if (res.result && res.result.code === 0 && res.result.data) {
                     let topUsers = res.result.data; // 顺序: [R1, R2, R3]
                     
-                    // 填充逻辑不变，rankList中的每个对象都包含一个avatarUrl，
-                    // 无论是真实用户的还是DEFAULT_RANK_USER中的默认链接。
-                    const finalRankList = [
-                        topUsers[0] || DEFAULT_RANK_USER, // Rank 1
-                        topUsers[1] || DEFAULT_RANK_USER, // Rank 2
-                        topUsers[2] || DEFAULT_RANK_USER  // Rank 3
+                    // 严格判断：只有当 topUsers[i] 存在时，才使用它
+                    finalRankList = [
+                        topUsers[0] ? topUsers[0] : DEFAULT_RANK_USER, // Rank 1
+                        topUsers[1] ? topUsers[1] : DEFAULT_RANK_USER, // Rank 2
+                        topUsers[2] ? topUsers[2] : DEFAULT_RANK_USER  // Rank 3
                     ];
 
-                    this.setData({
-                        rankList: finalRankList
-                    });
+                    // 立即更新数据
+                    this.setData({ rankList: finalRankList });
+
                 } else {
                     console.error('云函数返回数据格式错误或 code 不为 0', res);
+                    // 错误时使用默认占位符
+                    this.setData({ rankList: [DEFAULT_RANK_USER, DEFAULT_RANK_USER, DEFAULT_RANK_USER] });
                 }
             },
             fail: err => {
                 console.error('调用云函数 getTopRankUsers 失败', err);
+                // 失败时使用默认占位符
+                this.setData({
+                    rankList: [DEFAULT_RANK_USER, DEFAULT_RANK_USER, DEFAULT_RANK_USER],
+                });
+            },
+            complete: () => {
+                // 3. 无论成功或失败，都在完成时隐藏加载提示
+                wx.hideLoading();
+                // 4. 关闭 WXML 层的加载状态，显示排行榜主体
+                this.setData({ isRankingLoading: false }); 
             }
-        })
+        });
     },
     // ===================================================
-    // ⬆️ 云函数调用获取排行榜数据 ⬆️
+    // ⬆️ 云函数调用获取排行榜数据 (使用 wx.showLoading 优化) ⬆️
     // ===================================================
 
-    // ... (其他函数保持不变)
     loadData() {
         try {
             const storedUserInfo = wx.getStorageSync('userInfo'); 
@@ -192,7 +216,9 @@ Page({
             nextLevelText: nextLevelText      
         });
     },
-
+    goToLightboard() {
+      wx.navigateTo({ url: `/pages/myself/board/index`});
+    },
     goToRanking() {
       wx.navigateTo({ url: `/pages/myself/rank/index`});
     },

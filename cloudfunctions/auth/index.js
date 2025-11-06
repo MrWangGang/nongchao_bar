@@ -1,4 +1,3 @@
-// cloud/login/index.js
 const cloud = require('wx-server-sdk')
 const jwt = require('jsonwebtoken') 
 
@@ -99,6 +98,8 @@ exports.main = async (event, context) => {
                     vipLevel: 1, 
                     vipScore: INITIAL_SCORE,     // 初始积分 10
                     vipExp: INITIAL_EXP,         // 初始经验 100
+                    board: null,                 // 【已修改】灯牌 key 字段初始化为 null
+                    boardUrl: null,              // 【新增】灯牌图片 URL 字段初始化为 null
                     createdAt: db.serverDate(),
                     lastLoginAt: db.serverDate(),
                 }
@@ -117,7 +118,9 @@ exports.main = async (event, context) => {
                 userNum: userNum,
                 vipLevel: 1, 
                 vipScore: INITIAL_SCORE,
-                vipExp: INITIAL_EXP
+                vipExp: INITIAL_EXP,
+                board: null,                     // 【已修改】返回 board 字段
+                boardUrl: null                   // 【新增】返回 boardUrl 字段
             };
         } else {
             // ===================================
@@ -136,12 +139,13 @@ exports.main = async (event, context) => {
             
             let finalVipScore = data.vipScore;
             let finalVipExp = data.vipExp;
+            let finalBoard = data.board === undefined ? null : data.board; 
+            let finalBoardUrl = data.boardUrl === undefined ? null : data.boardUrl; // 【新增】处理 boardUrl 字段
 
             // 检查 vipScore 是否缺失
             if (data.vipScore === undefined) {
                 updateData.vipScore = INITIAL_SCORE;
                 finalVipScore = INITIAL_SCORE;
-                // 插入历史记录
                 await insertHistoryRecord(userId, REGISTER_ACTION, INITIAL_SCORE, scoreHistoryCollection);
             }
 
@@ -149,13 +153,22 @@ exports.main = async (event, context) => {
             if (data.vipExp === undefined) {
                 updateData.vipExp = INITIAL_EXP;
                 finalVipExp = INITIAL_EXP;
-                // 插入历史记录
                 await insertHistoryRecord(userId, REGISTER_ACTION, INITIAL_EXP, expHistoryCollection);
             }
             
             // 检查 vipLevel 是否缺失
             if (data.vipLevel === undefined) {
                 updateData.vipLevel = 1;
+            }
+            
+            // 【已修改】检查 board 字段是否缺失
+            if (data.board === undefined) {
+                updateData.board = null; 
+            }
+            
+            // 【新增】检查 boardUrl 字段是否缺失
+            if (data.boardUrl === undefined) {
+                updateData.boardUrl = null; 
             }
             
             // 执行更新
@@ -171,8 +184,10 @@ exports.main = async (event, context) => {
                 userId: userId, 
                 userNum: userNum,
                 vipLevel: data.vipLevel === undefined ? 1 : data.vipLevel, 
-                vipScore: finalVipScore === undefined ? 0 : finalVipScore, // 使用最新值
-                vipExp: finalVipExp === undefined ? 0 : finalVipExp        // 使用最新值
+                vipScore: finalVipScore, 
+                vipExp: finalVipExp,
+                board: finalBoard,                    // 【已修改】返回 board 字段
+                boardUrl: finalBoardUrl               // 【新增】返回 boardUrl 字段
             };
         }
         

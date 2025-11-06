@@ -101,36 +101,38 @@
                 <text class="rank-title">排行榜TOP3</text>
             </view>
 
-            <view class="rank-body">
-                
-                <view class="rank-item rank-item-2">
-                    <view class="rank-avatar-wrapper">
-                        <image class="rank-avatar" src="{{rankList[1].avatarUrl}}" mode="aspectFill"></image>
-                        <image class="rank-border rank-border-2" src="cloud://cloud1-7gy6iiv5f0cbcb43.636c-cloud1-7gy6iiv5f0cbcb43-1379173903/素材/rank2.png"></image>
+            <block wx:if="{{!isRankingLoading}}">
+                <view class="rank-body">
+                    
+                    <view class="rank-item rank-item-2">
+                        <view class="rank-avatar-wrapper">
+                            <image class="rank-avatar" src="{{rankList[1].avatarUrl}}" mode="aspectFill"></image>
+                            <image class="rank-border rank-border-2" src="cloud://cloud1-7gy6iiv5f0cbcb43.636c-cloud1-7gy6iiv5f0cbcb43-1379173903/素材/rank2.png"></image>
+                        </view>
+                        <text class="rank-name">{{rankList[1].nickName}}</text>
+                        <text class="rank-value">{{rankList[1].vipScore}}</text>
                     </view>
-                    <text class="rank-name">{{rankList[1].nickName}}</text>
-                    <text class="rank-value">{{rankList[1].vipScore}}</text>
-                </view>
 
-                <view class="rank-item rank-item-1">
-                    <view class="rank-avatar-wrapper rank-avatar-wrapper-1">
-                        <image class="rank-avatar rank-avatar-1" src="{{rankList[0].avatarUrl}}" mode="aspectFill"></image>
-                        <image class="rank-border rank-border-1" src="cloud://cloud1-7gy6iiv5f0cbcb43.636c-cloud1-7gy6iiv5f0cbcb43-1379173903/素材/rank1.png"></image>
+                    <view class="rank-item rank-item-1">
+                        <view class="rank-avatar-wrapper rank-avatar-wrapper-1">
+                            <image class="rank-avatar rank-avatar-1" src="{{rankList[0].avatarUrl}}" mode="aspectFill"></image>
+                            <image class="rank-border rank-border-1" src="cloud://cloud1-7gy6iiv5f0cbcb43.636c-cloud1-7gy6iiv5f0cbcb43-1379173903/素材/rank1.png"></image>
+                        </view>
+                        <text class="rank-name rank-name-1">{{rankList[0].nickName}}</text>
+                        <text class="rank-value rank-value-1">{{rankList[0].vipScore}}</text>
                     </view>
-                    <text class="rank-name rank-name-1">{{rankList[0].nickName}}</text>
-                    <text class="rank-value rank-value-1">{{rankList[0].vipScore}}</text>
-                </view>
 
-                <view class="rank-item rank-item-3">
-                    <view class="rank-avatar-wrapper">
-                        <image class="rank-avatar" src="{{rankList[2].avatarUrl}}" mode="aspectFill"></image>
-                        <image class="rank-border rank-border-3" src="cloud://cloud1-7gy6iiv5f0cbcb43.636c-cloud1-7gy6iiv5f0cbcb43-1379173903/素材/rank3.png"></image>
+                    <view class="rank-item rank-item-3">
+                        <view class="rank-avatar-wrapper">
+                            <image class="rank-avatar" src="{{rankList[2].avatarUrl}}" mode="aspectFill"></image>
+                            <image class="rank-border rank-border-3" src="cloud://cloud1-7gy6iiv5f0cbcb43.636c-cloud1-7gy6iiv5f0cbcb43-1379173903/素材/rank3.png"></image>
+                        </view>
+                        <text class="rank-name">{{rankList[2].nickName}}</text>
+                        <text class="rank-value">{{rankList[2].vipScore}}</text>
                     </view>
-                    <text class="rank-name">{{rankList[2].nickName}}</text>
-                    <text class="rank-value">{{rankList[2].vipScore}}</text>
                 </view>
+            </block>
             </view>
-        </view>
         </view>
 </scroll-view>
 
