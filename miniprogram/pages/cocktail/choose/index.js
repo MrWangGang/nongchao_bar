@@ -1,3 +1,4 @@
+// pages/home/home.js
 // app.js 或其他地方的云函数初始化代码 (请确保已初始化)
 // wx.cloud.init(); 
 
@@ -300,7 +301,7 @@ Page({
 
 
     /**
-     * 显示商品规格弹窗
+     * 【修复】显示商品规格弹窗，初始化数量为购物车中已有数量（如果存在）
      */
     onShowModal: function(e) {
         const product = e.currentTarget.dataset.product;
@@ -315,14 +316,21 @@ Page({
             }
         });
 
+        // ⭐ 1. 查找缓存中是否已存在该商品（基于默认规格）
+        let cartList = wx.getStorageSync('cocktailList') || [];
+        const existingItem = this.getExistingCartItem(product.id, defaultSelectedOptions, cartList);
+        
+        // ⭐ 2. 初始化数量：如果存在，使用已有的数量；否则为 1
+        const initialQuantity = existingItem ? existingItem.quantity : 1;
+        
         this.setData({
             showModal: true,
             selectedProduct: product,
             selectedOptions: defaultSelectedOptions, // 设置动态默认选中项
             dynamicOptions: dynamicOptions, // 传入动态选项列表
-            quantity: 1, // 默认数量为 1
+            quantity: initialQuantity, // ⭐ 使用初始数量
         }, () => {
-            this.calculateTotalPrice(product, 1);
+            this.calculateTotalPrice(product, initialQuantity);
         });
     },
 
@@ -396,8 +404,18 @@ Page({
         const updatedOptions = Object.assign({}, this.data.selectedOptions);
         updatedOptions[key] = value;
         
+        // ⭐ 规格变化后，需要重新计算数量和总价，并基于新规格检查购物车中是否有同类商品
+        const product = this.data.selectedProduct;
+        const currentCartList = wx.getStorageSync('cocktailList') || [];
+        const existingItem = this.getExistingCartItem(product.id, updatedOptions, currentCartList);
+        
+        const newQuantity = existingItem ? existingItem.quantity : 1;
+        
         this.setData({
-            selectedOptions: updatedOptions
+            selectedOptions: updatedOptions,
+            quantity: newQuantity // ⭐ 数量随规格变化而改变
+        }, () => {
+            this.calculateTotalPrice(product, newQuantity);
         });
     },
 
@@ -406,7 +424,7 @@ Page({
      */
     onQuantityChange: function(e) {
         const type = e.currentTarget.dataset.type;
-        let newQuantity = this.data.quantity;
+        let newQuantity = this.data.quantity; // 当前是该商品的 desired TOTAL
         const product = this.data.selectedProduct;
 
         if (type === 'plus') {
@@ -415,36 +433,28 @@ Page({
             newQuantity -= 1;
         }
         
-        // 确保数量始终大于等于 1 (点击按钮的操作通常要求数量合法)
-        if (newQuantity < 1) newQuantity = 1;
+        // 确保数量始终大于等于 1
+        newQuantity = Math.max(1, newQuantity);
 
-        // 【新增逻辑】：检查是否超出购物车总容量 MAX_QUANTITY
+        // 【总容量校验逻辑】
         const currentCartCount = this.data.cartCount;
         let cartList = wx.getStorageSync('cocktailList') || [];
+        // 使用当前选中的规格和商品ID查找现有项
         const existingItem = this.getExistingCartItem(product.id, this.data.selectedOptions, cartList);
         
-        // 计算如果不加/减新数量，当前购物车总数是多少（如果该商品已在购物车中，则需先减去其原有数量）
-        const baseCount = existingItem ? currentCartCount - existingItem.quantity : currentCartCount;
-        const totalAfterAdd = baseCount + newQuantity; // 这里的 newQuantity 是单个商品的选择数量
+        // 减去该商品的旧数量，得到剩余商品的总数 (baseCount)
+        const baseCount = currentCartCount - (existingItem ? existingItem.quantity : 0);
+        const totalAfterAdd = baseCount + newQuantity; // 总数 = 剩余商品总数 + 期望的新数量
 
         if (totalAfterAdd > MAX_QUANTITY) {
-            newQuantity = MAX_QUANTITY - baseCount;
+            newQuantity = MAX_QUANTITY - baseCount; // 允许的最大数量
             newQuantity = Math.max(1, newQuantity); // 确保至少为 1
             wx.showToast({
-                title: `总数量不能超过${MAX_QUANTITY}`,
+                title: `总数量不能超过${MAX_QUANTITY}ml`,
                 icon: 'none'
             });
         }
         
-        // 【关键逻辑】：检查单次添加的数量是否超过了 MAX_QUANTITY（即 550），即使购物车是空的
-        if (newQuantity > MAX_QUANTITY && currentCartCount === 0) {
-            newQuantity = MAX_QUANTITY;
-            wx.showToast({
-                title: `单次添加数量不能超过${MAX_QUANTITY}`,
-                icon: 'none'
-            });
-        }
-
         this.setData({
             quantity: newQuantity
         }, () => {
@@ -454,35 +464,25 @@ Page({
     
     /**
      * 数量输入（商品选项弹窗内 - 直接输入）
-     * 【已修正】：允许输入框显示 0，将 || 1 改为 || 0
      */
     onQuantityInput: function(e) {
-        // 【关键修改】：将 || 1 改为 || 0，允许用户输入框显示 0
+        // value 是用户输入的该商品的 desired TOTAL 数量
         let value = parseInt(e.detail.value) || 0; 
         
-        // 【新增逻辑】：检查是否超出购物车总容量 MAX_QUANTITY
+        // 【总容量校验逻辑】
         const product = this.data.selectedProduct;
         const currentCartCount = this.data.cartCount;
         let cartList = wx.getStorageSync('cocktailList') || [];
         const existingItem = this.getExistingCartItem(product.id, this.data.selectedOptions, cartList);
         
-        const baseCount = existingItem ? currentCartCount - existingItem.quantity : currentCartCount;
+        const baseCount = currentCartCount - (existingItem ? existingItem.quantity : 0);
         const totalAfterInput = baseCount + value;
 
         if (totalAfterInput > MAX_QUANTITY) {
              value = MAX_QUANTITY - baseCount;
              value = Math.max(0, value); // 数量不能为负
              wx.showToast({
-                title: `总数量不能超过${MAX_QUANTITY}`,
-                icon: 'none'
-            });
-        }
-        
-        // 限制最大数量
-        if (value > MAX_QUANTITY && currentCartCount === 0) {
-            value = MAX_QUANTITY;
-             wx.showToast({
-                title: `单次添加数量不能超过${MAX_QUANTITY}`,
+                title: `总数量不能超过${MAX_QUANTITY}ml`,
                 icon: 'none'
             });
         }
@@ -533,29 +533,24 @@ Page({
     onInputModalQuantity: function(e) {
         let value = parseInt(e.detail.value) || 0;
         
-        // 【新增逻辑】：检查是否超出购物车总容量 MAX_QUANTITY
+        // 【总容量校验逻辑】
         const itemId = this.data.targetItemId;
         let cartList = wx.getStorageSync('cocktailList') || [];
         const itemIndex = cartList.findIndex(item => item.id === itemId);
         const currentItemQuantity = itemIndex !== -1 ? cartList[itemIndex].quantity : 0;
         const currentCartCount = this.data.cartCount;
         
-        const baseCount = currentCartCount - currentItemQuantity;
+        // 减去该商品的旧数量，得到剩余商品的总数 (baseCount)
+        const baseCount = currentCartCount - currentItemQuantity; 
         const totalAfterInput = baseCount + value;
 
         if (totalAfterInput > MAX_QUANTITY) {
              value = MAX_QUANTITY - baseCount;
              value = Math.max(0, value); // 数量不能为负
              wx.showToast({
-                title: `总数量不能超过${MAX_QUANTITY}`,
+                title: `总数量不能超过${MAX_QUANTITY}ml`,
                 icon: 'none'
             });
-        }
-        
-        // 限制最大数量
-        if (value > MAX_QUANTITY && cartList.length === 1) {
-            value = MAX_QUANTITY;
-            wx.showToast({ title: `数量不能超过${MAX_QUANTITY}`, icon: 'none' });
         }
         
         this.setData({
@@ -579,12 +574,12 @@ Page({
             const baseCount = currentCartCount - currentItemQuantity;
             const totalAfterChange = baseCount + newQuantity;
 
-            // 【关键新增校验】：检查总数是否大于 550
+            // 【总容量校验】：检查总数是否大于 550
             if (totalAfterChange > MAX_QUANTITY) {
                 newQuantity = MAX_QUANTITY - baseCount;
-                newQuantity = Math.max(1, newQuantity); // 确保至少为 1
+                // newQuantity = Math.max(1, newQuantity); // 确保至少为 1
                  wx.showToast({
-                    title: `总数量不能超过${MAX_QUANTITY}`,
+                    title: `总数量不能超过${MAX_QUANTITY}ml`,
                     icon: 'none'
                 });
             }
@@ -624,11 +619,11 @@ Page({
         if (type === 'plus') {
             newQuantity += 1;
             
-            // 【关键新增校验】：检查总数是否大于 550
+            // 【总容量校验】：检查总数是否大于 550
             if (baseCount + newQuantity > MAX_QUANTITY) {
                 newQuantity = MAX_QUANTITY - baseCount;
                 wx.showToast({
-                    title: `总数量不能超过${MAX_QUANTITY}`,
+                    title: `总数量不能超过${MAX_QUANTITY}ml`,
                     icon: 'none'
                 });
             }
@@ -674,6 +669,12 @@ Page({
      * 【新增辅助函数】通过商品ID和规格获取购物车中已存在的商品项
      */
     getExistingCartItem: function(productId, selectedOptions, cartList) {
+        // 1. 确保 selectedOptions 存在且是一个对象
+        if (!selectedOptions || typeof selectedOptions !== 'object') {
+            return null;
+        }
+
+        // 2. 构造与 onAddToCart 中一致的 uniqueId
         const optionsArray = Object.keys(selectedOptions)
             .sort()
             .map(key => selectedOptions[key]);
@@ -702,9 +703,9 @@ Page({
         if (cartCount !== MAX_QUANTITY) {
             let title = '';
             if (cartCount < MAX_QUANTITY) {
-                title = `当前总量为 ${cartCount}，请补足 ${MAX_QUANTITY}ml ~_~`;
+                title = `当前总量为 ${cartCount}ml，请补足 ${MAX_QUANTITY}ml ~_~`;
             } else {
-                title = `当前总量为 ${cartCount}，已超过 ${MAX_QUANTITY}ml ~_~`;
+                title = `当前总量为 ${cartCount}ml，已超过 ${MAX_QUANTITY}ml ~_~`;
             }
             
             wx.showToast({
@@ -805,89 +806,56 @@ Page({
     },
 
     /**
-     * 【已修正】加入购物车逻辑：添加 sampleName 字段，并统一数量校验
+     * 【已修正】加入购物车逻辑：添加 sampleName 字段，统一数量校验，并增加种类限制校验
      */
     onAddToCart: function() {
         const {
             selectedProduct,
             selectedOptions,
             quantity,
-            dynamicOptions // 使用 dynamicOptions 来获取规格的 'name' (例如: '规格', '温度')
+            dynamicOptions
         } = this.data;
 
-        // 【关键修改】：在这里统一进行数量的最终校验和修正
+        // 1. 最终数量校验和修正
         let finalQuantity = parseInt(quantity) || 0; 
+        finalQuantity = Math.max(1, finalQuantity); // desired TOTAL quantity for this unique item
         
-        // 1. 确保数量至少为 1 (加入购物车的最终要求)
-        finalQuantity = Math.max(1, finalQuantity); 
-        
-        // 2. 检查添加后是否超过总数量限制 MAX_QUANTITY
-        let cartList = wx.getStorageSync('cocktailList') || [];
-        const existingItem = this.getExistingCartItem(selectedProduct.id, selectedOptions, cartList);
-        const currentCartCount = this.data.cartCount;
-
-        // 计算新总数
-        let newTotalCount = existingItem ? 
-            currentCartCount - existingItem.quantity + finalQuantity : 
-            currentCartCount + finalQuantity;
-
-        if (newTotalCount > MAX_QUANTITY) {
-            // 计算最大可添加数量
-            const maxAddQuantity = MAX_QUANTITY - (currentCartCount - (existingItem ? existingItem.quantity : 0));
-            
-            if (maxAddQuantity > 0) {
-                 finalQuantity = maxAddQuantity;
-                 // 提示用户只能添加 maxAddQuantity
-                 wx.showToast({
-                    title: `最多只能再添加 ${maxAddQuantity}ml！`,
-                    icon: 'none',
-                    duration: 2000
-                });
-            } else {
-                // 如果 maxAddQuantity <= 0，说明购物车已经满了或者超了
-                wx.showToast({
-                    title: `总数量已达 ${MAX_QUANTITY}ml 限制！`,
-                    icon: 'none',
-                    duration: 2000
-                });
-                return;
-            }
-        }
-        
-        // 3. 检查数量是否大于 0
-        if (finalQuantity <= 0) {
-            // 这个分支理论上在前面 maxAddQuantity 处理后不会再命中，但作为安全检查保留
-            wx.showToast({
-                title: '请选择购买数量',
-                icon: 'none'
-            });
-            return;
-        }
-        
-        // 4. 构造唯一ID (商品ID + 所有选项的值)
+        // 2. 构造唯一ID
         const optionsArray = Object.keys(selectedOptions)
             .sort()
             .map(key => selectedOptions[key]);
         const optionsString = optionsArray.join('_');
         const uniqueId = `${selectedProduct.id}_${optionsString}`;
-
-        // 【核心修改 A】：构造 selectedSpecs 数组，包含 key, name, value
-        const selectedSpecs = [];
         
-        // 遍历动态选项 dynamicOptions (来自云端商品数据)，查找用户选定的值
+        // 3. 构造 selectedSpecs 数组
+        const selectedSpecs = [];
         dynamicOptions.forEach(option => {
-            const specKey = option.key;   // 例如: 'spec'
-            const specName = option.name; // 例如: '规格'
+            const specKey = option.key;
+            const specName = option.name;
             
-            // 检查用户是否对该规格进行了选择
             if (selectedOptions.hasOwnProperty(specKey)) {
                 selectedSpecs.push({
                     key: specKey,
                     name: specName,
-                    value: selectedOptions[specKey] // 用户选择的值
+                    value: selectedOptions[specKey]
                 });
             }
         });
+
+        // 4. 从缓存中读取购物车并检查是否存在
+        let cartList = wx.getStorageSync('cocktailList') || [];
+        const existingIndex = cartList.findIndex(item => item.id === uniqueId);
+        
+        // ⭐ 【新增校验 A】：品种限制 (只有在新增商品时才校验)
+        if (existingIndex === -1 && cartList.length >= 5) {
+            wx.showToast({
+                title: '最多只能选择 5 种酒类！',
+                icon: 'none',
+                duration: 2000
+            });
+            this.onHideModal();
+            return;
+        }
 
         // 5. 构造购物车商品对象 (cartItem)
         const cartItem = {
@@ -896,49 +864,38 @@ Page({
             image: selectedProduct.image,
             name: selectedProduct.name,
             price: parseFloat(selectedProduct.price),
-            quantity: finalQuantity, // 使用修正后的 finalQuantity
+            quantity: finalQuantity, // 使用 desired TOTAL quantity
             totalPrice: (parseFloat(selectedProduct.price) * finalQuantity).toFixed(2),
-            
-            // ⭐ 【关键修正】：将 sampleName 添加到 cartItem 中 (用于购物车详情显示和结算传递) ⭐
             sampleName: selectedProduct.sampleName, 
-            
-            // 【核心修改 B】：将规格数组添加到 cartItem
             selectedSpecs: selectedSpecs  
         };
 
-        // 6. 从缓存中读取购物车
-        
-        // const existingIndex = cartList.findIndex(item => item.id === cartItem.id);
-        const existingIndex = cartList.findIndex(item => item.id === uniqueId); // 使用 uniqueId 查找
-
-        // ⭐ DEBUG A: 检查商品是否已存在于购物车中 ⭐
-        console.log(`[DEBUG A] 尝试添加商品ID: ${cartItem.id}`);
-        console.log(`[DEBUG A] 商品是否已存在 (Index): ${existingIndex}`);
-
-
+        // 6. 更新购物车
         if (existingIndex !== -1) {
-            // 存在则更新数量
-            // 注意：因为前面已经计算过新 total，所以这里直接用 finalQuantity 覆盖或者累加
+            // ⭐ 【修正】：存在则直接更新为 finalQuantity (total quantity)
             
-            // 如果是已存在的商品，则更新数量
-            let newQuantity = cartList[existingIndex].quantity + finalQuantity;
+            // 即使总数校验在弹窗内已完成，这里也再次校验，以防用户在弹窗外修改缓存
+            const currentCartCount = this.data.cartCount;
+            const baseCount = currentCartCount - cartList[existingIndex].quantity;
             
-            // 由于前面已经做了总数量的限制计算，这里的 newQuantity 已经是安全的值
-            cartList[existingIndex].quantity = newQuantity;
-            cartList[existingIndex].totalPrice = (parseFloat(cartList[existingIndex].price) * cartList[existingIndex].quantity).toFixed(2);
-            
-            // 确保 selectedSpecs 存在
-            if (!cartList[existingIndex].selectedSpecs || cartList[existingIndex].selectedSpecs.length === 0) {
-                cartList[existingIndex].selectedSpecs = selectedSpecs;
+            if (baseCount + finalQuantity > MAX_QUANTITY) {
+                finalQuantity = MAX_QUANTITY - baseCount;
+                finalQuantity = Math.max(1, finalQuantity);
+                wx.showToast({
+                    title: `总数量已达 ${MAX_QUANTITY}ml 限制！`,
+                    icon: 'none',
+                    duration: 2000
+                });
             }
-            
-            // ⭐ 确保已存在的项也拥有 sampleName (处理老数据) ⭐
-            if (!cartList[existingIndex].sampleName) {
-                cartList[existingIndex].sampleName = selectedProduct.sampleName;
-            }
+
+            cartList[existingIndex].quantity = finalQuantity;
+            cartList[existingIndex].totalPrice = (parseFloat(cartList[existingIndex].price) * finalQuantity).toFixed(2);
+            cartList[existingIndex].selectedSpecs = selectedSpecs; // 确保规格是最新的
+            cartList[existingIndex].sampleName = selectedProduct.sampleName; 
 
         } else {
             // 不存在则添加新商品
+            // finalQuantity 已经是总数量，直接 push 即可
             cartList.push(cartItem);
         }
 
@@ -946,9 +903,6 @@ Page({
         try {
             wx.setStorageSync('cocktailList', cartList);
             
-            // ⭐ DEBUG B: 检查缓存是否成功写入 ⭐
-            console.log('[DEBUG B] 成功写入缓存，当前总商品种类数:', cartList.length);
-
             // 8. 显示成功提示
             wx.showToast({
                 title: '添加购物车成功',

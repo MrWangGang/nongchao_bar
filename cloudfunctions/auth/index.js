@@ -12,6 +12,10 @@ const expHistoryCollection = db.collection('exp_his')
 const JWT_SECRET = '1234567890qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM,./' 
 const JWT_EXPIRES_IN = '7d' 
 
+// --- 新增 VIP 类型常量 ---
+const DEFAULT_VIP_TYPE = "普通会员";
+// -----------------------
+
 /**
  * 内部函数：生成一个唯一的9位随机数字符串作为 userNum
  */
@@ -96,10 +100,11 @@ exports.main = async (event, context) => {
                     avatarUrl: avatarUrl, 
                     userNum: userNum, 
                     vipLevel: 1, 
+                    vipType: DEFAULT_VIP_TYPE,     // 【新增】初始会员类型
                     vipScore: INITIAL_SCORE,     // 初始积分 10
                     vipExp: INITIAL_EXP,         // 初始经验 100
-                    board: null,                 // 【已修改】灯牌 key 字段初始化为 null
-                    boardUrl: null,              // 【新增】灯牌图片 URL 字段初始化为 null
+                    board: null,                 
+                    boardUrl: null,              
                     createdAt: db.serverDate(),
                     lastLoginAt: db.serverDate(),
                 }
@@ -117,10 +122,11 @@ exports.main = async (event, context) => {
                 userId: userId, 
                 userNum: userNum,
                 vipLevel: 1, 
+                vipType: DEFAULT_VIP_TYPE,      // 【新增】返回会员类型
                 vipScore: INITIAL_SCORE,
                 vipExp: INITIAL_EXP,
-                board: null,                     // 【已修改】返回 board 字段
-                boardUrl: null                   // 【新增】返回 boardUrl 字段
+                board: null,                     
+                boardUrl: null                   
             };
         } else {
             // ===================================
@@ -140,7 +146,8 @@ exports.main = async (event, context) => {
             let finalVipScore = data.vipScore;
             let finalVipExp = data.vipExp;
             let finalBoard = data.board === undefined ? null : data.board; 
-            let finalBoardUrl = data.boardUrl === undefined ? null : data.boardUrl; // 【新增】处理 boardUrl 字段
+            let finalBoardUrl = data.boardUrl === undefined ? null : data.boardUrl; 
+            let finalVipType = data.vipType === undefined ? DEFAULT_VIP_TYPE : data.vipType; // 【新增】处理 vipType
 
             // 检查 vipScore 是否缺失
             if (data.vipScore === undefined) {
@@ -161,12 +168,17 @@ exports.main = async (event, context) => {
                 updateData.vipLevel = 1;
             }
             
-            // 【已修改】检查 board 字段是否缺失
+            // 【新增】检查 vipType 字段是否缺失
+            if (data.vipType === undefined) {
+                updateData.vipType = DEFAULT_VIP_TYPE; 
+            }
+            
+            // 检查 board 字段是否缺失
             if (data.board === undefined) {
                 updateData.board = null; 
             }
             
-            // 【新增】检查 boardUrl 字段是否缺失
+            // 检查 boardUrl 字段是否缺失
             if (data.boardUrl === undefined) {
                 updateData.boardUrl = null; 
             }
@@ -184,10 +196,11 @@ exports.main = async (event, context) => {
                 userId: userId, 
                 userNum: userNum,
                 vipLevel: data.vipLevel === undefined ? 1 : data.vipLevel, 
+                vipType: finalVipType,              // 【新增】返回会员类型
                 vipScore: finalVipScore, 
                 vipExp: finalVipExp,
-                board: finalBoard,                    // 【已修改】返回 board 字段
-                boardUrl: finalBoardUrl               // 【新增】返回 boardUrl 字段
+                board: finalBoard,                   
+                boardUrl: finalBoardUrl              
             };
         }
         
