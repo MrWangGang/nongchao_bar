@@ -1,0 +1,69 @@
+<view class="score-card">
+    <view class="score-info">
+        <text class="current-label">
+            {{currentTab === 'score' ? '当前积分' : '当前经验'}}
+        </text>
+        <text class="current-value">
+            {{currentTab === 'score' ? currentScore : currentExp}}
+        </text>
+    </view>
+</view>
+
+<view class="tab-bar">
+    <view 
+        class="tab-item {{currentTab === 'score' ? 'active' : ''}}" 
+        data-tab="score" 
+        bindtap="switchTab"
+    >
+        积分详情
+    </view>
+    <view 
+        class="tab-item {{currentTab === 'exp' ? 'active' : ''}}" 
+        data-tab="exp" 
+        bindtap="switchTab"
+    >
+        经验详情
+    </view>
+</view>
+
+<scroll-view class="detail-list-wrap" scroll-y>
+    
+    <block wx:if="{{currentTab === 'score'}}">
+        <view class="history-item" wx:for="{{scoreList}}" wx:key="index">
+            <view class="item-left">
+                <text class="action-name">{{item.action}}</text>
+                <text class="time-stamp">{{item.createdAt}}</text>
+            </view>
+            <view class="item-right">
+                <text class="score-change {{item.value > 0 ? 'positive' : 'negative'}}">
+                    {{item.value > 0 ? '+' : ''}}{{item.value}}
+                </text>
+            </view>
+        </view>
+        
+        <view class="loading-wrap">
+            <text wx:if="{{scoreLoading}}">加载中...</text>
+            <text wx:elif="{{scoreList.length === 0}}">暂无积分记录</text>
+        </view>
+    </block>
+
+    <block wx:if="{{currentTab === 'exp'}}">
+        <view class="history-item" wx:for="{{expList}}" wx:key="index">
+            <view class="item-left">
+                <text class="action-name">{{item.action}}</text>
+                <text class="time-stamp">{{item.createdAt}}</text>
+            </view>
+            <view class="item-right">
+                <text class="exp-change {{item.value > 0 ? 'positive' : 'negative'}}">
+                    {{item.value > 0 ? '+' : ''}}{{item.value}}
+                </text>
+            </view>
+        </view>
+        
+        <view class="loading-wrap">
+            <text wx:if="{{expLoading}}">加载中...</text>
+            <text wx:elif="{{!expHasMore && expList.length > 0}}">--- 已加载全部经验记录 ---</text>
+            <text wx:elif="{{expList.length === 0}}">暂无经验记录</text>
+        </view>
+    </block>
+</scroll-view>

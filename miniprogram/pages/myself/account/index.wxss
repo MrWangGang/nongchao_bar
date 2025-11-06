@@ -1,0 +1,160 @@
+/* pages/account/detail/index.wxss */
+
+page {
+  background-color: #f8f8f8;
+}
+
+/* 顶部自定义导航栏 (适配微信自带的导航栏) */
+.header {
+  position: relative;
+  padding-top: 20rpx; /* 模拟状态栏高度 [cite: 12] */
+  height: 120rpx; /* 导航栏高度 [cite: 12] */
+  background-color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  padding-bottom: 20rpx;
+}
+.title {
+  font-size: 36rpx;
+  font-weight: bold;
+}
+.back-btn {
+  position: absolute;
+  left: 20rpx;
+  bottom: 20rpx;
+  width: 60rpx;
+  height: 60rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40rpx;
+}
+
+
+/* 积分/经验展示卡片 (参考您的设计图) */
+.score-card {
+  background-color: #fff;
+  padding: 20rpx 40rpx;
+  text-align: center;
+  /* 重点修改：移除底部间距，使其与Tab栏连接 */
+  margin-bottom: 0; 
+  box-shadow: 0 2rpx 4rpx rgba(0, 0, 0, 0.03);
+}
+.current-label {
+  font-size: 28rpx;
+  color: #999;
+  display: block;
+  margin-bottom: 10rpx;
+}
+.current-value {
+  font-size: 80rpx; /* 大号字体 [cite: 17] */
+  font-weight: bold;
+  color: #333;
+  display: block;
+  /* 这一行似乎是旧的实验性样式，如果保留会影响布局，但根据源文件保留： */
+  margin-top: -100rpx !important;
+}
+
+
+/* Tab 切换样式 */
+.tab-bar {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  background-color: #fff;
+  /* 确保没有上边框，仅保留底部分割线 */
+  border-top: none; 
+  border-bottom: 1rpx solid #eee;
+  height: 90rpx;
+  position: sticky;
+  top: 0;
+  z-index: 5;
+}
+
+.tab-item {
+  font-size: 30rpx;
+  color: #666;
+  padding: 10rpx 0;
+  position: relative;
+}
+
+.tab-item.active {
+  color: #ff4500; /* 激活颜色 [cite: 19] */
+  font-weight: bold;
+}
+
+.tab-item.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60rpx;
+  height: 4rpx;
+  background-color: #ff4500;
+  border-radius: 2rpx;
+}
+
+
+/* 历史记录列表 */
+.detail-list-wrap {
+  /* 重新计算高度以适应新的布局 */
+  /* 原始: height: calc(100vh - 350rpx); */ 
+  height: calc(100vh - 260rpx); /* 100vh - (Header 140rpx + ScoreCard 120rpx + TabBar 90rpx) - 20rpx buffer */
+  box-sizing: border-box;
+}
+
+.history-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 30rpx 0;
+  border-bottom: 1rpx solid #eee;
+  background-color: #fff;
+  padding: 20rpx;
+  margin-top: 10rpx;
+  border-radius: 8rpx;
+}
+
+.item-left {
+  display: flex;
+  flex-direction: column;
+}
+
+.action-name {
+  font-size: 30rpx;
+  color: #333;
+  font-weight: 500;
+}
+
+.time-stamp {
+  font-size: 24rpx;
+  color: #999;
+  margin-top: 8rpx;
+}
+
+.item-right {
+  flex-shrink: 0;
+}
+
+.score-change, .exp-change {
+  font-size: 32rpx;
+  font-weight: bold;
+}
+
+.positive {
+  color: #ff4500; /* 增加值使用红色 [cite: 25] */
+}
+
+.negative {
+  color: #333; /* 减少值使用黑色或深灰色 [cite: 26] */
+}
+
+/* 加载状态和提示 */
+.loading-wrap {
+  text-align: center;
+  padding: 30rpx 0;
+  font-size: 26rpx;
+  color: #999;
+}

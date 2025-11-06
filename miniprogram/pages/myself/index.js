@@ -237,5 +237,8 @@ Page({
     },
     goToVipRights() {
         console.log('导航到会员权益页');
+    },
+    goToAccountDetails() {
+      wx.navigateTo({ url: `/pages/myself/account/index`});
     }
 });
