@@ -87,7 +87,7 @@
                 </view>
                 <view class="reservation-query-card" bindtap="reserveQuery">
                     <image class="query-icon" src="cloud://cloud1-7gy6iiv5f0cbcb43.636c-cloud1-7gy6iiv5f0cbcb43-1379173903/素材/首页_搜索.png"></image>
-                    <text class="query-text">预订查询</text>
+                    <text class="query-text">订单查询</text>
                 </view>
             </view>
         </view>

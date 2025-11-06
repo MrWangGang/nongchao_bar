@@ -159,7 +159,7 @@
 /* NEW: 右侧按钮组容器，让两个按钮在 space-between 布局中保持在一起 */
 .right-buttons {
   display: flex;
-  align-items: center; 
+  align-items: center;
 }
 
 /* NEW: 账号详情按钮样式 (参考 vip-rights) */
@@ -172,7 +172,7 @@
   background-color: rgba(200, 245, 117, 0.1);
   border-radius: 20rpx;
   /* 增加右侧间距，与 vip-rights 隔开 */
-  margin-right: 20rpx; 
+  margin-right: 20rpx;
 }
 
 
@@ -213,10 +213,10 @@
 
 /* 放大当前累计经验值 */
 .exp-current-value {
-  font-size: 40rpx;  
+  font-size: 40rpx; 
   font-weight: bold;
   color: #ffffff;
-  line-height: 1;  
+  line-height: 1; 
   margin-right: 10rpx;
 }
 
@@ -238,7 +238,7 @@
 
 .progress-bar {
   height: 100%;
-  background-color: #ffd700;  
+  background-color: #ffd700; 
   transition: width 0.3s ease-in-out;
   border-radius: 5rpx;
 }
@@ -278,22 +278,22 @@
 /* 独立卡片样式 - 确保卡片尺寸一致 */
 .nav-item-standalone {
   /* 基础卡片样式 */
-  background-color: #ffffff; 
+  background-color: #ffffff;
   border-radius: 20rpx;
-  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.05); 
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.05);
   
   /* 尺寸和布局 */
-  /* 使用 calc() 确保四个卡片均匀分布且有间距。40rpx 是左右的 padding，60rpx 是三个间距 */
-  width: calc((100% - 60rpx) / 4);
+  /* 修复 WXSS calc() 编译错误：避免使用复杂的除法，简化为 25% - 15rpx */
+  width: calc(25% - 15rpx);
   height: 150rpx; /* 设置一个固定的统一高度 */
   padding: 20rpx 0; /* 内部上下内边距 */
   box-sizing: border-box;
 /* 确保 padding 不会增加最终宽度 */
-  flex-shrink: 0; 
+  flex-shrink: 0;
   
   /* 内部内容居中 */
   display: flex;
-  flex-direction: column; 
+  flex-direction: column;
   align-items: center;
   justify-content: center;
 /* 确保图标和文本垂直居中 */
@@ -315,25 +315,186 @@
 
 /* 独立图标样式，大小可根据需求不同 */
 .icon-orders {
-  width: 65rpx; 
+  width: 65rpx;
   height: 65rpx;
   margin-bottom: 5rpx;
 }
 
 .icon-cellar {
-  width: 65rpx; 
+  width: 65rpx;
   height: 65rpx;
   margin-bottom: 5rpx;
 }
 
 .icon-lightboard {
-  width: 65rpx; 
+  width: 65rpx;
   height: 65rpx;
   margin-bottom: 5rpx;
 }
 
 .icon-ranking {
-  width: 65rpx; 
+  width: 65rpx;
   height: 65rpx;
   margin-bottom: 5rpx;
+}
+
+/* =================================================== */
+/* NEW: 排行榜卡片样式 (Rank Card) */
+/* =================================================== */
+.rank-card {
+  position: relative; /* 允许子元素绝对定位 */
+  background-color: #ffffff; /* 卡片白底 */
+  border-radius: 20rpx;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.05); 
+  
+  margin-bottom: 40rpx; 
+  padding-bottom: 40rpx; 
+  overflow: hidden; 
+  height: 480rpx; /* 设定固定高度，容纳背景图和主体内容 */
+}
+
+/* 卡片背景图 (rank_back.png) */
+.rank-back-image {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100%; /* 允许图片撑满卡片 */
+  z-index: 1; /* 确保在最底层 */
+  margin-bottom: 100rpx;
+}
+
+
+/* 头部标题区域 */
+.rank-header {
+  position: relative;
+  height: 80rpx; /* 标题背景图高度 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 3; /* 确保在卡片背景之上 */
+}
+
+/* 头部背景图片 (rank_head.png) */
+.rank-header-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1; 
+}
+
+/* 头部覆盖文本 */
+.rank-title {
+  position: relative;
+  z-index: 2; /* 确保在头部背景图之上 */
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #fcf949;
+}
+
+/* 排行榜主体布局 */
+.rank-body {
+  position: relative;
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-start; 
+  padding-top: 50rpx;
+  padding-left: 20rpx;
+  padding-right: 20rpx;
+  z-index: 3; /* 确保在卡片背景之上 */
+}
+
+/* 单个排名项 */
+.rank-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  width: 30%; /* 均匀分配空间 */
+}
+
+/* 排名1 特殊样式 (最高) */
+.rank-item-1 {
+  /* 排名1在中间，相对位置更高 */
+  transform: translateY(-40rpx); 
+}
+
+/* 排名2/3 特殊样式 */
+.rank-item-2, .rank-item-3 {
+  /* 排名2/3稍微低一些 */
+  transform: translateY(60rpx);
+}
+
+
+/* 头像容器 */
+.rank-avatar-wrapper {
+  position: relative;
+  width: 154rpx; 
+  height: 228rpx;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: -10rpx;
+}
+/* 排名1头像容器尺寸 */
+.rank-avatar-wrapper-1 {
+  width: 182rpx; 
+  height: 270rpx;
+}
+
+/* 头像框图片 (排名1、2、3) */
+.rank-border {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 3; /* 确保框在头像之上 */
+}
+
+/* 实际用户头像 */
+.rank-avatar {
+  position: absolute;
+  width: 140rpx; /* 默认头像尺寸 */
+  height: 140rpx;
+  border-radius: 50%;
+  /* ⬇️ 修复：提高 z-index，确保头像位于边框之上 */
+  z-index: 4; 
+  /* ⬇️ 修复：使用绝对定位居中，确保头像位置正确 */
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -77%);
+}
+/* 排名1头像尺寸 */
+.rank-avatar-1 {
+  width: 150rpx;
+  height: 150rpx;
+  /* ⬇️ 修复：微调排名 1 头像位置，可能需要稍微抬高以匹配头像框设计 */
+  transform: translate(-50%, -80%);
+}
+
+
+/* 用户昵称 */
+.rank-name {
+  font-size: 26rpx;
+  color: #666666;
+}
+.rank-name-1 {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #333333;
+}
+
+
+/* 排名值 (积分/经验等) */
+.rank-value {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333333;
+}
+.rank-value-1 {
+  font-size: 40rpx;
+  color: #FF7F50; /* 排名1使用亮眼的颜色 */
 }

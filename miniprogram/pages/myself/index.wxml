@@ -17,42 +17,49 @@
         
         <view class="vip-banner">
             <view class="vip-header">
-                <view class="vip-info">
+          
+               <view class="vip-info">
          
                     <text class="nick-name">{{userInfo.name}}</text>
                     <image class="nav-icon-vip" src="cloud://cloud1-7gy6iiv5f0cbcb43.636c-cloud1-7gy6iiv5f0cbcb43-1379173903/素材/VIP (1).png" mode="heightFix"></image>
                     <text class="vip-text">{{vipLevel}}</text>
                 </view>
-                
+  
+               
                 <view class="right-buttons">
                   <view class="account-details" bindtap="goToAccountDetails">
                         <text>账户详情</text>
                     </view>
-                    
+     
+                
                   <view class="vip-rights" bindtap="goToVipRights">
                         <text>会员权益</text>
                     </view>
 
                   
 
-                </view>
+   
+              </view>
             </view>
             
             <view class="vip-footer">
                
                 <view class="progress-area">
-                    <view class="exp-text-group">
+                  
+                  <view class="exp-text-group">
                         <text class="exp-current-value">{{vipExp}}</text>
                         <text class="exp-next-level">{{nextLevelText}}</text>
                     </view>
         
-                    <view class="progress-bar-container">
+                   
+                  <view class="progress-bar-container">
                         <view class="progress-bar" style="width: {{progressPercent}}"></view>
                     </view>
                 </view>
                 
         
-                <view class="qr-code-placeholder">
+           
+                  <view class="qr-code-placeholder">
                     <image class="qr-icon" src="cloud://cloud1-7gy6iiv5f0cbcb43.636c-cloud1-7gy6iiv5f0cbcb43-1379173903/素材/qr.png"></image> 
                 </view>
             </view>
@@ -61,19 +68,22 @@
         <view class="nav-grid-container">
             <view class="nav-item-standalone" bindtap="goToOrders">
  
-                <image class="icon-orders" src="cloud://cloud1-7gy6iiv5f0cbcb43.636c-cloud1-7gy6iiv5f0cbcb43-1379173903/素材/扑克.png"></image>
+   
+              <image class="icon-orders" src="cloud://cloud1-7gy6iiv5f0cbcb43.636c-cloud1-7gy6iiv5f0cbcb43-1379173903/素材/扑克.png"></image>
                 <text class="nav-item-text">我的订单</text>
             </view>
             
             <view class="nav-item-standalone" bindtap="goToCellar">
                 <image class="icon-cellar" src="cloud://cloud1-7gy6iiv5f0cbcb43.636c-cloud1-7gy6iiv5f0cbcb43-1379173903/素材/鸡尾酒.png"></image>
           
-                <text class="nav-item-text">我的存酒</text>
+  
+               <text class="nav-item-text">我的存酒</text>
             </view>
             
             <view class="nav-item-standalone" bindtap="goToLightboard">
                 <image class="icon-lightboard" src="cloud://cloud1-7gy6iiv5f0cbcb43.636c-cloud1-7gy6iiv5f0cbcb43-1379173903/素材/皇冠.png"></image>
                 <text class="nav-item-text">灯牌</text>
+            
             </view>
         
      
@@ -83,7 +93,45 @@
             </view>
         </view>
         
-    </view>
+        <view class="rank-card">
+            <image class="rank-back-image" src="cloud://cloud1-7gy6iiv5f0cbcb43.636c-cloud1-7gy6iiv5f0cbcb43-1379173903/素材/rank_back.png" mode="widthFix"></image>
+            
+            <view class="rank-header">
+                <image class="rank-header-bg" src="cloud://cloud1-7gy6iiv5f0cbcb43.636c-cloud1-7gy6iiv5f0cbcb43-1379173903/素材/rank_head.png" mode="widthFix"></image>
+                <text class="rank-title">排行榜TOP3</text>
+            </view>
+
+            <view class="rank-body">
+                
+                <view class="rank-item rank-item-2">
+                    <view class="rank-avatar-wrapper">
+                        <image class="rank-avatar" src="{{rankList[1].avatarUrl}}" mode="aspectFill"></image>
+                        <image class="rank-border rank-border-2" src="cloud://cloud1-7gy6iiv5f0cbcb43.636c-cloud1-7gy6iiv5f0cbcb43-1379173903/素材/rank2.png"></image>
+                    </view>
+                    <text class="rank-name">{{rankList[1].nickName}}</text>
+                    <text class="rank-value">{{rankList[1].vipScore}}</text>
+                </view>
+
+                <view class="rank-item rank-item-1">
+                    <view class="rank-avatar-wrapper rank-avatar-wrapper-1">
+                        <image class="rank-avatar rank-avatar-1" src="{{rankList[0].avatarUrl}}" mode="aspectFill"></image>
+                        <image class="rank-border rank-border-1" src="cloud://cloud1-7gy6iiv5f0cbcb43.636c-cloud1-7gy6iiv5f0cbcb43-1379173903/素材/rank1.png"></image>
+                    </view>
+                    <text class="rank-name rank-name-1">{{rankList[0].nickName}}</text>
+                    <text class="rank-value rank-value-1">{{rankList[0].vipScore}}</text>
+                </view>
+
+                <view class="rank-item rank-item-3">
+                    <view class="rank-avatar-wrapper">
+                        <image class="rank-avatar" src="{{rankList[2].avatarUrl}}" mode="aspectFill"></image>
+                        <image class="rank-border rank-border-3" src="cloud://cloud1-7gy6iiv5f0cbcb43.636c-cloud1-7gy6iiv5f0cbcb43-1379173903/素材/rank3.png"></image>
+                    </view>
+                    <text class="rank-name">{{rankList[2].nickName}}</text>
+                    <text class="rank-value">{{rankList[2].vipScore}}</text>
+                </view>
+            </view>
+        </view>
+        </view>
 </scroll-view>
 
 <authorize></authorize>

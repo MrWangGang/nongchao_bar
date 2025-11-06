@@ -43,9 +43,8 @@ Page({
   },
 
   reserveQuery:function(e) {
-    wx.navigateTo({ url: `/pages/index/orders/index`
-  });
-},
+    wx.navigateTo({ url: `/pages/index/orders/index`});
+  },
 
 
     // 加载本页面所需的用户数据
