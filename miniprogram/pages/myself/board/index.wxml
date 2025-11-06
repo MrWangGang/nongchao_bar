@@ -21,7 +21,7 @@
                 disabled="{{true}}"
         
             >
-                已佩戴
+                已领养
             </button>
             <button 
                 wx:elif="{{item.canClaim}}" 
@@ -29,7 +29,7 @@
                 data-key="{{item.key}}" 
                 bindtap="handleClaimBoard"
             >
-                佩戴
+              领养
             </button>
    
             <button 
@@ -38,7 +38,7 @@
                 disabled="{{true}}"
             >
        
-                LV{{item.requiredLevel}}可佩戴
+                LV{{item.requiredLevel}}可领养
             </button>
         </view>
     </view>

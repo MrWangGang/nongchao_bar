@@ -82,7 +82,7 @@
             
             <view class="nav-item-standalone" bindtap="goToLightboard">
                 <image class="icon-lightboard" src="cloud://cloud1-7gy6iiv5f0cbcb43.636c-cloud1-7gy6iiv5f0cbcb43-1379173903/素材/皇冠.png"></image>
-                <text class="nav-item-text">灯牌</text>
+                <text class="nav-item-text">领养宠物</text>
             
             </view>
         
