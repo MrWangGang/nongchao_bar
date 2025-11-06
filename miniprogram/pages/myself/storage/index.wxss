@@ -1,22 +1,15 @@
-/* index.wxss - 存酒页面样式 */
-
-/* --- 页面整体布局调整 --- */
+/* index.wxss - 存酒页面样式 (完整版) */
 page {
   background-color: #f8f8f8;
 }
-/* 【修改】调整高度和 padding，为 Tab 导航栏预留空间 */
 .page-content {
   height: calc(100vh - 100rpx);
-/* 假设 Tab 高度 100rpx */
   box-sizing: border-box;
   padding-top: 100rpx;
 }
-/* 占位符：按钮高 100rpx + 底部边距 40rpx = 140rpx */
 .footer-spacer {
   height: 140rpx;
 }
-
-/* --- 【新增】Tab 导航样式 --- */
 .tab-bar {
   position: fixed;
   top: 0;
@@ -30,19 +23,16 @@ page {
   z-index: 10;
   border-bottom: 1rpx solid #eee;
 }
-
 .tab-item {
   font-size: 30rpx;
   color: #666;
   padding: 10rpx 0;
   position: relative;
 }
-
 .tab-item.active {
   color: #ff4500;
   font-weight: bold;
 }
-
 .tab-item.active::after {
   content: '';
   position: absolute;
@@ -54,9 +44,6 @@ page {
   background-color: #ff4500;
   border-radius: 2rpx;
 }
-
-
-/* --- 列表样式 --- */
 .wine-list {
   padding: 20rpx;
 }
@@ -73,19 +60,12 @@ page {
   font-size: 26rpx;
   padding-bottom: 10rpx;
 }
-
-/* 默认状态颜色：用于 '已确认寄存' */
 .status {
   color: #ff4500;
 }
-
-/* 【新增样式】已取出状态的颜色 (灰色) */
 .status.withdrawn {
   color: #999;
 }
-
-
-/* 寄存时间行的样式 */
 .item-time-row {
   font-size: 24rpx;
   color: #999;
@@ -93,14 +73,11 @@ page {
   border-bottom: 1rpx solid #eee;
   margin-bottom: 20rpx;
 }
-
-/* 列表主体布局 */
 .item-body {
   display: flex;
-  align-items: stretch; /* 允许子项垂直拉伸 */
+  align-items: stretch;
   padding-bottom: 0;
 }
-/* 图片和信息保持在顶部 */
 .wine-img {
   width: 120rpx;
   height: 120rpx;
@@ -121,13 +98,20 @@ page {
   font-weight: bold;
   margin-bottom: 10rpx;
 }
+
+/* 【新增】列表内数量样式 */
+.quantity-inline {
+    font-size: 24rpx;
+    color: #ff4500; 
+    font-weight: bold;
+    margin: 5rpx 0 5rpx 0;
+}
+
 .period, .remark {
   font-size: 24rpx;
   color: #888;
   margin-top: -5rpx;
 }
-
-/* 重点修改：让备注最多显示两行，并显示省略号 */
 .remark {
     margin-top: 10rpx; 
     white-space: normal; 
@@ -135,73 +119,50 @@ page {
     text-overflow: ellipsis; 
     display: -webkit-box;
     -webkit-line-clamp: 2;
-/* 限制行数 */
     -webkit-box-orient: vertical;
 }
-
-/* 数量和按钮容器 */
 .actions {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-/* 按钮靠右 */
-  justify-content: flex-end; /* 按钮靠底 */
+  justify-content: flex-end;
   flex-shrink: 0;
 }
-.quantity {
-  font-size: 28rpx;
-  color: #333;
-  margin-bottom: 10rpx;
-}
 
-/* 按钮包裹层，用于固定宽度 */
 .button-wrap {
   width: 30rpx;
   flex-shrink: 0;
   margin-right: 100rpx;
   margin-top: 50rpx;
 }
-
-/* 列表卡片内按钮样式 */
 .action-btn {
   background-color: #fff;
   color: #ff4500;
   border: 1rpx solid #ff4500;
   border-radius: 15rpx;
-/* 强制固定尺寸 */
-  width: 130rpx !important;
+  width: 140rpx !important;
   height: 65rpx;      
   line-height: 65rpx;
-/* 确保文本垂直居中 */
-  
-  /* 覆盖默认样式 */
   padding: 0; 
   margin: 0;
-  
   font-size: 26rpx;
   flex-shrink: 0;
 }
-
-/* 【新增】历史记录按钮样式 */
 .action-btn.historical-btn {
     background-color: #f0f0f0;
     color: #999;
     border: 1rpx solid #ccc;
 }
-
-/* --- 底部悬浮按钮样式 --- */
 .bottom-float-btn-wrap {
   position: fixed;
   right: 40rpx; 
   bottom: 0;
-/* 增加底部安全距离 */
   padding-bottom: calc(40rpx + env(safe-area-inset-bottom));
   z-index: 99; 
   height: auto;
   background-color: transparent;
 }
 .store-wine-btn {
-  /* 约四字宽 */
   width: 675rpx !important;
   height: 80rpx !important;
   background-color: #ff4500;
@@ -214,9 +175,6 @@ page {
   padding: 0;
   box-shadow: 0 4rpx 10rpx rgba(255, 69, 0, 0.4);
 }
-
-
-/* --- 模态框样式 --- */
 .modal-mask {
   position: fixed;
   top: 0;
@@ -265,46 +223,33 @@ input {
 .picker-value {
   color: #333;
 }
-
-/* 模态框底部按钮组样式 */
 .modal-actions-group {
     display: flex;
-    /* 【修改】改为靠右对齐 (取消按钮在左，确认按钮在右) */
     justify-content: flex-end; 
     margin-top: 50rpx;
 }
-/* 取消按钮样式 */
 .cancel-btn {
-    /* 【修改】设置固定宽度 */
-    width: 260rpx !important; 
-    /* 调整按钮间距 */
+    width: 260rpx !important;
     margin-right: 30rpx; 
     background-color: #f0f0f0;
     color: #333;
-    /* 尺寸调整 */
-    border-radius: 20rpx; 
+    border-radius: 20rpx;
     height: 80rpx; 
     line-height: 80rpx;
-    /* 尺寸调整 */
     font-size: 32rpx;
     padding: 0;
 }
 .submit-btn {
-    /* 【修改】设置固定宽度 */
     width: 260rpx !important; 
     background-color: #ff4500;
     color: white;
-    /* 尺寸调整 */
     border-radius: 20rpx; 
     height: 80rpx; 
     line-height: 80rpx; 
-    /* 尺寸调整 */
     font-size: 32rpx;
     margin: 0;
-/* 清除默认 margin */
     padding: 0;
 }
-
 .word-count {
   font-size: 24rpx;
   color: #aaa;
@@ -335,4 +280,49 @@ input {
   width: auto;
   font-size: 26rpx;
   color: #999;
+}
+
+/* --- 无数据和加载提示样式 --- */
+.empty-data-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 500rpx; 
+    padding: 100rpx 0;
+    text-align: center;
+}
+
+.empty-icon {
+    width: 150rpx;
+    height: 150rpx;
+    background-color: #f0f0f0; 
+    border-radius: 50%;
+    margin-bottom: 20rpx;
+}
+
+.empty-text {
+    font-size: 32rpx;
+    color: #333;
+    font-weight: bold;
+    margin-bottom: 10rpx;
+}
+
+.empty-subtext {
+    font-size: 26rpx;
+    color: #999;
+}
+
+.load-more-footer {
+    text-align: center;
+    padding: 30rpx 0 50rpx;
+    font-size: 26rpx;
+}
+
+.loading-text {
+    color: #ff4500;
+}
+
+.no-more-text {
+    color: #999;
 }
