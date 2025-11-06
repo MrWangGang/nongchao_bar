@@ -226,13 +226,15 @@ Page({
     goToOrders() {
       wx.navigateTo({ url: `/pages/index/orders/index`});
     },
+    goToCellar() {
+      wx.navigateTo({ url: `/pages/myself/storage/index`});
+    },
     goToEditProfile() {
         console.log('导航到编辑资料页');
     },
     goToSettings() {
         console.log('导航到设置页');
     },
-    
     goToVipRights() {
         console.log('导航到会员权益页');
     }
