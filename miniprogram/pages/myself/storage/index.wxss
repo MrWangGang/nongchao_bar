@@ -1,19 +1,62 @@
 /* index.wxss - 存酒页面样式 */
 
-/* --- 页面整体布局 --- */
+/* --- 页面整体布局调整 --- */
 page {
   background-color: #f8f8f8;
 }
+/* 【修改】调整高度和 padding，为 Tab 导航栏预留空间 */
 .page-content {
-  height: 100vh;
-  padding-bottom: 180rpx; /* 必须留出空间给底部按钮 */
+  height: calc(100vh - 100rpx);
+/* 假设 Tab 高度 100rpx */
   box-sizing: border-box;
+  padding-top: 100rpx;
 }
+/* 占位符：按钮高 100rpx + 底部边距 40rpx = 140rpx */
 .footer-spacer {
-  height: 180rpx; /* 与底部按钮高度一致，避免内容被遮挡 */
+  height: 140rpx;
 }
 
-/* --- 列表样式 (模仿截图) --- */
+/* --- 【新增】Tab 导航样式 --- */
+.tab-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 100rpx;
+  background-color: #fff;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  z-index: 10;
+  border-bottom: 1rpx solid #eee;
+}
+
+.tab-item {
+  font-size: 30rpx;
+  color: #666;
+  padding: 10rpx 0;
+  position: relative;
+}
+
+.tab-item.active {
+  color: #ff4500;
+  font-weight: bold;
+}
+
+.tab-item.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60rpx;
+  height: 4rpx;
+  background-color: #ff4500;
+  border-radius: 2rpx;
+}
+
+
+/* --- 列表样式 --- */
 .wine-list {
   padding: 20rpx;
 }
@@ -29,22 +72,42 @@ page {
   justify-content: space-between;
   font-size: 26rpx;
   padding-bottom: 10rpx;
+}
+
+/* 默认状态颜色：用于 '已确认寄存' */
+.status {
+  color: #ff4500;
+}
+
+/* 【新增样式】已取出状态的颜色 (灰色) */
+.status.withdrawn {
+  color: #999;
+}
+
+
+/* 寄存时间行的样式 */
+.item-time-row {
+  font-size: 24rpx;
+  color: #999;
+  padding-bottom: 20rpx;
   border-bottom: 1rpx solid #eee;
   margin-bottom: 20rpx;
 }
-.status {
-  color: #ff4500; /* 示例状态颜色 */
-}
+
+/* 列表主体布局 */
 .item-body {
   display: flex;
-  align-items: flex-start;
+  align-items: stretch; /* 允许子项垂直拉伸 */
+  padding-bottom: 0;
 }
+/* 图片和信息保持在顶部 */
 .wine-img {
   width: 120rpx;
   height: 120rpx;
   border-radius: 8rpx;
   margin-right: 20rpx;
   flex-shrink: 0;
+  align-self: flex-start;
 }
 .info-details {
   flex-grow: 1;
@@ -52,6 +115,7 @@ page {
   flex-direction: column;
   font-size: 28rpx;
   color: #333;
+  align-self: flex-start;
 }
 .wine-name {
   font-weight: bold;
@@ -60,11 +124,28 @@ page {
 .period, .remark {
   font-size: 24rpx;
   color: #888;
+  margin-top: -5rpx;
 }
+
+/* 重点修改：让备注最多显示两行，并显示省略号 */
+.remark {
+    margin-top: 10rpx; 
+    white-space: normal; 
+    overflow: hidden; 
+    text-overflow: ellipsis; 
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+/* 限制行数 */
+    -webkit-box-orient: vertical;
+}
+
+/* 数量和按钮容器 */
 .actions {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
+/* 按钮靠右 */
+  justify-content: flex-end; /* 按钮靠底 */
   flex-shrink: 0;
 }
 .quantity {
@@ -72,36 +153,68 @@ page {
   color: #333;
   margin-bottom: 10rpx;
 }
+
+/* 按钮包裹层，用于固定宽度 */
+.button-wrap {
+  width: 30rpx;
+  flex-shrink: 0;
+  margin-right: 100rpx;
+  margin-top: 50rpx;
+}
+
+/* 列表卡片内按钮样式 */
 .action-btn {
   background-color: #fff;
   color: #ff4500;
   border: 1rpx solid #ff4500;
-  border-radius: 40rpx;
-  font-size: 24rpx;
-  padding: 8rpx 25rpx;
-  height: auto;
-  line-height: 1.5;
+  border-radius: 15rpx;
+/* 强制固定尺寸 */
+  width: 130rpx !important;
+  height: 65rpx;      
+  line-height: 65rpx;
+/* 确保文本垂直居中 */
+  
+  /* 覆盖默认样式 */
+  padding: 0; 
+  margin: 0;
+  
+  font-size: 26rpx;
+  flex-shrink: 0;
+}
+
+/* 【新增】历史记录按钮样式 */
+.action-btn.historical-btn {
+    background-color: #f0f0f0;
+    color: #999;
+    border: 1rpx solid #ccc;
 }
 
 /* --- 底部悬浮按钮样式 --- */
 .bottom-float-btn-wrap {
   position: fixed;
+  right: 40rpx; 
   bottom: 0;
-  left: 0;
-  right: 0;
-  padding: 30rpx 40rpx;
-  background-color: #fff;
-  box-shadow: 0 -4rpx 10rpx rgba(0, 0, 0, 0.05);
-  z-index: 99; /* 确保悬浮在内容之上 */
+/* 增加底部安全距离 */
+  padding-bottom: calc(40rpx + env(safe-area-inset-bottom));
+  z-index: 99; 
+  height: auto;
+  background-color: transparent;
 }
 .store-wine-btn {
-  background-color: #ff4500; /* 红色按钮 */
+  /* 约四字宽 */
+  width: 675rpx !important;
+  height: 80rpx !important;
+  background-color: #ff4500;
   color: white;
   font-size: 32rpx;
-  border-radius: 60rpx;
+  border-radius: 15rpx; 
   height: 100rpx;
-  line-height: 100rpx;
+  line-height: 83rpx;
+  margin: 0; 
+  padding: 0;
+  box-shadow: 0 4rpx 10rpx rgba(255, 69, 0, 0.4);
 }
+
 
 /* --- 模态框样式 --- */
 .modal-mask {
@@ -152,14 +265,46 @@ input {
 .picker-value {
   color: #333;
 }
-.submit-btn {
-  margin-top: 50rpx;
-  background-color: #ff4500;
-  color: white;
-  border-radius: 60rpx;
-  height: 90rpx;
-  line-height: 90rpx;
+
+/* 模态框底部按钮组样式 */
+.modal-actions-group {
+    display: flex;
+    /* 【修改】改为靠右对齐 (取消按钮在左，确认按钮在右) */
+    justify-content: flex-end; 
+    margin-top: 50rpx;
 }
+/* 取消按钮样式 */
+.cancel-btn {
+    /* 【修改】设置固定宽度 */
+    width: 260rpx !important; 
+    /* 调整按钮间距 */
+    margin-right: 30rpx; 
+    background-color: #f0f0f0;
+    color: #333;
+    /* 尺寸调整 */
+    border-radius: 20rpx; 
+    height: 80rpx; 
+    line-height: 80rpx;
+    /* 尺寸调整 */
+    font-size: 32rpx;
+    padding: 0;
+}
+.submit-btn {
+    /* 【修改】设置固定宽度 */
+    width: 260rpx !important; 
+    background-color: #ff4500;
+    color: white;
+    /* 尺寸调整 */
+    border-radius: 20rpx; 
+    height: 80rpx; 
+    line-height: 80rpx; 
+    /* 尺寸调整 */
+    font-size: 32rpx;
+    margin: 0;
+/* 清除默认 margin */
+    padding: 0;
+}
+
 .word-count {
   font-size: 24rpx;
   color: #aaa;
@@ -167,8 +312,6 @@ input {
   display: block;
   margin-top: 10rpx;
 }
-
-/* 上传图片区域 */
 .upload-box {
   justify-content: center;
   flex-direction: column;

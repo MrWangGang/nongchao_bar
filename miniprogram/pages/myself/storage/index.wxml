@@ -1,22 +1,69 @@
+<view class="tab-bar">
+    <view 
+        class="tab-item {{currentTab === 0 ? 'active' : ''}}" 
+        data-index="0" 
+        bindtap="switchTab"
+    >
+        未取出存酒
+    </view>
+    <view 
+        class="tab-item {{currentTab === 1 ? 'active' : ''}}" 
+        data-index="1" 
+        bindtap="switchTab"
+    >
+        历史存酒
+    </view>
+</view>
+
 <scroll-view class="page-content" scroll-y>
     
     <view class="wine-list">
-        <block wx:for="{{wineList}}" wx:key="index">
+        <block wx:for="{{displayList}}" wx:key="index">
             <view class="list-item">
+                
                 <view class="item-header">
                     <text class="order-no">寄存单号: {{item.orderNo}}</text>
-                    <text class="status">{{item.status}}</text>
+                    <text class="status {{item.status === '已取出' ? 'withdrawn' : ''}}">{{item.status}}</text>
                 </view>
+                
+                <view class="item-time-row">
+                    <text wx:if="{{item.status === '已取出'}}">取酒时间: {{item.withdrawTimeDisplay ||
+'N/A'}}</text>
+                    <text wx:else>寄存时间: {{item.depositTimeDisplay}}</text>
+                </view>
+    
+ 
                 <view class="item-body">
                     <image class="wine-img" src="{{item.imageUrl || '/images/default_wine.png'}}" mode="aspectFill"></image>
+               
+             
                     <view class="info-details">
                         <text class="wine-name">{{item.name}}</text>
-                        <text class="period">有效期: {{item.startDate}}至{{item.endDate}}</text>
+                        <text class="period">有效期至: {{item.endDate}}</text>
                         <text class="remark">备注: {{item.remark}}</text>
                     </view>
+        
+            
                     <view class="actions">
                         <text class="quantity">x{{item.quantity}}</text>
-                        <button class="action-btn">立刻取酒</button>
+           
+                        <view class="button-wrap">
+                            <button 
+                                wx:if="{{item.status === '已确认寄存'}}" 
+                                class="action-btn"
+                                data-index="{{index}}" 
+                                bindtap="withdrawWine"
+                            >
+                                立刻取酒
+                            </button>
+                            <button 
+                                wx:else
+                                class="action-btn historical-btn"
+                                disabled
+                            >
+                                已取出
+                            </button>
+                        </view>
                     </view>
                 </view>
             </view>
@@ -27,6 +74,7 @@
 </scroll-view>
 
 <view class="bottom-float-btn-wrap">
+ 
     <button class="store-wine-btn" bindtap="showModal">立即存酒</button>
 </view>
 
@@ -35,7 +83,8 @@
 <view class="modal-dialog" wx:if="{{isModalVisible}}">
     <view class="modal-title">寄存新酒</view>
     <form bindsubmit="submitForm">
-        <view class="form-item upload-box" bindtap="chooseImage">
+        <view class="form-item upload-box" 
+            bindtap="chooseImage">
             <image wx:if="{{formData.imageUrl}}" src="{{formData.imageUrl}}" mode="aspectFill" class="uploaded-img"></image>
             <view wx:else class="placeholder-icon">+</view>
             <text class="label">上传图片</text>
@@ -45,24 +94,30 @@
             <text class="label">酒名:</text>
             <input name="wineName" placeholder="请输入酒名" value="{{formData.wineName}}" />
         </view>
-        
+  
+              
         <picker mode="date" value="{{formData.validityDate}}" start="{{currentDate}}" bindchange="bindDateChange">
             <view class="form-item input-item picker-item">
                 <text class="label">有效期至:</text>
-                <view class="picker-value">{{formData.validityDate || '请选择到期时间'}}</view>
+                <view class="picker-value">{{formData.validityDate ||
+'请选择到期时间'}}</view>
             </view>
         </picker>
 
         <view class="form-item input-item">
             <text class="label">备注:</text>
             <input name="remark" 
-                   placeholder="最多10个字" 
-                   maxlength="10" 
+                   placeholder="最多25个字" 
+                   maxlength="25" 
                    value="{{formData.remark}}"
                    bindinput="bindRemarkInput" />
         </view>
-        <text class="word-count">{{formData.remark.length || 0}}/10</text>
+        <text class="word-count">{{formData.remark.length ||
+0}}/25</text>
         
-        <button form-type="submit" class="submit-btn">确认存酒</button>
+        <view class="modal-actions-group">
+            <button class="cancel-btn" bindtap="hideModal">取消</button>
+            <button form-type="submit" class="submit-btn">确认存酒</button>
+        </view>
     </form>
 </view>
