@@ -391,7 +391,7 @@
   z-index: 2; /* 确保在头部背景图之上 */
   font-size: 32rpx;
   font-weight: bold;
-  color: #fcf949;
+  color: #ecece1;
 }
 
 /* 排行榜主体布局 */
@@ -431,8 +431,8 @@
 /* 头像容器 */
 .rank-avatar-wrapper {
   position: relative;
-  width: 154rpx; 
-  height: 228rpx;
+  width: 220rpx; 
+  height: 200rpx;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -440,8 +440,9 @@
 }
 /* 排名1头像容器尺寸 */
 .rank-avatar-wrapper-1 {
-  width: 182rpx; 
-  height: 270rpx;
+  width: 220rpx; 
+  height: 200rpx;
+  margin-top: 20rpx;
 }
 
 /* 头像框图片 (排名1、2、3) */
@@ -480,6 +481,8 @@
 .rank-name {
   font-size: 26rpx;
   color: #666666;
+  margin-top: 20rpx;
+  font-weight: bold;
 }
 .rank-name-1 {
   font-size: 28rpx;
