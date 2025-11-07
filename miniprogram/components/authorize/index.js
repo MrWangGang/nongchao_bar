@@ -5,8 +5,8 @@
 // ===============================================
 
 const CLOUD_FUNCTION_NAME = 'auth';
-// 建议将默认头像放到你的云存储中，而不是用微信的临时链接
-const DEFAULT_AVATAR_URL = 'https://mmbiz.qpic.cn/mmbiz/icTdbqWNOwNRna42FI242Lcia07jQodd2FJGIYQfG0LAJGFxM4FbnQP6yfMxBgJ0F3YRqJCJ1aPAK2dQagdusBZg/0';
+// 【重要修改】请将此默认头像替换为您云存储中的永久图片链接
+const DEFAULT_AVATAR_URL = 'cloud://cloud1-7gy6iiv5f0cbcb43.636c-cloud1-7gy6iiv5f0cbcb43-1379173903/素材/默认头像.png';
 
 /**
  * 检查本地缓存中是否存在Token，判断登录状态
@@ -18,7 +18,7 @@ const checkLoginStatus = () => {
 
 /**
  * 封装：调用云函数进行登录和Token获取
- * @param {object} userInfo - 包含 nickName 和 avatarUrl 的用户信息对象
+ * @param {object} userInfo - 包含 nickName 和 avatarUrl (永久文件ID) 的用户信息对象
  * @param {function} finalSuccessCallback - 登录流程全部成功后的回调
  */
 const callCloudLogin = (userInfo, finalSuccessCallback) => {
@@ -28,7 +28,7 @@ const callCloudLogin = (userInfo, finalSuccessCallback) => {
         name: CLOUD_FUNCTION_NAME,
         data: {
             nickName: userInfo.nickName,
-            avatarUrl: userInfo.avatarUrl
+            avatarUrl: userInfo.avatarUrl // 此时 avatarUrl 是永久文件 ID
         },
         success: res => {
             wx.hideLoading();
@@ -58,16 +58,47 @@ const callCloudLogin = (userInfo, finalSuccessCallback) => {
 
 /**
 * 检查登录状态并处理授权流程 (调用云函数)
-* @param {object} userInfo - 包含 nickName 和 avatarUrl 的用户信息对象
+* * 【关键修改】此函数现在负责将头像上传到云存储，并将永久 fileID 传递给 callCloudLogin。
+* * @param {object} userInfo - 包含 nickName 和 avatarUrl (临时路径) 的用户信息对象
 * @param {function} finalSuccessCallback - 登录流程全部成功后的回调
 */
-const checkAndAuthorize = (userInfo, finalSuccessCallback) => {
+const checkAndAuthorize = async (userInfo, finalSuccessCallback) => {
     
-    // 1. 发起 wx.login 获取 code (云函数会自动使用这个code)
+    let permanentAvatarUrl = userInfo.avatarUrl;
+
+    // 1. 【新增】将临时头像路径上传到云存储
+    // 只有当头像路径不是云存储链接 (cloud://) 或默认链接时，才需要上传
+    if (!permanentAvatarUrl.startsWith('cloud://') && permanentAvatarUrl !== DEFAULT_AVATAR_URL) {
+        wx.showLoading({ title: '上传头像中...' });
+        try {
+            // 生成唯一的云端文件路径
+            const cloudPath = `user_avatars/${userInfo.nickName}_${Date.now()}.png`;
+            
+            const uploadRes = await wx.cloud.uploadFile({
+                cloudPath: cloudPath,
+                filePath: userInfo.avatarUrl, // 临时文件路径
+            });
+
+            permanentAvatarUrl = uploadRes.fileID; // 获取永久文件 ID
+            wx.hideLoading();
+
+        } catch (error) {
+            wx.hideLoading();
+            console.error('头像上传云存储失败', error);
+            wx.showToast({ title: '头像上传失败，请重试', icon: 'error' });
+            return; 
+        }
+    }
+    
+    // 2. 发起 wx.login 获取 code 
     wx.login({
         success: () => {
-            // 2. 授权成功后，立即调用云函数进行后端登录
-            callCloudLogin(userInfo, finalSuccessCallback);
+            // 3. 授权成功后，立即调用云函数进行后端登录
+            const finalUserInfo = { 
+                nickName: userInfo.nickName, 
+                avatarUrl: permanentAvatarUrl // 传递永久链接或 Cloud File ID
+            };
+            callCloudLogin(finalUserInfo, finalSuccessCallback);
         },
         fail: () => {
             wx.showToast({ title: '微信登录失败', icon: 'error' });
@@ -100,7 +131,7 @@ Component({
     methods: {
         onChooseAvatar(e) {
             const { avatarUrl } = e.detail;
-            this.setData({ authAvatarUrl: avatarUrl });
+            this.setData({ authAvatarUrl: avatarUrl }); // 此时 avatarUrl 是一个临时文件路径
             wx.showToast({ title: '头像已选定', icon: 'none' });
         },
 
@@ -108,7 +139,8 @@ Component({
             this.setData({ authNickName: e.detail.value.trim() });
         },
 
-        submitAuthAndLogin() {
+        // 【关键修改】改为异步函数
+        async submitAuthAndLogin() {
             const { authAvatarUrl, authNickName, defaultAvatarUrl } = this.data;
 
             if (authAvatarUrl === defaultAvatarUrl) {
@@ -120,17 +152,15 @@ Component({
                 return;
             }
             
-            // 构造用户信息
+            // 构造用户信息 (authAvatarUrl 此时是临时路径)
             const userInfo = { nickName: authNickName, avatarUrl: authAvatarUrl };
             
-            // 调用核心登录流程，并把组件的 handleLoginSuccess 作为最终成功回调传进去
-            checkAndAuthorize(userInfo, this.handleLoginSuccess.bind(this));
+            // 调用核心登录流程，checkAndAuthorize 将处理头像上传
+            await checkAndAuthorize(userInfo, this.handleLoginSuccess.bind(this));
         },
         
         /**
-         * 【核心修改】
          * 登录流程完全成功后的处理函数
-         * 不再触发事件，而是调用 app.js 的全局方法
          */
         handleLoginSuccess() {
             this.setData({ isAuthModalVisible: false }); 
