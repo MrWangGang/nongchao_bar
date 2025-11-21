@@ -26,6 +26,9 @@
             </view>
         </view>
     </view>
+    <view class="pickup-alert">
+        <text>温馨提示：你需要去柜台自取</text>
+    </view>
     <view class="order-card">
         <scroll-view class="product-list-scroll" scroll-y>
             <view class="product-list">

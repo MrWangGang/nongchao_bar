@@ -24,7 +24,28 @@ page {
   transform: translateY(30rpx);
   z-index: 10;
 }
-
+/* ============================================== */
+/* 💥 新增：柜台自取提示样式 💥 */
+/* ============================================== */
+.pickup-alert {
+  padding: 18rpx 30rpx; /* 增加内边距 */
+  /* 左右边距要与 container 的 padding 保持一致 */
+  width: 650rpx;  
+  background-color: #fff9e6; /* 柔和的黄色背景，提示信息 */
+  color: #cc9900; /* 深黄色字体 */
+  font-size: 28rpx;
+  font-weight: 500;
+  text-align: center;
+  line-height: 1.4;
+  
+  border: 1rpx solid #ffe9b3;
+  border-radius: 16rpx;
+  
+  /* 确保提示卡片位于 order-card 上方，如果 order-card 有负边距 */
+  position: relative;
+  z-index: 5; 
+  margin-top: 150rpx;
+}
 .status-card-wrapper {
   width: 100%;
   height: auto;
@@ -111,7 +132,7 @@ page {
   padding: 25rpx; 
   box-shadow: 0 5rpx 20rpx rgba(0, 0, 0, 0.05);
   /* 调整 margin-top，因为容器顶部已留出空间 */
-  margin-top: 150rpx; /* 靠近顶部卡片 */
+  margin-top: 30rpx; /* 靠近顶部卡片 */
   width: 100%; 
   box-sizing: border-box;
 }
