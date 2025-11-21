@@ -21,11 +21,11 @@ const HISTORY_ACTION_NAME = "特调订单"; // ⭐ 历史记录中的 Action 名
 
 // --- VIP 等级所需总经验值 (保持与业务逻辑一致) ---
 const VIP_LEVELS = [
-    { level: 1, requiredExp: 0 },      
-    { level: 2, requiredExp: 300 },      
-    { level: 3, requiredExp: 1300 }, 
-    { level: 4, requiredExp: 2800 }, 
-    { level: 5, requiredExp: 5800 }, 
+    { level: 1, requiredExp: 0 },
+    { level: 2, requiredExp: 300 },
+    { level: 3, requiredExp: 1300 },
+    { level: 4, requiredExp: 2800 },
+    { level: 5, requiredExp: 5800 },
 ];
 
 /**
@@ -36,7 +36,7 @@ function calculateVipLevel(totalExp) {
     for (let i = VIP_LEVELS.length - 1; i >= 0; i--) {
         if (totalExp >= VIP_LEVELS[i].requiredExp) {
             currentLevel = VIP_LEVELS[i].level;
-            break; 
+            break;
         }
     }
     return currentLevel;
@@ -47,7 +47,7 @@ function calculateVipLevel(totalExp) {
  */
 async function insertHistoryRecord(tx, userId, action, value, collectionName) {
     if (value !== 0) {
-        await tx.collection(collectionName).add({ 
+        await tx.collection(collectionName).add({
             data: {
                 userId: userId,
                 action: action,
@@ -63,8 +63,22 @@ async function insertHistoryRecord(tx, userId, action, value, collectionName) {
  * 模拟支付和取消订单功能集成云函数
  */
 exports.main = async (event, context) => {
-    // 💥 关键修改 1: 从 event 中接收 paidAmount 💥
-    const { action, orderId, transactionId, paymentMethod, paidAmount } = event;
+    // 关键修改 1: 从 event 中接收 paidAmount
+    const { action, orderId, transactionId, paymentMethod } = event;
+    let { paidAmount } = event; // 单独取出 paidAmount
+    
+    // 💥 关键修改 4: 强制将 paidAmount 转换为数字，防止客户端传入字符串 💥
+    if (paidAmount !== undefined && paidAmount !== null) {
+        paidAmount = Number(paidAmount);
+        // 如果转换后不是有效的数字，可以考虑报错或将其设为 0
+        if (isNaN(paidAmount)) {
+             console.error('paidAmount 转换失败，使用 0 作为默认值');
+             paidAmount = 0;
+        }
+    } else {
+        // 如果 paidAmount 缺失，将其设为 0 或保持 undefined/null
+        paidAmount = 0; // 支付场景下，如果缺失，通常是 0
+    }
     
     if (!orderId) {
         return { success: false, errMsg: '缺少订单 ID' };
@@ -91,18 +105,15 @@ exports.main = async (event, context) => {
     if (action === 'pay') {
         // ==================== 支付逻辑 (使用事务) ====================
         
-        // 💥 关键修改 2: 校验 paidAmount 💥
-        if (!transactionId || !paymentMethod || paidAmount === undefined) {
-            return { success: false, errMsg: '支付操作缺少交易 ID、支付方式或实际支付金额 (paidAmount)' };
+        // 关键修改 2: 校验 paidAmount
+        if (!transactionId || !paymentMethod || paidAmount <= 0) { // 校验 paidAmount 必须大于 0
+            return { success: false, errMsg: '支付操作缺少交易 ID、支付方式或实际支付金额 (paidAmount 必须大于 0)' };
         }
 
         if (order.orderStatus !== '待支付') {
             return { success: false, errMsg: `订单状态错误，当前状态为: ${order.orderStatus}，无法支付` };
         }
 
-        // totalAmount 是订单原始应付金额，paidAmount 是实际支付金额
-        // const totalAmount = order.payment.totalAmount; // 不再使用这个变量进行设置，而是使用 paidAmount
-        
         const transaction = await db.startTransaction();
         
         try {
@@ -114,9 +125,9 @@ exports.main = async (event, context) => {
                     payment: {
                         paymentMethod: paymentMethod,
                         paymentTime: db.serverDate(),
-                        // 💥 关键修改 3: 使用 paidAmount 存储到 payment 对象的 paidAmount 字段 💥
+                        // 关键修改 3: 使用 paidAmount 存储到 payment 对象的 paidAmount 字段
                         totalAmount: order.payment.totalAmount, // 原始应付金额不变
-                        paidAmount: paidAmount, // 存储实际支付金额
+                        paidAmount: paidAmount, // 存储实际支付金额 (已是数字)
                         transactionId: transactionId,
                     }
                 }
@@ -144,7 +155,7 @@ exports.main = async (event, context) => {
                 data: {
                     vipExp: _.inc(ADD_EXP),      // 累加 50 经验
                     vipScore: _.inc(ADD_SCORE), // 累加 10 积分
-                    vipLevel: newVipLevel,       // 更新等级
+                    vipLevel: newVipLevel,      // 更新等级
                 }
             });
             
