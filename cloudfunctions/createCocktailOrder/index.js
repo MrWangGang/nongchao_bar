@@ -17,17 +17,17 @@ const _ = db.command;
 exports.main = async (event, context) => {
     
     const { 
-        products,          // 商品列表
-        totalAmount,       // 总金额
-        totalCount,        // 总件数
-        recipeName,        // 酒谱名称（如果有）
-        remark,            // 订单备注
-        uploadedImages,    // 上传的图片列表 (用于获取所有图片和第一张图片)
-        orderStatus,       // 初始订单状态 (如 '待支付')
-        userId             // 从调用者传入的 event 中获取 userId
+        products,           // 商品列表
+        totalAmount,        // 总金额
+        totalCount,         // 总件数
+        recipeName,         // 酒谱名称（如果有）
+        remark,             // 订单备注
+        uploadedImages,     // 上传的图片列表 (用于获取所有图片和第一张图片)
+        orderStatus,        // 初始订单状态 (如 '待支付')
+        userId              // 从调用者传入的 event 中获取 userId
     } = event;
 
-    // 基础校验
+    // 基础校验 (略)
     if (!products || products.length === 0 || !totalAmount || !userId) {
         return {
             success: false,
@@ -35,7 +35,7 @@ exports.main = async (event, context) => {
         };
     }
 
-    // 关键逻辑：检查是否存在待支付订单
+    // 关键逻辑：检查是否存在待支付订单 (略)
     try {
         const existingOrder = await db.collection('cocktails_order').where({
             userId: userId,
@@ -43,7 +43,6 @@ exports.main = async (event, context) => {
         }).limit(1).get();
 
         if (existingOrder.data && existingOrder.data.length > 0) {
-            // 找到待支付订单，阻止新的订单创建
             return {
                 success: false,
                 errMsg: `您已有一个待支付订单 (编号: ${existingOrder.data[0].no})，请先完成支付或取消。`
@@ -57,32 +56,33 @@ exports.main = async (event, context) => {
         };
     }
     
-    // 生成订单号 (简单示例，实际应用中应更严谨)
+    // 生成订单号 (略)
     const dateStr = new Date().getTime().toString();
     const randomStr = Math.random().toString(36).substr(2, 4).toUpperCase();
     const orderNo = `CO${dateStr.slice(-8)}${randomStr}`;
 
     const orderData = {
-        no: orderNo,                      // 订单编号
-        userId: userId,                   // 用户ID
-        products: products,               // 商品列表
-        totalCount: totalCount,           // 订单总件数
-        recipeName: recipeName || '',     // 酒谱名称
-        remark: remark || '',             // 备注
+        no: orderNo,                // 订单编号
+        userId: userId,                 // 用户ID
+        products: products,             // 商品列表
+        totalCount: totalCount,         // 订单总件数
+        recipeName: recipeName || '',   // 酒谱名称
+        remark: remark || '',           // 备注
         image: uploadedImages && uploadedImages.length > 0 ? uploadedImages[0] : '', // 仅存第一张图片
-        // *** 关键修改：恢复 images 数组字段 ***
-        images: uploadedImages || [],     // 存储所有图片 URL
+        images: uploadedImages || [],   // 存储所有图片 URL
         orderStatus: orderStatus || '待支付', // 初始状态
         
         // payment 对象初始化
-        payment: {                        
-            paymentMethod: null,          // 支付方式 (初始化为 null)
-            paymentTime: null,            // 支付时间 (初始化为 null)
-            totalAmount: totalAmount,     // 订单总金额 (从 event 中获取)
-            transactionId: null,          // 交易流水号 (初始化为 null)
+        payment: {                          
+            paymentMethod: null,            // 支付方式 (初始化为 null)
+            paymentTime: null,              // 支付时间 (初始化为 null)
+            totalAmount: totalAmount,       // 订单总金额 (应付金额)
+            // 💥 关键修改：将 paidAmount 初始化为 0 💥
+            paidAmount: 0,               
+            transactionId: null,            // 交易流水号 (初始化为 null)
         },
         
-        createTime: db.serverDate(),      // 下单时间
+        createTime: db.serverDate(),        // 下单时间
         updateTime: db.serverDate(),
     };
 

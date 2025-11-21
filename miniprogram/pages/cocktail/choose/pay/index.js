@@ -237,7 +237,8 @@ Page({
                                 action: 'pay', 
                                 orderId: currentOrderId,
                                 transactionId: 'MOCK' + Date.now(), // 模拟交易ID
-                                paymentMethod: '微信支付' 
+                                paymentMethod: '微信支付',
+                                paidAmount: totalAmount // 使用 data 中的 totalAmount 作为实际支付金额
                             },
                             success: (res) => {
                                 wx.hideLoading();

@@ -21,7 +21,7 @@ const HISTORY_ACTION_NAME = "特调订单"; // ⭐ 历史记录中的 Action 名
 
 // --- VIP 等级所需总经验值 (保持与业务逻辑一致) ---
 const VIP_LEVELS = [
-    { level: 1, requiredExp: 0 },          
+    { level: 1, requiredExp: 0 },      
     { level: 2, requiredExp: 300 },      
     { level: 3, requiredExp: 1300 }, 
     { level: 4, requiredExp: 2800 }, 
@@ -63,7 +63,8 @@ async function insertHistoryRecord(tx, userId, action, value, collectionName) {
  * 模拟支付和取消订单功能集成云函数
  */
 exports.main = async (event, context) => {
-    const { action, orderId, transactionId, paymentMethod } = event;
+    // 💥 关键修改 1: 从 event 中接收 paidAmount 💥
+    const { action, orderId, transactionId, paymentMethod, paidAmount } = event;
     
     if (!orderId) {
         return { success: false, errMsg: '缺少订单 ID' };
@@ -90,15 +91,18 @@ exports.main = async (event, context) => {
     if (action === 'pay') {
         // ==================== 支付逻辑 (使用事务) ====================
         
-        if (!transactionId || !paymentMethod) {
-            return { success: false, errMsg: '支付操作缺少交易 ID 或支付方式' };
+        // 💥 关键修改 2: 校验 paidAmount 💥
+        if (!transactionId || !paymentMethod || paidAmount === undefined) {
+            return { success: false, errMsg: '支付操作缺少交易 ID、支付方式或实际支付金额 (paidAmount)' };
         }
 
         if (order.orderStatus !== '待支付') {
             return { success: false, errMsg: `订单状态错误，当前状态为: ${order.orderStatus}，无法支付` };
         }
 
-        const totalAmount = order.payment.totalAmount; 
+        // totalAmount 是订单原始应付金额，paidAmount 是实际支付金额
+        // const totalAmount = order.payment.totalAmount; // 不再使用这个变量进行设置，而是使用 paidAmount
+        
         const transaction = await db.startTransaction();
         
         try {
@@ -110,7 +114,9 @@ exports.main = async (event, context) => {
                     payment: {
                         paymentMethod: paymentMethod,
                         paymentTime: db.serverDate(),
-                        totalAmount: totalAmount,
+                        // 💥 关键修改 3: 使用 paidAmount 存储到 payment 对象的 paidAmount 字段 💥
+                        totalAmount: order.payment.totalAmount, // 原始应付金额不变
+                        paidAmount: paidAmount, // 存储实际支付金额
                         transactionId: transactionId,
                     }
                 }
@@ -136,9 +142,9 @@ exports.main = async (event, context) => {
             // C. 事务内：更新 users 集合 (累加积分/经验，更新等级)
             await transaction.collection(USER_COLLECTION).doc(userId).update({
                 data: {
-                    vipExp: _.inc(ADD_EXP),     // 累加 50 经验
+                    vipExp: _.inc(ADD_EXP),      // 累加 50 经验
                     vipScore: _.inc(ADD_SCORE), // 累加 10 积分
-                    vipLevel: newVipLevel,      // 更新等级
+                    vipLevel: newVipLevel,       // 更新等级
                 }
             });
             
