@@ -1,4 +1,4 @@
-/* /pages/index/reserve/detail/index.wxss */
+/* /pages/index/reserve/detail/index.wxss (完整的 WXSS 代码) */
 page {
   background-color: #f7f7f7;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
@@ -78,6 +78,10 @@ page {
   font-size: 32rpx;
   font-weight: bold;
   color: #333;
+}
+.sub-title {
+  font-size: 24rpx;
+  color: #999;
 }
 
 .icons .icon {
@@ -185,6 +189,8 @@ page {
   padding: 10rpx 30rpx;
   padding-bottom: calc(20rpx + env(safe-area-inset-bottom));
   box-sizing: border-box;
+  background-color: #fff;
+  box-shadow: 0 -2rpx 10rpx rgba(0, 0, 0, 0.05);
 }
 .submit-btn {
   width: 100% !important;
@@ -200,38 +206,35 @@ page {
 .submit-btn::after {
   border: none;
 }
-
+.submit-btn[disabled] {
+  opacity: 0.6;
+}
 
 /**************************************************************
- * --- 新增样式：手机号输入框与“悬浮”的发送验证码按钮 ---
+ * --- 手机号输入框与“悬浮”的发送验证码按钮 (不变) ---
  **************************************************************/
 
-/* 1. 输入框和按钮的父容器，作为“定位锚点” */
 .input-wrapper {
   display: flex;
   align-items: center;
   flex: 1;
   justify-content: flex-end;
-  position: relative; /* 关键：让它成为绝对定位的参考容器 */
+  position: relative;
 }
 
-/* 2. 为手机号输入框右侧留出空间，防止文字与按钮重叠 */
 .phone-input {
   flex: 1;
   min-width: 0;
-  padding-right: 200rpx; /* 关键：在输入框内部留出空间 */
-  box-sizing: border-box;  /* 确保 padding 不会撑大输入框 */
+  padding-right: 200rpx;
+  box-sizing: border-box;
 }
 
-/* 3. “悬浮”的发送验证码按钮 */
 .send-code-btn {
-  /* 核心：变为绝对定位，脱离布局流 */
   position: absolute;
   right: 0;
   top: 50%;
   transform: translateY(-50%);
 
-  /* 尺寸和样式 */
   height: 70rpx;
   line-height: 68rpx;
   padding: 0 20rpx;
@@ -245,9 +248,173 @@ page {
   transition: all 0.2s;
 }
 
-/* 4. 按钮的禁用状态 (倒计时中) */
 .send-code-btn.disabled {
   background-color: #f7f7f7;
   color: #ccc;
   border-color: #eee;
+}
+
+/**************************************************************
+ * --- 弹窗相关样式 (Modal/Action Sheet) ---
+ **************************************************************/
+
+/* 弹窗入口样式 */
+.selector-entry-wrapper {
+    padding: 20rpx 0;
+    border-bottom: 1rpx solid #f0f0f0;
+    margin-bottom: 10rpx;
+}
+.selector-entry {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10rpx 0;
+    font-size: 30rpx;
+    color: #333;
+}
+.entry-label {
+    font-weight: 500;
+}
+.entry-value {
+    color: #FF4D4F;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+}
+.arrow-down-icon {
+    margin-left: 10rpx;
+    font-size: 24rpx;
+    color: #999;
+}
+
+
+/* 弹窗主体样式 */
+.modal-mask {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.6);
+    z-index: 1000;
+}
+
+.package-modal {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: #ffffff;
+    border-top-left-radius: 30rpx;
+    border-top-right-radius: 30rpx;
+    z-index: 1001;
+    max-height: 70vh; /* 限制最大高度 */
+    display: flex;
+    flex-direction: column;
+    animation: slideUp 0.3s ease-out;
+    /* 🚀 底部安全距离适配 */
+    padding-bottom: env(safe-area-inset-bottom);
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(100%);
+    }
+    to {
+        transform: translateY(0);
+    }
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 30rpx;
+    border-bottom: 1rpx solid #f0f0f0;
+}
+
+.modal-title {
+    font-size: 34rpx;
+    font-weight: bold;
+    color: #333;
+}
+
+.modal-close-btn {
+    font-size: 40rpx;
+    color: #999;
+    padding: 0 10rpx;
+    line-height: 1; /* 确保 X 符号居中 */
+}
+
+.package-selector-scroll {
+    flex: 1;
+    overflow-y: scroll;
+    padding: 0 30rpx 30rpx;
+}
+
+.package-selector-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20rpx;
+    padding-top: 10rpx;
+}
+
+/* 弹窗内的单个套餐项样式 */
+.package-item {
+    border: 1rpx solid #eee;
+    border-radius: 12rpx;
+    padding: 25rpx;
+    box-sizing: border-box;
+    transition: all 0.2s;
+    text-align: left;
+    margin-right: 60rpx;
+}
+
+.package-item.active {
+    border-color: #FF4D4F; 
+    background-color: #fff6f6;
+}
+
+.package-item.active .item-name-type {
+    color: #FF4D4F;
+}
+
+.package-item.active .item-price-select {
+    color: #FF4D4F;
+}
+
+.item-name-type {
+    font-size: 30rpx;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 10rpx;
+}
+
+/* 🌟 描述和价格的父容器 */
+.item-details-brief {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* 🌟 描述文字样式 */
+.item-desc-brief {
+    font-size: 24rpx;
+    color: #999;
+    flex: 1;
+    margin-right: 20rpx;
+    /* 溢出隐藏 */
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+/* 🌟 价格文字样式，确保它不会被挤压 */
+.item-price-select {
+    font-size: 32rpx; 
+    font-weight: bold;
+    color: #333; 
+    flex-shrink: 0;
+    /* 关键：防止被描述挤压 */
+    margin-right: 80rpx;
 }

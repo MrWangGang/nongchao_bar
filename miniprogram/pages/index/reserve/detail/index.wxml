@@ -53,8 +53,8 @@
           <text class="label">最晚到店时间</text>
           <view class="value picker-value">
             {{arrivalTime}}
-                <text class="arrow-right">></text>          
-            </view>
+            <text class="arrow-right">></text>          
+          </view>
         </view>
       </picker>
     </view>
@@ -65,6 +65,17 @@
       <view class="card-title-bar">
         <text class="card-title">预订内容</text>
       </view>
+      
+      <view class="selector-entry-wrapper" bindtap="togglePackageSelector">
+          <view class="selector-entry">
+              <text class="entry-label">已选套餐</text>
+              <view class="entry-value">
+                  <text>{{packageInfo.name}}</text>
+                  <text class="arrow-down-icon">v</text>
+              </view>
+          </view>
+      </view>
+
       <view class="content-item">
         <view class="image-wrapper">
           <image class="item-image" src="{{packageInfo.imageUrl}}" mode="aspectFill" />
@@ -80,6 +91,32 @@
   </view>
 
   <view class="bottom-bar">
-    <button class="submit-btn" bindtap="submitBooking">提交预订</button>
+    <button class="submit-btn" bindtap="submitBooking" disabled="{{!packageInfo.price || packageInfo.price == 0}}">提交预订</button>
+  </view>
+
+  <view class="modal-mask" wx:if="{{showPackageSelector}}" catchtap="togglePackageSelector"></view>
+  <view class="package-modal" wx:if="{{showPackageSelector}}">
+      <view class="modal-header">
+          <text class="modal-title">选择套餐 ({{packageList.length}})</text>
+          <view class="modal-close-btn" bindtap="togglePackageSelector">×</view>
+      </view>
+      <scroll-view scroll-y class="package-selector-scroll">
+          <view class="package-selector-list">
+              <view 
+                  wx:for="{{packageList}}" 
+                  wx:key="type" 
+                  data-index="{{index}}" 
+                  bindtap="selectPackage"
+                  class="package-item {{index === currentPackageIndex ? 'active' : ''}}"
+              >
+                  <view class="item-name-type">{{item.name}}</view>
+                  
+                  <view class="item-details-brief">
+                      <text class="item-desc-brief">{{item.description || '暂无描述'}}</text>
+                      <view class="item-price-select">¥ {{item.price}}</view>
+                  </view>
+                  </view>
+          </view>
+      </scroll-view>
   </view>
 </view>

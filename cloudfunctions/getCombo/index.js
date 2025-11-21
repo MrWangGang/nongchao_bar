@@ -12,26 +12,26 @@ const db = cloud.database()
 // 云函数入口函数
 exports.main = async (event, context) => {
   // event 对象包含了小程序端调用时传过来的所有参数
-  const comboType = event.type
+  const comboType = event.type 
 
-  // 1. 参数校验：检查调用者是否传入了 type 参数
+  // 🚀 关键修改：检查 comboType 是否存在
   if (!comboType) {
+    console.error('参数错误: 缺少必要的 type 字段')
     return {
-      code: 400, // Bad Request: 请求参数错误
-      errMsg: '查询类型 type 不能为空',
-      data: []
+      code: 400, // Bad Request: 客户端请求参数错误
+      errMsg: '参数错误：必须提供套餐类型 (type) 才能进行查询'
     }
   }
 
   try {
-    // 2. 执行数据库查询
-    // 【请注意】这里我假设你的集合名为 'packages'，如果不是，请修改成你的集合名
-    const res = await db.collection('combos')
+    // 1. 构建查询对象，并应用 where 条件
+    const query = db.collection('combos')
       .where({
-        // 查询条件：文档中 'type' 字段的值等于传入的 comboType
-        type: comboType
+        type: comboType // 强制要求 type 字段的值等于传入的 comboType
       })
-      .get()
+
+    // 2. 执行数据库查询
+    const res = await query.get()
 
     // 3. 返回成功的结果
     return {
